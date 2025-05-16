@@ -1,9 +1,9 @@
 skkutable.com {
-  handle /api/* {
+  handle_path /api/* {
     reverse_proxy spring-boot-app:8080
   }
   handle {
     reverse_proxy nextjs:3000
   }
-  tls rbstj0311@naver.com
+  tls skkutable@gmail.com
 }
