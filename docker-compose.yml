@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  nextjs:
+    build:
+      context: frontend/
+      dockerfile: Dockerfile
+    container_name: nextjs-app
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    networks:
+      - web
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+  database:
+    container_name: mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: skku-table
+    volumes:
+      - skku-table-database:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - web
+
+  spring-boot-app:
+    container_name: spring-boot-app
+    image: ghcr.io/
+#    build:
+#      context: backend/
+#      dockerfile: Dockerfile
+#      args:
+#        JAR_FILE: build/libs/skku-table-backend.jar
+    ports:
+      - 8080:8080 # Spring Boot 애플리케이션을 8080 포트로 매핑
+    depends_on:
+      - database # 데이터베이스가 먼저 시작되도록 의존성 설정
+    environment:
+      SPRING_PROFILES_ACTIVE: dev # 필요한 프로파일 설정 (예: 개발 환경)
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/skku-table
+    networks:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
+  skku-table-database:
+
+networks:
+  web:
+    driver: bridge
