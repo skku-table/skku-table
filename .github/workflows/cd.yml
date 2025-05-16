@@ -1,8 +1,10 @@
 name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
-  push:
+  workflow_run:
+    workflows: [ "CI - PR & Main build" ]
     branches: [ main ]
+    types: [ completed ]
 
 jobs:
 
@@ -10,6 +12,7 @@ jobs:
     # 프런트 & 백엔드 동시 배포
     # ────────────────────────────────
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     needs: build-backend
 
@@ -20,11 +23,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.4
         with:
           ssh-private-key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
-
-      - name: Download backend JAR
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-jar
 
       - name: Deploy to Oracle Cloud
         env:
@@ -47,10 +45,6 @@ jobs:
             cd ~
           EOSSH
 
-          echo "📤 Uploading new JAR ..."
-          scp -o StrictHostKeyChecking=no skku-table-backend.jar \
-              $USER@$HOST:~/skku-table/backend/build/libs/skku-table-backend.jar
-
           echo "♻️docker-compose up"
           ssh -o StrictHostKeyChecking=no $USER@$HOST \
-              "cd ~/skku-table && docker compose build backend && docker compose pull && docker compose up -d --remove-orphans"
+              "cd ~/skku-table && docker compose pull && docker compose up -d --remove-orphans"
