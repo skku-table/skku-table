@@ -2,6 +2,8 @@ name: CI - Pull Request Check
 
 on:
   pull_request:
+  push:
+    branches: [ main ]
 
 
 jobs:
