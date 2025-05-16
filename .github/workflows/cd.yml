@@ -6,10 +6,6 @@ on:
     types: [ completed ]
 
 jobs:
-
-    # ────────────────────────────────
-    # 프런트 & 백엔드 동시 배포
-    # ────────────────────────────────
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'}}
     runs-on: ubuntu-latest
