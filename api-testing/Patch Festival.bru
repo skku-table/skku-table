@@ -1,0 +1,18 @@
+meta {
+  name: Patch Festival
+  type: http
+  seq: 8
+}
+
+patch {
+  url: http://localhost:8080/festivals/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "posterImageUrl": "public/test.jpg",
+    "mapImageUrl": "public/test.jpg"
+  }
+}

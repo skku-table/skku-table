@@ -1,0 +1,25 @@
+meta {
+  name: Create Booth
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/booths/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "festivalId": "1",
+    "name": "다같이 추억 솦으로",
+    "host": "소프트웨어학과",
+    "location": "율전",
+    "description": "1인 입장 가능. 최대 4명까지 입장 가능",
+    "startDateTime": "2025-05-08T19:00:00",
+    "endDateTime": "2025-05-08T23:00:00",
+    "posterImageUrl": "https://naver.com",
+    "eventImageUrl": "https://google.com"
+  }
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Create 율전 Festival
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/festivals/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "2025 성균관대 대동제",
+    "description": "율전 대동제입니다.",
+    "location": "율전",
+    "startDate": "2025-05-08",
+    "endDate": "2025-05-09",
+    "posterImageUrl": "https://naver.com",
+    "mapImageUrl": "https://google.com"
+  }
+}
