@@ -3,12 +3,14 @@ package com.skkutable.controller;
 import com.skkutable.domain.Booth;
 import com.skkutable.domain.Festival;
 import com.skkutable.dto.FestivalDto;
+import com.skkutable.dto.FestivalPatchDto;
 import com.skkutable.service.BoothService;
 import com.skkutable.service.FestivalService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,4 +58,9 @@ class FestivalController {
         .orElseThrow(() -> new IllegalArgumentException("Booth not found with id: " + boothId));
   }
 
+  @PatchMapping("/festivals/{id}")
+  @ResponseBody
+  public Festival patchFestival(@PathVariable Long id, @RequestBody FestivalPatchDto dto) {
+    return festivalService.patchUpdateFestival(id, dto);
+  }
 }

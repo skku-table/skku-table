@@ -1,6 +1,7 @@
 package com.skkutable.service;
 
 import com.skkutable.domain.Festival;
+import com.skkutable.dto.FestivalPatchDto;
 import com.skkutable.repository.FestivalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,11 @@ public class FestivalService {
     festivalRepository.deleteById(festivalId);
   }
 
-  // 추가적인 비즈니스 로직이 필요하다면 여기에 추가할 수 있음
+  public Festival patchUpdateFestival(Long id, FestivalPatchDto dto) {
+    Festival fest = festivalRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Festival not found: " + id));
+
+    fest.applyPatch(dto);
+    return fest;
+  }
 }

@@ -1,6 +1,7 @@
 package com.skkutable.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.skkutable.dto.FestivalPatchDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +62,16 @@ public class Festival {
   @UpdateTimestamp
   @Column(name = "updated_at", columnDefinition="TIMESTAMP")
   private LocalDateTime UpdatedAt;
+
+  public void applyPatch(FestivalPatchDto dto) {
+    if (dto.getName()            != null) this.name          = dto.getName();
+    if (dto.getDescription()     != null) this.description   = dto.getDescription();
+    if (dto.getLocation()        != null) this.location      = dto.getLocation();
+    if (dto.getStartDate()       != null) this.startDate     = dto.getStartDate();
+    if (dto.getEndDate()         != null) this.endDate       = dto.getEndDate();
+    if (dto.getPosterImageUrl()  != null) this.posterImageUrl= dto.getPosterImageUrl();
+    if (dto.getMapImageUrl()     != null) this.mapImageUrl   = dto.getMapImageUrl();
+  }
 
   public Festival(String posterImageUrl, String mapImageUrl, String name, Date startDate, Date endDate, String location, String description) {
     this.posterImageUrl = posterImageUrl;
