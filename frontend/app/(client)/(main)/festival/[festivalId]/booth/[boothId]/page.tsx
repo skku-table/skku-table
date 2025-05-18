@@ -1,46 +1,72 @@
-'use client';
 
+import { use } from 'react';
 import { IoHeart } from 'react-icons/io5';
 import Image from 'next/image';
 import Header from '@/components/Headers';
-import { useState } from 'react';
 import LikeButton from '@/components/LikeButton';
+import { formatDate } from '@/libs/utils';
 
 
-const mockBoothDetail = {
-  boothId: 1,
-  festivalId: 1,
-  name: '다같이 추억 솦으로',
-  host: '소프트웨어학과',
-  location: '삼성학술정보관 앞 잔디밭 3번 부스',
-  description: '1인 입장 가능 <br /> 최대 4명까지 예약 가능',
-  openTime: '17:00',
-  closeTime: '23:00',
-  startDate: '2025-05-16',
-  endDate: '2025-05-17',
-  likeCount: 24,
-  posterImageUrl: '/booth1.png',
-  eventImageUrl: '/booth1_event1.JPG',
-};
+// const mockBoothDetail = {
+//   boothId: 1,
+//   festivalId: 1,
+//   name: '다같이 추억 솦으로',
+//   host: '소프트웨어학과',
+//   location: '삼성학술정보관 앞 잔디밭 3번 부스',
+//   description: '1인 입장 가능 <br /> 최대 4명까지 예약 가능',
+//   openTime: '17:00',
+//   closeTime: '23:00',
+//   startDate: '2025-05-16',
+//   endDate: '2025-05-17',
+//   likeCount: 24,
+//   posterImageUrl: '/booth1.png',
+//   eventImageUrl: '/booth1_event1.JPG',
+// };
 
-//날짜 포멧 함수
-function formatDateRange(start: string, end: string): string {
-  const format = (dateStr: string) => {
-    const [, month, day] = dateStr.split('-');
-    return `${Number(month)}.${Number(day)}`; 
-  };
-  return `${format(start)} - ${format(end)}`;
+type Festivaltype = {
+  id: number;
+  posterImageUrl: string;
+  mapImageUrl: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  description: string;
+  likeCount: number;
+  booths:{
+    id: number;
+    name: string;
+    host: string;
+    location: string;
+    description: string;
+    startDateTime: string;
+    endDateTime: string;
+    likeCount: number;
+    posterImageUrl: string;
+    eventImageUrl: string;
+    createdAt: string;
+    updatedAt: string;
+  }[]
 }
 
-export default function BoothDetailPage() {
-  const booth = mockBoothDetail;
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(booth.likeCount);
 
-  const toggleLike = () => {
-    setLiked(prev => !prev);
-    setLikeCount(prev => prev + (liked ? -1 : 1));
-  };
+export default async function BoothDetailPage({ params }:{ params: { festivalId: number, boothId: number } }) {
+  const festivalId = params.festivalId;
+  const boothId = params.boothId;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+  const festival : Festivaltype = await res.json();
+  const booth = festival.booths.find((booths) => booths.id === Number(boothId));
+  // const [liked, setLiked] = useState(false);
+  // const [likeCount, setLikeCount] = useState(booth.likeCount);
+
+  // const toggleLike = () => {
+  //   setLiked(prev => !prev);
+  //   setLikeCount(prev => prev + (liked ? -1 : 1));
+  // };
+
+  if (!booth) {
+    return <div>부스를 찾을 수 없습니다.</div>;
+  }
 
   return (
     <>
@@ -56,9 +82,8 @@ export default function BoothDetailPage() {
             className="object-cover"
           />
           <LikeButton
-            initialLiked={liked}
+            initialLiked={false}
             size={25}
-            onClick={toggleLike}
             className="absolute top-2 right-2"
           />
         </div>
@@ -69,11 +94,11 @@ export default function BoothDetailPage() {
             <h2 className="text-xl font-bold">{booth.name}</h2>
             <div className="flex items-center gap-1 text-[15px] text-black/60">
               <IoHeart size={18} className="text-red-500" />
-              {likeCount}
+              {booth.likeCount}
             </div>
           </div>
           <ul className="list-disc pl-5 text-sm space-y-1 mt-2">
-            <li><strong>기간</strong> : {formatDateRange(booth.startDate, booth.endDate)}</li>
+            <li><strong>기간</strong> : {formatDate(booth.startDateTime)} - {formatDate(booth.endDateTime)}</li>
             <li><strong>위치</strong> : {booth.location}</li>
           </ul>
         </div>
