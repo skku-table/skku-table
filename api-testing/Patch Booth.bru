@@ -1,0 +1,17 @@
+meta {
+  name: Patch Booth
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{Url}}/festivals/1/booths/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "likeCount": 9999
+  }
+}

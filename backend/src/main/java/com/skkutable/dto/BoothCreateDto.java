@@ -2,26 +2,30 @@ package com.skkutable.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class FestivalDto {
+public class BoothCreateDto {
+
+  @NotNull
+  private Long festivalId;
 
   @NotBlank
   private String name;
 
-  private String description;
+  @NotBlank
+  private String host;
 
   private String location;
+  private String description;
 
   @NotNull
-  private Date startDate;
+  private LocalDateTime startDateTime;
 
   @NotNull
-  private Date endDate;
+  private LocalDateTime endDateTime;
 
   private String posterImageUrl;
-
-  private String mapImageUrl;
+  private String eventImageUrl;
 }

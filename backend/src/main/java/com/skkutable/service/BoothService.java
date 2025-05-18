@@ -1,8 +1,11 @@
 package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
+import com.skkutable.dto.BoothPatchDto;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.domain.Festival;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +17,9 @@ import java.util.Optional;
 @Transactional
 public class BoothService {
 
+  @PersistenceContext
+  private EntityManager em;
+
   private final BoothRepository boothRepository;
 
   @Autowired
@@ -21,9 +27,15 @@ public class BoothService {
     this.boothRepository = boothRepository;
   }
 
-  public Booth createBooth(Booth booth) {
-    // Festival과의 관계를 설정
-    validateFestivalExists(booth.getFestival());
+  public Booth createBooth(Long festivalId, Booth booth) {
+    // ① 영속성 컨텍스트 안에서 proxy reference 획득
+    Festival festivalRef = em.getReference(Festival.class, festivalId);
+
+    // ② 양방향 동기화
+    festivalRef.addBooth(booth);   // festival.booths 에도 추가
+    // 또는 booth.setFestival(festivalRef);
+
+    // ③ 저장 – festivalRef 는 managed 상태
     return boothRepository.save(booth);
   }
 
@@ -48,5 +60,21 @@ public class BoothService {
   public Optional<Booth> findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
     return boothRepository.findByIdAndFestivalId(boothId, festivalId);
   }
-  // 추가적인 비즈니스 로직이 필요하다면 여기에 추가할 수 있음
+
+  public Booth patchUpdateBooth(Long boothId, BoothPatchDto dto, FestivalService festivalService) {
+
+    Booth booth = boothRepository.findById(boothId)
+        .orElseThrow(() -> new IllegalArgumentException("Booth not found: " + boothId));
+
+    Festival targetFestival = null;
+    if (dto.getFestivalId() != null &&              // festivalId가 요청에 포함됐고
+        !dto.getFestivalId().equals(booth.getFestival().getId())) {  // 현재와 다르면
+      targetFestival = festivalService.findFestivalById(dto.getFestivalId())
+          .orElseThrow(() -> new IllegalArgumentException(
+              "Festival not found: " + dto.getFestivalId()));
+    }
+
+    booth.applyPatch(dto, targetFestival);   // Dirty Checking
+    return booth;                            // flush 시점에 UPDATE
+  }
 }

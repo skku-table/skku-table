@@ -14,6 +14,7 @@ public class FestivalPatchDto {
   private String location;
   private Date startDate;
   private Date   endDate;
+  private Integer likeCount;
   private String posterImageUrl;
   private String mapImageUrl;
 

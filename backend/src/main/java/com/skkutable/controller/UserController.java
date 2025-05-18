@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class UserController {
   private final UserService userService;
 
@@ -21,13 +22,11 @@ public class UserController {
   }
 
   @GetMapping("/users")
-  @ResponseBody
   public List<User> getUsers() {
     return userService.findUsers();
   }
 
   @PostMapping("/users/signup")
-  @ResponseBody
   public User addUser(@RequestBody UserDto userDto) {
     User user = new User(userDto.getName(), userDto.getEmail(), userDto.getPassword());
     return userService.join(user);

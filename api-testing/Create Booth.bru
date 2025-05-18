@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/booths/register
+  url: {{Url}}/festivals/1/booths/register
   body: json
   auth: inherit
 }
@@ -13,8 +13,8 @@ post {
 body:json {
   {
     "festivalId": "1",
-    "name": "다같이 추억 솦으로",
-    "host": "소프트웨어학과",
+    "name": "다같이 컴공 역사속으로4",
+    "host": "컴공과",
     "location": "율전",
     "description": "1인 입장 가능. 최대 4명까지 입장 가능",
     "startDateTime": "2025-05-08T19:00:00",
