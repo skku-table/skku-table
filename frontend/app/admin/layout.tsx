@@ -42,7 +42,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
           {isCurrentTab('checkReservation')? <IoPeople className="h-10 w-10 stroke-1"/> : <IoPeopleOutline className="h-10 w-10 stroke-1"/>}
         </Link>
         <Link href="/admin/manageBooth">
-          {isCurrentTab('manageBooth')? <RiPagesFill className="h-10 w-10 p-0.5"/> : <RiPagesLine className="h-10 w-10 p-0.5"/>}
+          {isCurrentTab('manageBooth') || isCurrentTab('registerBooth')? <RiPagesFill className="h-10 w-10 p-0.5"/> : <RiPagesLine className="h-10 w-10 p-0.5"/>}
         </Link>
         <Link href="/admin/myprofile">
           {isCurrentTab('myprofile')? <HiUserCircle className="h-10 w-10"/> : <HiOutlineUserCircle className="h-10 w-10"/>}

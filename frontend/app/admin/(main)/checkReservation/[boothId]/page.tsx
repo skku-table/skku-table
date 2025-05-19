@@ -163,13 +163,7 @@ export default function CheckReservationDetail({params}: {params:{boothId: strin
                 ))}
               </div>
             </div>
-
-
         </div>
-
-
-
-
       </div>
     );
   }
