@@ -43,10 +43,11 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReservationResponseDTO> getReservationsByBooth(Long boothId) {
-        return reservationRepository.findByBoothId(boothId).stream()
+    public List<ReservationResponseDTO> getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
+        List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
+        return reservations.stream()
                 .map(this::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ReservationResponseDTO updateReservation(Long reservationId, ReservationRequestDTO dto) {

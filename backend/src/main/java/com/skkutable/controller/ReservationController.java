@@ -27,9 +27,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationsByUser(userId));
     }
 
-    @GetMapping("/booth/{boothId}")
-    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByBooth(@PathVariable Long boothId) {
-        return ResponseEntity.ok(reservationService.getReservationsByBooth(boothId));
+    @GetMapping("/festival/{festivalId}/booth/{boothId}")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByFestivalAndBooth(
+            @PathVariable Long festivalId,
+            @PathVariable Long boothId) {
+        return ResponseEntity.ok(reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
     }
 
     @PutMapping("/{reservationId}")
