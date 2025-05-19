@@ -48,9 +48,8 @@ type Festivaltype = {
 }
 
 
-export default async function BoothDetailPage({ params }:{ params: { festivalId: number, boothId: number } }) {
-  const festivalId = params.festivalId;
-  const boothId = params.boothId;
+export default async function BoothDetailPage({ params }:{ params: Promise<{ festivalId: string; boothId: string }>; }) {
+  const { festivalId, boothId } = await params;
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
   const booth = festival.booths.find((booths) => booths.id === Number(boothId));
