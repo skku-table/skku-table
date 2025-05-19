@@ -1,5 +1,3 @@
-
-import { use } from 'react';
 import { IoHeart } from 'react-icons/io5';
 import Image from 'next/image';
 import Header from '@/components/Headers';
