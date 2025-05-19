@@ -49,6 +49,30 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public ReservationResponseDTO updateReservation(Long reservationId, ReservationRequestDTO dto) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Booth booth = boothRepository.findById(dto.getBoothId())
+                .orElseThrow(() -> new IllegalArgumentException("Booth not found"));
+
+        reservation.setUser(user);
+        reservation.setBooth(booth);
+        reservation.setReservationTime(dto.getReservationTime());
+        reservation.setNumberOfPeople(dto.getNumberOfPeople());
+
+        Reservation saved = reservationRepository.save(reservation);
+        return toResponseDTO(saved);
+    }
+
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+        reservationRepository.delete(reservation);
+    }
+
     private ReservationResponseDTO toResponseDTO(Reservation reservation) {
         ReservationResponseDTO dto = new ReservationResponseDTO();
         dto.setReservationId(reservation.getId());

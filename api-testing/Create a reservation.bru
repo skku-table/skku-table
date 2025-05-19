@@ -1,20 +1,19 @@
 meta {
   name: Create Reservation
   type: http
-  seq: 1
+  seq: 0
 }
 
 post {
   url: {{Url}}/reservations
-  body: json
   auth: inherit
-}
-
-body:json {
-  {
+  headers {
+    Content-Type: application/json
+  }
+  body: json({
     "userId": 1,
     "boothId": 2,
-    "reservationTime": "2025-05-20T15:00:00",
+    "reservationTime": "2025-05-21T18:00:00",
     "numberOfPeople": 3
-  }
+  })
 }

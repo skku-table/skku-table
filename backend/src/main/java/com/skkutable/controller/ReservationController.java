@@ -31,4 +31,19 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponseDTO>> getReservationsByBooth(@PathVariable Long boothId) {
         return ResponseEntity.ok(reservationService.getReservationsByBooth(boothId));
     }
+
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<ReservationResponseDTO> updateReservation(
+            @PathVariable Long reservationId,
+            @RequestBody ReservationRequestDTO dto
+    ) {
+        ReservationResponseDTO updated = reservationService.updateReservation(reservationId, dto);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
+        reservationService.deleteReservation(reservationId);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
 }
