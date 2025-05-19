@@ -52,11 +52,6 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
               
 
               {/* 포스터 */}
-              {/* <img
-                  src={festival.posterImageUrl}
-                  alt="축제 포스터"
-                  className="w-full rounded-lg shadow"
-              /> */}
               <Image
                 src={festival.posterImageUrl}
                 alt="축제 포스터"
@@ -92,12 +87,6 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
                         className="object-cover rounded cursor-pointer"
                       />
                     </Link>
-                      // <img
-                      // key={booth.boothId}
-                      // src={booth.posterImageUrl}
-                      // alt={`부스 ${booth.boothId}`}
-                      // className="w-32 h-32 object-cover rounded"
-                      // />
                   ))}
                   </div>
               </div>
