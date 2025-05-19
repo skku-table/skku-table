@@ -1,8 +1,10 @@
 // app/(client)/(main)/[festivalId]/page.tsx
+
 import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
 import Image from "next/image";
+
 
 // type Props = {
 //     params: {
@@ -11,46 +13,27 @@ import Image from "next/image";
 // };
 
 
+export default function FestivalDetailPage() {
 
-type Festivaltype = {
-  id: number;
-  posterImageUrl: string;
-  mapImageUrl: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  description: string;
-  likeCount: number;
-  booths:{
-    id: number;
-    name: string;
-    host: string;
-    location: string;
-    description: string;
-    startDateTime: string;
-    endDateTime: string;
-    likeCount: number;
-    posterImageUrl: string;
-    eventImageUrl: string;
-    createdAt: string;
-    updatedAt: string;
-  }[]
-}
+    //const {festivalId}=params;
+    //let festival;
 
-export default async function FestivalDetailPage({ params }: { params: { festivalId: number } }) {
-  const festivalId = params.festivalId;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
-  const festival : Festivaltype = await res.json();
+    // try {
+    //     const res= await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+    //     if (!res.ok) throw new Error('api error');
+    //     const data=await res.json();
+    //     festival=data;
+    // }catch (err) {
+    //     festival = mockFestivalDetail;
+    // }
+    const festival = mockFestivalDetail;
 
-
-  return (
-      <>
-          <Header isBackButton={true} title={festival.name}/>
-          <div className="relative p-4 pt-16 space-y-6">
-              {/* 뒤로가기 & 제목 */}
-              
-
+    return (
+        <>
+            <Header isBackButton={true} title={festival.name}/>
+            <div className="relative p-4 pt-16 space-y-6">
+                {/* 뒤로가기 & 제목 */}
+                
               {/* 포스터 */}
               <Image
                 src={festival.posterImageUrl}
@@ -60,18 +43,19 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
                 className="rounded-lg shadow"
               />
 
-              {/* 간단 정보 */}
-              <div>
-                  <h2 className="text-xl font-semibold mt-4">{festival.description}</h2>
-                  <p className="mt-1">📅 {formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</p>
-                  <p>📍 {festival.location}</p>
-              </div>
 
-              {/* 부스 목록 */}
-              <div>
-                  <h3 className="font-semibold mb-2">부스</h3>
-                  <div className="flex overflow-x-auto space-x-3 scrollbar-hide pb-2 whitespace-nowrap">
-                  {festival.booths.map(booth=> (
+                {/* 간단 정보 */}
+                <div>
+                    <h2 className="text-xl font-semibold mt-4">{festival.description}</h2>
+                    <p className="mt-1">📅 {festival.startDate} ~ {festival.endDate}</p>
+                    <p>📍 {festival.location}</p>
+                </div>
+
+                {/* 부스 목록 */}
+                <div>
+                    <h3 className="font-semibold mb-2">부스</h3>
+                    <div className="flex space-x-3 overflow-x-auto">
+                    {festival.booths.map((booth: Boothtype) => (
 
                       // 부스 클릭하면 부스 페이지로 넘어가도록 링크 추가
                       <Link
@@ -105,4 +89,5 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
           </div>
       </>
   );
+
 }

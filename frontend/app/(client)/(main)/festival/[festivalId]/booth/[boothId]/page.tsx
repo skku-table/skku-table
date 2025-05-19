@@ -1,51 +1,39 @@
 import { IoHeart } from 'react-icons/io5';
 import Image from 'next/image';
 import Header from '@/components/Headers';
+import { useState } from 'react';
 import LikeButton from '@/components/LikeButton';
-import { formatDate } from '@/libs/utils';
 
 
-// const mockBoothDetail = {
-//   boothId: 1,
-//   festivalId: 1,
-//   name: '다같이 추억 솦으로',
-//   host: '소프트웨어학과',
-//   location: '삼성학술정보관 앞 잔디밭 3번 부스',
-//   description: '1인 입장 가능 <br /> 최대 4명까지 예약 가능',
-//   openTime: '17:00',
-//   closeTime: '23:00',
-//   startDate: '2025-05-16',
-//   endDate: '2025-05-17',
-//   likeCount: 24,
-//   posterImageUrl: '/booth1.png',
-//   eventImageUrl: '/booth1_event1.JPG',
-// };
+const mockBoothDetail = {
+  boothId: 1,
+  festivalId: 1,
+  name: '다같이 추억 솦으로',
+  host: '소프트웨어학과',
+  location: '삼성학술정보관 앞 잔디밭 3번 부스',
+  description: '1인 입장 가능 <br /> 최대 4명까지 예약 가능',
+  openTime: '17:00',
+  closeTime: '23:00',
+  startDate: '2025-05-16',
+  endDate: '2025-05-17',
+  likeCount: 24,
+  posterImageUrl: '/booth1.png',
+  eventImageUrl: '/booth1_event1.JPG',
+};
 
-type Festivaltype = {
-  id: number;
-  posterImageUrl: string;
-  mapImageUrl: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  description: string;
-  likeCount: number;
-  booths:{
-    id: number;
-    name: string;
-    host: string;
-    location: string;
-    description: string;
-    startDateTime: string;
-    endDateTime: string;
-    likeCount: number;
-    posterImageUrl: string;
-    eventImageUrl: string;
-    createdAt: string;
-    updatedAt: string;
-  }[]
+//날짜 포멧 함수
+function formatDateRange(start: string, end: string): string {
+  const format = (dateStr: string) => {
+    const [, month, day] = dateStr.split('-');
+    return `${Number(month)}.${Number(day)}`; 
+  };
+  return `${format(start)} - ${format(end)}`;
 }
+
+export default function BoothDetailPage() {
+  const booth = mockBoothDetail;
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(booth.likeCount);
 
 
 export default async function BoothDetailPage({ params }:{ params: Promise<{ festivalId: string; boothId: string }> }) {
@@ -65,6 +53,7 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
     return <div>부스를 찾을 수 없습니다.</div>;
   }
 
+
   return (
     <>
       <Header isBackButton={true} title={booth.name} />
@@ -79,8 +68,9 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
             className="object-cover"
           />
           <LikeButton
-            initialLiked={false}
+            initialLiked={liked}
             size={25}
+            onClick={toggleLike}
             className="absolute top-2 right-2"
           />
         </div>
@@ -91,11 +81,11 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
             <h2 className="text-xl font-bold">{booth.name}</h2>
             <div className="flex items-center gap-1 text-[15px] text-black/60">
               <IoHeart size={18} className="text-red-500" />
-              {booth.likeCount}
+              {likeCount}
             </div>
           </div>
           <ul className="list-disc pl-5 text-sm space-y-1 mt-2">
-            <li><strong>기간</strong> : {formatDate(booth.startDateTime)} - {formatDate(booth.endDateTime)}</li>
+            <li><strong>기간</strong> : {formatDateRange(booth.startDate, booth.endDate)}</li>
             <li><strong>위치</strong> : {booth.location}</li>
           </ul>
         </div>
