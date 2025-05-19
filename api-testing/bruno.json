@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "api-testing",
+  "name": "skku-table",
   "type": "collection",
   "ignore": [
     "node_modules",

@@ -1,8 +1,10 @@
 // app/(client)/(main)/[festivalId]/page.tsx
+
 import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
 import Image from "next/image";
+
 
 // type Props = {
 //     params: {
@@ -11,38 +13,20 @@ import Image from "next/image";
 // };
 
 
+export default function FestivalDetailPage() {
 
-type Festivaltype = {
-  id: number;
-  posterImageUrl: string;
-  mapImageUrl: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  description: string;
-  likeCount: number;
-  booths:{
-    id: number;
-    name: string;
-    host: string;
-    location: string;
-    description: string;
-    startDateTime: string;
-    endDateTime: string;
-    likeCount: number;
-    posterImageUrl: string;
-    eventImageUrl: string;
-    createdAt: string;
-    updatedAt: string;
-  }[]
-}
+    //const {festivalId}=params;
+    //let festival;
 
-export default async function FestivalDetailPage({ params }: { params: { festivalId: number } }) {
-  const festivalId = params.festivalId;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
-  const festival : Festivaltype = await res.json();
-
+    // try {
+    //     const res= await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+    //     if (!res.ok) throw new Error('api error');
+    //     const data=await res.json();
+    //     festival=data;
+    // }catch (err) {
+    //     festival = mockFestivalDetail;
+    // }
+    const festival = mockFestivalDetail;
 
   return (
     <>
