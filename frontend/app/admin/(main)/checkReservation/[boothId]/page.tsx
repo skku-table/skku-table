@@ -34,7 +34,7 @@ type Booth = {
 
 type AdminBoothList = Booth[]
   
-export const mockAdminBooths: AdminBoothList = [
+const mockAdminBooths: AdminBoothList = [
   {
     id: 1,
     name: '다같이 추억 숲으로',
