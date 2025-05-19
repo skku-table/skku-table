@@ -2,6 +2,7 @@
 import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
+import Image from "next/image";
 
 // type Props = {
 //     params: {
@@ -9,10 +10,6 @@ import { formatDate } from "@/libs/utils";
 //     };
 // };
 
-type Boothtype= {
-    boothId:number;
-    posterImageUrl: string;
-}
 
 
 type Festivaltype = {
@@ -55,10 +52,17 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
               
 
               {/* 포스터 */}
-              <img
+              {/* <img
                   src={festival.posterImageUrl}
                   alt="축제 포스터"
                   className="w-full rounded-lg shadow"
+              /> */}
+              <Image
+                src={festival.posterImageUrl}
+                alt="축제 포스터"
+                width={312}
+                height={312}
+                className="rounded-lg shadow"
               />
 
               {/* 간단 정보 */}
@@ -80,12 +84,12 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
                       href={`/festival/${festival.id}/booth/${booth.id}`}
                       className="flex-shrink-0"
                     >
-                      <img
-                        width={128}
-                        height={128}
+                      <Image
                         src={booth.posterImageUrl}
                         alt={`부스 ${booth.id}`}
-                        className="w-32 h-32 object-cover rounded cursor-pointer"
+                        width={128}
+                        height={128}
+                        className="object-cover rounded cursor-pointer"
                       />
                     </Link>
                       // <img
@@ -101,10 +105,12 @@ export default async function FestivalDetailPage({ params }: { params: { festiva
               {/* 지도 */}
               <div>
                   <h3 className="font-semibold mb-2">지도</h3>
-                  <img
-                  src={festival.mapImageUrl}
-                  alt="지도 이미지"
-                  className="w-full rounded-lg shadow"
+                  <Image
+                    src={festival.mapImageUrl}
+                    alt="지도 이미지"
+                    width={312}
+                    height={312}
+                    className="w-full rounded-lg shadow"
                   />
               </div>
           </div>
