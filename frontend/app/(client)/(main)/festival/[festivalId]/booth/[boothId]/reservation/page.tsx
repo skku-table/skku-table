@@ -121,9 +121,8 @@ export default function BoothReservationPage() {
     }
 
     const reservationBody = {
-      userId: 1,
       boothId: Number(boothId),
-      reservationTime: `${selectedDate}T${selectedTime}:00`,
+      reservationDateTime: `${selectedDate}T${selectedTime}:00`,
       numberOfPeople: numberOfPeople,
     };
 
