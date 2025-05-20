@@ -38,7 +38,7 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> getReservationsByUser(Long userId) {
-        return reservationRepository.findByUserId(userId).stream()
+        return reservationRepository.findByUserIdWithBoothAndFestival(userId).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -81,6 +81,7 @@ public class ReservationService {
         dto.setUserName(reservation.getUser().getName());
         dto.setBoothId(reservation.getBooth().getId());
         dto.setBoothName(reservation.getBooth().getName());
+        dto.setFestivalName(reservation.getBooth().getFestival().getName());
         dto.setReservationTime(reservation.getReservationTime());
         dto.setNumberOfPeople(reservation.getNumberOfPeople());
         dto.setCreatedAt(reservation.getCreatedAt());
