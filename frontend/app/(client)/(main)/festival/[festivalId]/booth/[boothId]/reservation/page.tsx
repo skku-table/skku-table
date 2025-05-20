@@ -4,10 +4,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { IoHeart } from 'react-icons/io5';
-import Image from 'next/image';
-import Header from '@/components/Headers';
-import LikeButton from '@/components/LikeButton';
 import { formatDate } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
