@@ -11,10 +11,10 @@ public class ReservationResponseDTO {
     private Long userId;
     private String userName;
     private String festivalName;
-    private Date festivalStartDate;
-    private String festivalPosterImageUrl;
     private Long boothId;
     private String boothName;
+    private LocalDateTime boothStartDate;
+    private String boothPosterImageUrl;
     private LocalDateTime reservationTime;
     private int numberOfPeople;
     private LocalDateTime createdAt;
