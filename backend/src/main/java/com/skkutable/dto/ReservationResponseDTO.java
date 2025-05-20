@@ -3,6 +3,7 @@ package com.skkutable.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class ReservationResponseDTO {
@@ -10,6 +11,8 @@ public class ReservationResponseDTO {
     private Long userId;
     private String userName;
     private String festivalName;
+    private Date festivalStartDate;
+    private String festivalPosterImageUrl;
     private Long boothId;
     private String boothName;
     private LocalDateTime reservationTime;

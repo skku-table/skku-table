@@ -82,6 +82,8 @@ public class ReservationService {
         dto.setBoothId(reservation.getBooth().getId());
         dto.setBoothName(reservation.getBooth().getName());
         dto.setFestivalName(reservation.getBooth().getFestival().getName());
+        dto.setFestivalStartDate(reservation.getBooth().getFestival().getStartDate());
+        dto.setFestivalPosterImageUrl(reservation.getBooth().getFestival().getPosterImageUrl());
         dto.setReservationTime(reservation.getReservationTime());
         dto.setNumberOfPeople(reservation.getNumberOfPeople());
         dto.setCreatedAt(reservation.getCreatedAt());
