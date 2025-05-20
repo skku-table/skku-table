@@ -8,7 +8,6 @@ import { formatDate } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
 
-
 interface BoothType {
   id: number;
   name: string;

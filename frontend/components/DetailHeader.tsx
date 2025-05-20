@@ -5,7 +5,6 @@ import { IoHeart } from 'react-icons/io5';
 import Header from '@/components/Headers';
 import LikeButton from '@/components/LikeButton';
 import { formatDate } from '@/libs/utils';
-
 interface CommonDetailHeaderProps {
   name: string;
   startDate: string;
