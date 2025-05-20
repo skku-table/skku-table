@@ -11,7 +11,7 @@ type MyBooth = {
   date: string
 }
 
-export const mockMyBooths: MyBooth[] = [
+const mockMyBooths: MyBooth[] = [
   {
     id: 1,
     name: '다같이 추억 숲으로',
