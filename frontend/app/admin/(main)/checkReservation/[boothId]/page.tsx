@@ -3,6 +3,7 @@ import { IoHeart } from 'react-icons/io5';
 import Header from "@/components/Headers"
 import { redirect } from "next/navigation"
 import Image from "next/image"
+import { useParams } from 'next/navigation';
 
 import {
     Select,
@@ -95,8 +96,9 @@ const mockAdminBooths: AdminBoothList = [
   },
 ]
 
-export default function CheckReservationDetail({params}: {params:{boothId: string}}) {
-    const boothId = Number(params.boothId);
+export default function CheckReservationDetail() {
+    const params = useParams();
+    const boothId = params.boothId;
     const booth:Booth = mockAdminBooths.find((booth) => booth.id === Number(boothId)) as Booth;
     function redirectBoothId(boothId: number) {
         redirect(`/admin/checkReservation/${boothId}`);
