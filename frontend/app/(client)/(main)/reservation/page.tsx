@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import cn from 'classnames';
 import { formatToKoreanTime } from '@/libs/utils';
+import Link from 'next/link';
 
 
 interface Reservation {
@@ -14,12 +15,12 @@ interface Reservation {
   festivalName: string;
   reservationTime: string;
   numberOfPeople: number;
-  festivalPosterImageUrl: string;
+  boothPosterImageUrl: string;
 }
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
-  const yy = String(date.getFullYear()).slice(2); // "25"
+  const yy = String(date.getFullYear()).slice(2);
   const mm = date.getMonth() + 1;
   const dd = date.getDate();
   const weekday = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
@@ -86,11 +87,11 @@ export default function ReservationPage() {
         </p>
         <div className="flex gap-4 items-center">
           <Image
-            src={r.festivalPosterImageUrl}
+            src={r.boothPosterImageUrl}
             alt={r.boothName}
             width={80}
             height={80}
-            className="rounded-lg object-cover w-[80px] h-[80px]"
+            className="object-cover w-[130px] h-[130px] rounded-[10%]"
           />
           <div className="flex-1">
             <p className="font-bold text-lg mb-1">{r.boothName}</p>
@@ -100,12 +101,36 @@ export default function ReservationPage() {
               <li>ㆍ{formattedTime} / {r.numberOfPeople}명</li> 
             </ul>
             <div className="flex gap-3 mt-2">
-              <button className="font-bold w-[95px] h-[28px] rounded-full bg-[#3355331A] text-xs text-black active:bg-[#335533] active:text-white">
-                예약 수정
-              </button>
-              <button className="font-bold w-[95px] h-[28px] rounded-full bg-[#3355331A] text-xs text-black active:bg-[#335533] active:text-white">
-                예약 취소
-              </button>
+              <Link href={`/reservation/${r.reservationId}`}>
+                <button className="font-bold w-[90px] h-[28px] rounded-full bg-[#3355331A] text-xs text-black active:bg-[#335533] active:text-white">
+                  예약 수정
+                </button>
+              </Link>
+              <button
+                  className="font-bold w-[90px] h-[28px] rounded-full bg-[#3355331A] text-xs text-black active:bg-[#335533] active:text-white"
+                  onClick={async () => {
+                    const confirmed = window.confirm('정말 예약을 취소하시겠습니까?');
+                    if (!confirmed) return;
+                    try {
+                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
+                        method: 'DELETE',
+                      });
+
+                      if (res.ok) {
+                        // 예약 목록에서 제거
+                        setReservations(prev => prev.filter(item => item.reservationId !== r.reservationId));
+                        alert('예약이 취소되었습니다');
+                      } else {
+                        alert('예약 취소에 실패했습니다');
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      alert('오류가 발생했습니다');
+                    }
+                  }}
+                >
+                  예약 취소
+                </button>
             </div>
 
           </div>

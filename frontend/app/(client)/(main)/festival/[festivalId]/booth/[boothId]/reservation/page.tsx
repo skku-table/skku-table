@@ -7,7 +7,6 @@ import { useParams } from 'next/navigation';
 import { formatDate } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
-
 interface BoothType {
   id: number;
   name: string;
@@ -19,20 +18,9 @@ interface BoothType {
   likeCount: number;
   posterImageUrl: string;
   eventImageUrl: string;
-  createdAt: string;
-  updatedAt: string;
 }
-
 interface FestivalType {
   id: number;
-  posterImageUrl: string;
-  mapImageUrl: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  description: string;
-  likeCount: number;
   booths: BoothType[];
 }
 
@@ -124,6 +112,7 @@ export default function BoothReservationPage() {
       boothId: Number(boothId),
       reservationDateTime: `${selectedDate}T${selectedTime}:00`,
       numberOfPeople: numberOfPeople,
+      paymentMethod: paymentMethod,
     };
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
@@ -196,7 +185,7 @@ export default function BoothReservationPage() {
             <div>
             <div className="w-[95%] h-px bg-[#335533b3] mx-auto mb-6" />
             <h3 className="text-lg font-bold">결제 수단</h3>
-            <div className="w-full h-[140px] rounded-[10px] border border-gray-200 bg-white flex flex-col justify-center items-center gap-2 shadow-sm">
+            <div className="mt-3 w-full h-[140px] rounded-[10px] border border-gray-200 bg-white flex flex-col justify-center items-center gap-2 shadow-sm">
                 {[
                 { value: 'card', label: '카드' },
                 { value: 'bank', label: '계좌 이체' },
