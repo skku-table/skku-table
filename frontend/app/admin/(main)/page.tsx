@@ -68,7 +68,7 @@ export default async function Page() {
           {festivalsData.map((festival) => (
             <div key={festival.id}>
                 <div className="relative w-[290px] h-[290px] mx-auto">
-                  <Link href={`/festival/${festival.id}`}>
+                  <Link href={`/admin/festival/${festival.id}`}>
                     <Image
                       src={festival.posterImageUrl}
                       alt="festival poster"

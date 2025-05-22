@@ -1,4 +1,4 @@
-// app/(client)/(main)/[festivalId]/page.tsx
+// app/admin/(main)/[festivalId]/page.tsx
 
 import Header from "@/components/Headers";
 import Link from "next/link";
@@ -81,7 +81,7 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
                       // 부스 클릭하면 부스 페이지로 넘어가도록 링크 추가
                       <Link
                       key={booth.id}
-                      href={`/festival/${festival.id}/booth/${booth.id}`}
+                      href={`/admin/festival/${festival.id}/booth/${booth.id}`}
                       className="flex-shrink-0"
                     >
                       <Image

@@ -41,6 +41,7 @@ services:
     networks:
       - web
 
+
   spring-boot-app:
     container_name: spring-boot-app
     image: ghcr.io/skku-table/skku-table-backend:latest

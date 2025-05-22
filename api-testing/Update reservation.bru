@@ -1,0 +1,19 @@
+meta {
+  name: Update Reservation
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{Url}}/reservations/1
+  auth: inherit
+  headers {
+    Content-Type: application/json
+  }
+  body: json({
+    "userId": 1,
+    "boothId": 2,
+    "reservationTime": "2025-05-21T19:00:00",
+    "numberOfPeople": 5
+  })
+}
