@@ -45,8 +45,7 @@ class FestivalController {
 
   @GetMapping("/festivals/{id}")
   public Festival getFestival(@PathVariable Long id) {
-    return festivalService.findFestivalById(id)
-        .orElseThrow((() -> new IllegalArgumentException("Festival not found with id: " + id)));
+    return festivalService.findFestivalById(id);
   }
 
   @PatchMapping("/festivals/{id}")
