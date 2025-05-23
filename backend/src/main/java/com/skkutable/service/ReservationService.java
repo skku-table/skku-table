@@ -5,10 +5,12 @@ import com.skkutable.domain.Reservation;
 import com.skkutable.domain.User;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
+import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,9 +71,16 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
-        reservationRepository.delete(reservation);
+        try {
+            reservationRepository.deleteById(reservationId);
+        } catch (Exception e) {
+            if (e instanceof EmptyResultDataAccessException) {
+                throw new ResourceNotFoundException("Reservation not found: " + reservationId);
+            }
+            else {
+                throw new RuntimeException("Failed to delete reservation: " + reservationId, e);
+            }
+        }
     }
 
     private ReservationResponseDTO toResponseDTO(Reservation reservation) {

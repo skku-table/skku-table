@@ -1,14 +1,17 @@
 package com.skkutable.repository;
 
 import com.skkutable.domain.Reservation;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.skkutable.repository.custom.ReservationRepositoryCustom;
+import java.util.Optional;
 
 import java.util.List;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    @Query("SELECT r FROM Reservation r JOIN FETCH r.booth b JOIN FETCH b.festival WHERE r.user.id = :userId")
-    List<Reservation> findByUserIdWithBoothAndFestival(@Param("userId") Long userId);
+public interface ReservationRepository extends ReservationRepositoryCustom {
+    // 기본 CRUD
+    Reservation save(Reservation reservation);
+    Optional<Reservation> findById(Long id);
+    void deleteById(Long id);
+
+    // 파생(derived) 쿼리 – 이름 파싱으로 자동 구현
     List<Reservation> findByBoothFestivalIdAndBoothId(Long festivalId, Long boothId);
 }
