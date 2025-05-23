@@ -52,32 +52,33 @@ public class BoothService {
     return boothRepository.findByFestivalId(festivalId);
   }
 
-  public Optional<Booth> findBoothById(Long boothId) {
-    return boothRepository.findById(boothId);
+  public Booth findBoothById(Long boothId) {
+
+    return boothRepository.findById(boothId).
+        orElseThrow((
+            () -> new ResourceNotFoundException("Booth not found: " + boothId)
+            ));
   }
 
   public void deleteBooth(Long boothId) {
     boothRepository.deleteById(boothId);
   }
 
-  public Optional<Booth> findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
-    return boothRepository.findByIdAndFestivalId(boothId, festivalId);
+  public Booth findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
+    return boothRepository.findByIdAndFestivalId(boothId, festivalId).
+        orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
   }
 
   public Booth patchUpdateBooth(Long festivalId, Long boothId, BoothPatchDto dto, FestivalService festivalService) {
 
-    festivalService.findFestivalById(festivalId).orElseThrow(
-        () -> new ResourceNotFoundException("Festival not found: " + festivalId)
-    );
+    festivalService.findFestivalById(festivalId);
     Booth booth = boothRepository.findById(boothId)
         .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
 
     Festival targetFestival = null;
     if (dto.getFestivalId() != null &&              // festivalId가 요청에 포함됐고
         !dto.getFestivalId().equals(booth.getFestival().getId())) {  // 현재와 다르면
-      targetFestival = festivalService.findFestivalById(dto.getFestivalId())
-          .orElseThrow(() -> new ResourceNotFoundException(
-              "Festival not found: " + dto.getFestivalId()));
+      targetFestival = festivalService.findFestivalById(dto.getFestivalId());
     }
 
     booth.applyPatch(dto, targetFestival);   // Dirty Checking

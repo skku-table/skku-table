@@ -45,11 +45,7 @@ class BoothController {
 
   @GetMapping("/{boothId}")
   public Booth getBoothByFestival(@PathVariable Long festivalId, @PathVariable Long boothId) {
-    Festival festival = festivalService.findFestivalById(festivalId)
-        .orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + festivalId));
-
-    return boothService.findBoothByIdAndFestivalId(boothId, festivalId)
-        .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
+    return boothService.findBoothByIdAndFestivalId(boothId, festivalId);
   }
 
 }
