@@ -1,0 +1,31 @@
+meta {
+  name: Create Admin
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{Url}}/users/signup
+  body: json
+  auth: inherit
+}
+
+headers {
+  X-ADMIN-SECRET: skku2023
+}
+
+body:json {
+  {
+    "name": "어드민1",
+    "email": "admin.test.1@skkutable.com",
+    "password": "1234test",
+    "role": "ADMIN"
+  }
+}
+
+docs {
+  # Create Admin
+  
+  Role이 Admin인 사용자를 생성합니다. (생성하려면 헤더에 X-ADMIN-SECRET 주입 필요, 현재는 임시적으로 "skku2023"으로 설정해 놨지만 차후에 저희만 시크릿값으로 변경할 예정입니다.)
+  
+}
