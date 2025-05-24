@@ -1,0 +1,27 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{Url}}/users/signup
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "유저1",
+    "email": "user.test.1@skkutable.com",
+    "password": "1234test",
+    "role": "USER"
+  }
+}
+
+docs {
+  # Create User
+  
+  Role이 User인 사용자를 만듭니다.
+  name, email(이건 겹치면 안됩니다), password, role 필수
+}
