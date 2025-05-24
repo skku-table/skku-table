@@ -26,10 +26,10 @@ public class ReservationService {
 
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.getUserId()));
 
         Booth booth = boothRepository.findById(dto.getBoothId())
-                .orElseThrow(() -> new IllegalArgumentException("Booth not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + dto.getBoothId()));
 
         Reservation reservation = new Reservation(
                 null, user, booth, dto.getReservationTime(), dto.getNumberOfPeople(), null, null
@@ -54,12 +54,12 @@ public class ReservationService {
 
     public ReservationResponseDTO updateReservation(Long reservationId, ReservationRequestDTO dto) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found: "+ reservationId));
 
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: "+ dto.getUserId()));
         Booth booth = boothRepository.findById(dto.getBoothId())
-                .orElseThrow(() -> new IllegalArgumentException("Booth not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booth not found: "+ dto.getBoothId()));
 
         reservation.setUser(user);
         reservation.setBooth(booth);
@@ -73,13 +73,8 @@ public class ReservationService {
     public void deleteReservation(Long reservationId) {
         try {
             reservationRepository.deleteById(reservationId);
-        } catch (Exception e) {
-            if (e instanceof EmptyResultDataAccessException) {
-                throw new ResourceNotFoundException("Reservation not found: " + reservationId);
-            }
-            else {
-                throw new RuntimeException("Failed to delete reservation: " + reservationId, e);
-            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Reservation not found: " + reservationId);
         }
     }
 
