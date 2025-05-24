@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
+  private final String REDACTED = "[REDACTED]";
   private final UserService userService;
 
   @Autowired
@@ -35,8 +38,10 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public User addUser(@RequestBody @Valid UserDto dto, @RequestHeader(value="X-ADMIN-SECRET", required = false) String adminSecret) {
-    return userService.join(dto, adminSecret);
+  @ResponseStatus(HttpStatus.CREATED)
+  public UserDto addUser(@RequestBody @Valid UserDto dto, @RequestHeader(value="X-ADMIN-SECRET", required = false) String adminSecret) {
+    var createUser = userService.join(dto, adminSecret);
+    return new UserDto(createUser.getName(), createUser.getEmail(), REDACTED, createUser.getRole());
   }
 
   /* 로그인은 Spring Security 필터가 처리 (POST /users/login) */
@@ -52,7 +57,7 @@ public class UserController {
   @GetMapping("/me")
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
     return userService.findOne(email)
-        .map(u -> new UserDto(u.getName(), u.getEmail(), u.getPassword(), u.getRole()))
+        .map(u -> new UserDto(u.getName(), u.getEmail(), REDACTED, u.getRole()))
         .orElseThrow();
   }
 
