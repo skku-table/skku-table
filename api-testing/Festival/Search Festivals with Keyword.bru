@@ -1,0 +1,20 @@
+meta {
+  name: Search Festivals with Keyword
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{Url}}/festivals?q=가야
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: 가야
+}
+
+docs {
+  # Search Festivals with Keyword
+  q=:keyword로 keyword가 포함된 festival들을 찾아냅니다.
+}
