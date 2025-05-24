@@ -24,6 +24,13 @@ public class FestivalService {
     this.boothService = boothService;
   }
 
+  public List<Festival> search(String keyword) {
+    if (keyword == null || keyword.isBlank()) {
+      return festivalRepository.findAll();
+    }
+    return festivalRepository.searchDynamic(keyword);
+  }
+
   public Festival createFestival(Festival festival) {
     // 중복된 이름 검증 등의 로직이 있다면 여기에 추가
     return festivalRepository.save(festival);
