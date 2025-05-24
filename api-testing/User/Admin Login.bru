@@ -1,0 +1,20 @@
+meta {
+  name: Admin Login
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{Url}}/users/login
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  email: admin.test.1@skkutable.com
+  password: 1234test
+}
+
+docs {
+  로그인합니다. (이메일, 패스워드 필요)
+}
