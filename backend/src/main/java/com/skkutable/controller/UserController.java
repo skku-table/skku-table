@@ -33,8 +33,9 @@ public class UserController {
 
   // Admin용으로 모든 사용자 조회
   @GetMapping
-  public List<User> getUsers() {
-    return userService.findUsers();
+  public List<UserDto> getUsers() {
+    return userService.findUsers().stream().map(u -> new UserDto(u.getName(), u.getEmail(), REDACTED, u.getRole()))
+        .toList();
   }
 
   @PostMapping("/signup")
