@@ -5,10 +5,12 @@ import com.skkutable.domain.Reservation;
 import com.skkutable.domain.User;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
+import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +26,10 @@ public class ReservationService {
 
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.getUserId()));
 
         Booth booth = boothRepository.findById(dto.getBoothId())
-                .orElseThrow(() -> new IllegalArgumentException("Booth not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + dto.getBoothId()));
 
         Reservation reservation = new Reservation(
                 null, user, booth, dto.getReservationTime(), dto.getNumberOfPeople(), null, null
@@ -52,12 +54,12 @@ public class ReservationService {
 
     public ReservationResponseDTO updateReservation(Long reservationId, ReservationRequestDTO dto) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found: "+ reservationId));
 
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: "+ dto.getUserId()));
         Booth booth = boothRepository.findById(dto.getBoothId())
-                .orElseThrow(() -> new IllegalArgumentException("Booth not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booth not found: "+ dto.getBoothId()));
 
         reservation.setUser(user);
         reservation.setBooth(booth);
@@ -69,9 +71,11 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
-        reservationRepository.delete(reservation);
+        try {
+            reservationRepository.deleteById(reservationId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Reservation not found: " + reservationId);
+        }
     }
 
     private ReservationResponseDTO toResponseDTO(Reservation reservation) {

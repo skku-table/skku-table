@@ -19,9 +19,6 @@ import java.util.Optional;
 @Transactional
 public class BoothService {
 
-  @PersistenceContext
-  private EntityManager em;
-
   private final BoothRepository boothRepository;
 
   @Autowired
@@ -30,16 +27,7 @@ public class BoothService {
   }
 
   public Booth createBooth(Long festivalId, Booth booth) {
-    // ① 영속성 컨텍스트 안에서 proxy reference 획득
-    Festival festivalRef = em.getReference(Festival.class, festivalId);
-    if (festivalRef == null) throw new ResourceNotFoundException("Festival not found: " + festivalId);
-
-    // ② 양방향 동기화
-    festivalRef.addBooth(booth);   // festival.booths 에도 추가
-    // 또는 booth.setFestival(festivalRef);
-
-    // ③ 저장 – festivalRef 는 managed 상태
-    return boothRepository.save(booth);
+    return boothRepository.createBooth(festivalId, booth);
   }
 
   private void validateFestivalExists(Festival festival) {
