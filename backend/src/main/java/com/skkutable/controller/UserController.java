@@ -34,7 +34,7 @@ public class UserController {
   // Admin용으로 모든 사용자 조회
   @GetMapping
   public List<UserDto> getUsers() {
-    return userService.findUsers().stream().map(u -> new UserDto(u.getName(), u.getEmail(), REDACTED, u.getRole()))
+    return userService.findUsers().stream().map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), REDACTED, u.getRole()))
         .toList();
   }
 
@@ -42,7 +42,7 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   public UserDto addUser(@RequestBody @Valid UserDto dto, @RequestHeader(value="X-ADMIN-SECRET", required = false) String adminSecret) {
     var createUser = userService.join(dto, adminSecret);
-    return new UserDto(createUser.getName(), createUser.getEmail(), REDACTED, createUser.getRole());
+    return new UserDto(createUser.getId(), createUser.getName(), createUser.getEmail(), REDACTED, createUser.getRole());
   }
 
   /* 로그인은 Spring Security 필터가 처리 (POST /users/login) */
@@ -58,8 +58,7 @@ public class UserController {
   @GetMapping("/me")
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
     return userService.findOne(email)
-        .map(u -> new UserDto(u.getName(), u.getEmail(), REDACTED, u.getRole()))
+        .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), REDACTED, u.getRole()))
         .orElseThrow();
   }
-
 }
