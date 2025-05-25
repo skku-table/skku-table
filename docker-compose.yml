@@ -9,6 +9,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - NEXT_PUBLIC_API_URL=https://skkutable.com/api
     ports:
       - "3000:3000"
     networks:
@@ -41,16 +42,15 @@ services:
     networks:
       - web
 
-
   spring-boot-app:
     pull_policy: always
     container_name: spring-boot-app
     image: ghcr.io/skku-table/skku-table-backend:latest
-#    build:
-#      context: backend/
-#      dockerfile: Dockerfile
-#      args:
-#        JAR_FILE: build/libs/skku-table-backend.jar
+    #    build:
+    #      context: backend/
+    #      dockerfile: Dockerfile
+    #      args:
+    #        JAR_FILE: build/libs/skku-table-backend.jar
     ports:
       - 8080:8080 # Spring Boot 애플리케이션을 8080 포트로 매핑
     depends_on:
