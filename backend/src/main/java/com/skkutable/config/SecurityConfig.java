@@ -33,6 +33,8 @@ public class SecurityConfig {
         /* URL 인가 규칙 */
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/users/signup", "/users/login").permitAll()
+            /* GET /festivals → 모든 사용자 */
+            .requestMatchers(HttpMethod.GET, "/festivals", "/festivals/**").permitAll()
             /* GET /users → ADMIN 권한만 */
             .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
             .anyRequest().authenticated())
