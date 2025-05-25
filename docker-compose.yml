@@ -43,6 +43,7 @@ services:
 
 
   spring-boot-app:
+    pull_policy: always
     container_name: spring-boot-app
     image: ghcr.io/skku-table/skku-table-backend:latest
 #    build:
