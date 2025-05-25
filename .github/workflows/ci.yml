@@ -14,7 +14,7 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      NEXT_PUBLIC_API_URL: https://skkutable.com/api
 
     steps:
       - name: Checkout code
