@@ -34,10 +34,10 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/users/signup", "/users/login").permitAll()
             /* GET /festivals → 모든 사용자 */
-            .requestMatchers(HttpMethod.GET, "/festivals", "/festivals/**").permitAll()
+//            .requestMatchers(HttpMethod.GET, "/festivals", "/festivals/**").permitAll()
             /* GET /users → ADMIN 권한만 */
             .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-            .anyRequest().authenticated())
+            .anyRequest().permitAll())
 
         /* 폼 로그인 -> REST 에서도 x-www-form-urlencoded 전송이면 OK */
         .formLogin(form -> form
