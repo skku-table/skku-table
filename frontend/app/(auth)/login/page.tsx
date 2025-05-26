@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [id, setId] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [error, setError] = useState('')
@@ -14,24 +15,37 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const body = new URLSearchParams({ id, password }).toString()
+      const body = new URLSearchParams({ email, password }).toString()
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
         method: 'POST',
         credentials: 'include', // 세션/쿠키 기반 인증일 경우 꼭 필요!
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body,
       })
-
+      const text = await res.text()
       if (!res.ok) {
+        console.error('로그인 실패 응답:', text)
         setError('로그인 실패: 아이디 또는 비밀번호 오류')
         return
       }
 
-      const data = await res.json()
+      const userRes = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        method: 'GET',
+        credentials: 'include',
+      })
+  
+      if (!userRes.ok) {
+        setError('로그인 후 사용자 정보 조회 실패')
+        return
+      }
+  
+      const userData = await userRes.json()
+      const role = userData.role
+      console.log('유저 데이터:', userData)
+      console.log('유저 역할:', role)
 
-      const role = data.role
       if (role === 'USER') {
         router.push('/')
       } else if (role === 'ADMIN') {
@@ -56,8 +70,8 @@ export default function LoginPage() {
           <span className="text-sm">아이디</span>
           <input
             className="w-full border p-2 rounded mt-1"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="아이디를 입력하세요"
           />
         </label>

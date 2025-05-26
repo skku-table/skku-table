@@ -6,6 +6,7 @@ import Image from 'next/image';
 import cn from 'classnames';
 import { formatToKoreanTime } from '@/libs/utils';
 import Link from 'next/link';
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 
 
 interface Reservation {
@@ -34,7 +35,7 @@ export default function ReservationPage() {
   useEffect(() => {
     async function fetchReservations() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/user/1`);
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/user/1`);
         const data = await res.json();
         setReservations(data);
       } catch (error) {
@@ -112,7 +113,7 @@ export default function ReservationPage() {
                     const confirmed = window.confirm('정말 예약을 취소하시겠습니까?');
                     if (!confirmed) return;
                     try {
-                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
+                      const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
                         method: 'DELETE',
                       });
 

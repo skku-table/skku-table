@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Headers'
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials'
 
 type Festival = {
   id: string
@@ -34,7 +35,7 @@ export default function RegisterBoothPage() {
 
   useEffect(() => {
     const fetchFestivals = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals`)
+      const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals`)
       const data = await res.json()
       setFestivals(data)
     }
@@ -46,7 +47,7 @@ export default function RegisterBoothPage() {
   }
 
   const handleSubmit = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`, {
+    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
