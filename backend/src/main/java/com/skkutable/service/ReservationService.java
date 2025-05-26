@@ -1,6 +1,7 @@
 package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
+import com.skkutable.domain.PaymentMethod;
 import com.skkutable.domain.Reservation;
 import com.skkutable.domain.User;
 import com.skkutable.dto.ReservationRequestDTO;
@@ -31,13 +32,20 @@ public class ReservationService {
         Booth booth = boothRepository.findById(dto.getBoothId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + dto.getBoothId()));
 
+        PaymentMethod paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
+
         Reservation reservation = new Reservation(
-                null, user, booth, dto.getReservationTime(), dto.getNumberOfPeople(), null, null
+                user,
+                booth,
+                dto.getReservationTime(),
+                dto.getNumberOfPeople()
         );
+        reservation.setPaymentMethod(paymentMethod);
 
         Reservation saved = reservationRepository.save(reservation);
         return toResponseDTO(saved);
     }
+
 
     public List<ReservationResponseDTO> getReservationsByUser(Long userId) {
         return reservationRepository.findByUserIdWithBoothAndFestival(userId).stream()
@@ -77,6 +85,32 @@ public class ReservationService {
             throw new ResourceNotFoundException("Reservation not found: " + reservationId);
         }
     }
+    public ReservationResponseDTO getReservationById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        return toResponseDTO(reservation);
+    }
+
+    public ReservationResponseDTO patchReservation(Long id, ReservationRequestDTO dto) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+
+        if (dto.getBoothId() != null) {
+            Booth booth = boothRepository.findById(dto.getBoothId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Booth not found"));
+            reservation.setBooth(booth);
+        }
+
+        if (dto.getReservationTime() != null) {
+            reservation.setReservationTime(dto.getReservationTime());
+        }
+
+        reservation.setNumberOfPeople(dto.getNumberOfPeople());
+        reservation.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
+
+        return toResponseDTO(reservationRepository.save(reservation));
+    }
+
 
     private ReservationResponseDTO toResponseDTO(Reservation reservation) {
         ReservationResponseDTO dto = new ReservationResponseDTO();
@@ -90,6 +124,7 @@ public class ReservationService {
         dto.setBoothPosterImageUrl(reservation.getBooth().getPosterImageUrl());
         dto.setReservationTime(reservation.getReservationTime());
         dto.setNumberOfPeople(reservation.getNumberOfPeople());
+        dto.setPaymentMethod(reservation.getPaymentMethod().name());
         dto.setCreatedAt(reservation.getCreatedAt());
         return dto;
     }

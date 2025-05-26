@@ -34,6 +34,10 @@ public class Reservation {
 
     private int numberOfPeople;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethod paymentMethod;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

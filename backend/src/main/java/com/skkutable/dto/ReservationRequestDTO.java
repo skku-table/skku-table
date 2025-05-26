@@ -10,4 +10,5 @@ public class ReservationRequestDTO {
     private Long boothId;
     private LocalDateTime reservationTime;
     private int numberOfPeople;
+    private String paymentMethod;
 }
