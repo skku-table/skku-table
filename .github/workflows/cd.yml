@@ -1,15 +1,14 @@
 name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
-  push:
-    branches: [main]
-  workflow_run:
-    workflows: ["CI - PR & Main build"]
-    types: [completed]
+  workflow_run: # 'CI - PR & Main build' 워크플로우를 기다리기 위한 트리거
+    workflows: ["CI - PR & Main build"] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
+    types: [completed] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
 
 jobs:
   deploy:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    # "CI - PR & Main build" 워크플로우가 성공적으로 완료된 경우에만 실행
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
 
     steps:
