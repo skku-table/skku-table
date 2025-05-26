@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Header from '@/components/Headers';
 import LikeButton from '@/components/LikeButton';
 import { formatDate } from '@/libs/utils';
-
+import Link from 'next/link';
 
 type Festivaltype = {
   id: number;
@@ -105,9 +105,11 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
 
         {/* 예약 버튼 */}
         <div className="fixed bottom-0 left-0 w-full py-4 bg-white border-t border-gray-200 z-50 flex justify-center">
-          <button className="w-[289px] h-[48px] bg-[#335533] text-white font-bold text-[20px] rounded-lg">
-            예약하기
-          </button>
+          <Link href={`/festival/${festivalId}/booth/${boothId}/reservation`}>
+            <button className="w-[289px] h-[48px] bg-[#335533] text-white font-bold text-[20px] rounded-lg">
+              예약하기
+            </button>
+          </Link>
         </div>
 
       </div>

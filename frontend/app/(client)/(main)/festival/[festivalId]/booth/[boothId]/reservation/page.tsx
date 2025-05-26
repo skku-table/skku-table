@@ -109,10 +109,11 @@ export default function BoothReservationPage() {
     }
 
     const reservationBody = {
+      userId: 1,
       boothId: Number(boothId),
       reservationDateTime: `${selectedDate}T${selectedTime}:00`,
       numberOfPeople: numberOfPeople,
-      paymentMethod: paymentMethod,
+      // paymentMethod: paymentMethod,
     };
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
@@ -169,7 +170,7 @@ export default function BoothReservationPage() {
                 <div className="inline-flex gap-2 px-1">
                 {timeList.map((time) => (
                  <button
-                    key={time}
+                    key={`${selectedDate}-${time}`}
                     onClick={() => setSelectedTime(time)}
                     className={`min-w-[110px] h-[45px] text-[15px] border rounded-md font-medium ${
                     selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
