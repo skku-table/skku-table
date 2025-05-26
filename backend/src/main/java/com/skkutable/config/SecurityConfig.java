@@ -11,6 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +30,7 @@ public class SecurityConfig {
 
     http
         /* CSRF - REST JSON 클라이언트면 비활성화 */
+        .cors(withDefaults())
         .csrf(csrf -> csrf.disable())
 
         /* 세션 정책: 필요할 때 생성 & 동시 로그인 1개 */
@@ -34,10 +42,10 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/users/signup", "/users/login").permitAll()
             /* GET /festivals → 모든 사용자 */
-//            .requestMatchers(HttpMethod.GET, "/festivals", "/festivals/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/festivals", "/festivals/**").permitAll()
             /* GET /users → ADMIN 권한만 */
             .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-            .anyRequest().permitAll())
+            .anyRequest().authenticated())
 
         /* 폼 로그인 -> REST 에서도 x-www-form-urlencoded 전송이면 OK */
         .formLogin(form -> form
@@ -57,6 +65,20 @@ public class SecurityConfig {
     http.userDetailsService(userDetailsService);
     return http.build();
   }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration config = new CorsConfiguration();
+      config.setAllowedOrigins(List.of("http://localhost:3000", "https://skkutable.com"));
+      config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+      config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+      config.setExposedHeaders(List.of("*"));
+      config.setAllowCredentials(true); // ✅ 핵심
+      config.setMaxAge(3600L);
+
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", config);
+      return source;
+    }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
