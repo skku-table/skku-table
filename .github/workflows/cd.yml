@@ -16,7 +16,7 @@ jobs:
       # webfactory/ssh-agent 단계는 appleboy/ssh-action이 키를 직접 처리하므로 더 이상 필요하지 않습니다.
 
       - name: Deploy to Oracle Cloud - Pull latest and set up .env
-        uses: appleboy/ssh-action@v1.0.3 # 또는 최신 버전을 위해 @v1 사용 가능
+        uses: appleboy/ssh-action@v1.2.2 # 또는 최신 버전을 위해 @v1 사용 가능
         # 이 env 블록은 GitHub Actions 스텝 자체의 환경 변수를 설정합니다.
         # 여기서 설정된 SCRIPT_NEXT_PUBLIC_API_URL 변수를 'with.envs'를 통해 원격 스크립트로 전달합니다.
         env:
