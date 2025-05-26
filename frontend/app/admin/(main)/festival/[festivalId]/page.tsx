@@ -4,6 +4,7 @@ import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
 import Image from "next/image";
+import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
 
 // type Props = {
 //     params: {
@@ -40,7 +41,7 @@ type Festivaltype = {
 
 export default async function FestivalDetailPage({ params }: { params: Promise<{ festivalId: string }> }) {
   const { festivalId } = await params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+  const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
 
 
