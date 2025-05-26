@@ -71,6 +71,6 @@ jobs:
             docker compose pull
 
             echo "Starting application with docker-compose up -d..."
-            docker compose up -d --remove-orphans #孤立したコンテナを削除
+            docker compose up -d --build --remove-orphans
 
             echo "✅ Docker Compose deployment finished."
