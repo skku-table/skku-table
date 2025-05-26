@@ -2,8 +2,8 @@ name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
   workflow_run:
-    workflows: [ "CI - PR & Main build" ]
-    types: [ completed ]
+    workflows: ["CI - PR & Main build"]
+    types: [completed]
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4   # (워크플로 파일이 들어 있는 레포만 체크아웃)
+      - uses: actions/checkout@v4 # (워크플로 파일이 들어 있는 레포만 체크아웃)
 
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.9.1
@@ -22,6 +22,7 @@ jobs:
         env:
           HOST: skkutable.com
           USER: ubuntu
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
         run: |
           set -ex
 
@@ -34,8 +35,8 @@ jobs:
             else
               cd skku-table && git pull && cd ..
             fi
-            cd skku-table
-          
+            cd skku-table/frontend/
+            echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env.production
             cd ~
           EOSSH
 
