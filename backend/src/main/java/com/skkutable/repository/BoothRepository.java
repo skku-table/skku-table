@@ -1,10 +1,11 @@
 package com.skkutable.repository;
 
 import com.skkutable.domain.Booth;
+import com.skkutable.repository.custom.BoothRepositoryCustom;
 import java.util.List;
 import java.util.Optional;
 
-public interface BoothRepository {
+public interface BoothRepository extends BoothRepositoryCustom {
   Booth save(Booth booth);
   Optional<Booth> findById(Long id);
   void delete(Booth booth);

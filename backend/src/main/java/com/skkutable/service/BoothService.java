@@ -2,10 +2,12 @@ package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
 import com.skkutable.dto.BoothPatchDto;
+import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.domain.Festival;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.nio.file.ReadOnlyFileSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +19,6 @@ import java.util.Optional;
 @Transactional
 public class BoothService {
 
-  @PersistenceContext
-  private EntityManager em;
-
   private final BoothRepository boothRepository;
 
   @Autowired
@@ -28,15 +27,7 @@ public class BoothService {
   }
 
   public Booth createBooth(Long festivalId, Booth booth) {
-    // ① 영속성 컨텍스트 안에서 proxy reference 획득
-    Festival festivalRef = em.getReference(Festival.class, festivalId);
-
-    // ② 양방향 동기화
-    festivalRef.addBooth(booth);   // festival.booths 에도 추가
-    // 또는 booth.setFestival(festivalRef);
-
-    // ③ 저장 – festivalRef 는 managed 상태
-    return boothRepository.save(booth);
+    return boothRepository.createBooth(festivalId, booth);
   }
 
   private void validateFestivalExists(Festival festival) {
@@ -49,29 +40,33 @@ public class BoothService {
     return boothRepository.findByFestivalId(festivalId);
   }
 
-  public Optional<Booth> findBoothById(Long boothId) {
-    return boothRepository.findById(boothId);
+  public Booth findBoothById(Long boothId) {
+
+    return boothRepository.findById(boothId).
+        orElseThrow((
+            () -> new ResourceNotFoundException("Booth not found: " + boothId)
+            ));
   }
 
   public void deleteBooth(Long boothId) {
     boothRepository.deleteById(boothId);
   }
 
-  public Optional<Booth> findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
-    return boothRepository.findByIdAndFestivalId(boothId, festivalId);
+  public Booth findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
+    return boothRepository.findByIdAndFestivalId(boothId, festivalId).
+        orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
   }
 
-  public Booth patchUpdateBooth(Long boothId, BoothPatchDto dto, FestivalService festivalService) {
+  public Booth patchUpdateBooth(Long festivalId, Long boothId, BoothPatchDto dto, FestivalService festivalService) {
 
+    festivalService.findFestivalById(festivalId);
     Booth booth = boothRepository.findById(boothId)
-        .orElseThrow(() -> new IllegalArgumentException("Booth not found: " + boothId));
+        .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
 
     Festival targetFestival = null;
     if (dto.getFestivalId() != null &&              // festivalId가 요청에 포함됐고
         !dto.getFestivalId().equals(booth.getFestival().getId())) {  // 현재와 다르면
-      targetFestival = festivalService.findFestivalById(dto.getFestivalId())
-          .orElseThrow(() -> new IllegalArgumentException(
-              "Festival not found: " + dto.getFestivalId()));
+      targetFestival = festivalService.findFestivalById(dto.getFestivalId());
     }
 
     booth.applyPatch(dto, targetFestival);   // Dirty Checking

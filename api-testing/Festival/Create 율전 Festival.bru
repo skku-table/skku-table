@@ -1,0 +1,23 @@
+meta {
+  name: Create 율전 Festival
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{Url}}/festivals/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "2025 가야대 대동제",
+    "description": "가야 대동제입니다.",
+    "location": "가야",
+    "startDate": "2025-05-08",
+    "endDate": "2025-05-09",
+    "posterImageUrl": "/src/booth1.png",
+    "eventImageUrl": "/src/booth1_event1.png"
+  }
+}

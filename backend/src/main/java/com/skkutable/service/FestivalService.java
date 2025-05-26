@@ -2,6 +2,7 @@ package com.skkutable.service;
 
 import com.skkutable.domain.Festival;
 import com.skkutable.dto.FestivalPatchDto;
+import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.FestivalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,13 @@ public class FestivalService {
     this.boothService = boothService;
   }
 
+  public List<Festival> search(String keyword) {
+    if (keyword == null || keyword.isBlank()) {
+      return festivalRepository.findAll();
+    }
+    return festivalRepository.searchDynamic(keyword);
+  }
+
   public Festival createFestival(Festival festival) {
     // 중복된 이름 검증 등의 로직이 있다면 여기에 추가
     return festivalRepository.save(festival);
@@ -32,8 +40,9 @@ public class FestivalService {
     return festivalRepository.findAll();
   }
 
-  public Optional<Festival> findFestivalById(Long festivalId) {
-    return festivalRepository.findById(festivalId);
+  public Festival findFestivalById(Long festivalId) {
+    return festivalRepository.findById(festivalId).
+        orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + festivalId));
   }
 
   public void deleteFestival(Long festivalId) {

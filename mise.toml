@@ -1,2 +1,4 @@
 [tools]
-java = "openjdk-17.0.2"
+java = "temurin-21.0.7+6.0.LTS"
+node = "22"
+pnpm = "10.6.5"

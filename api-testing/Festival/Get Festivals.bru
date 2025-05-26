@@ -1,0 +1,15 @@
+meta {
+  name: Get Festivals
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{Url}}/festivals?q=가야대
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: 가야대
+}

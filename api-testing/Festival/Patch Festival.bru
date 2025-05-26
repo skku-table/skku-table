@@ -1,0 +1,17 @@
+meta {
+  name: Patch Festival
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{Url}}/festivals/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "likeCount": 999
+  }
+}
