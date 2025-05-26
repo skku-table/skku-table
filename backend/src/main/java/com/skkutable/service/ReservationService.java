@@ -1,13 +1,11 @@
 package com.skkutable.service;
 
-import com.skkutable.domain.Booth;
-import com.skkutable.domain.PaymentMethod;
-import com.skkutable.domain.Reservation;
-import com.skkutable.domain.User;
+import com.skkutable.domain.*;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
+import com.skkutable.repository.FestivalRepository;
 import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final BoothRepository boothRepository;
+    private final FestivalRepository festivalRepository;
 
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
@@ -32,11 +31,15 @@ public class ReservationService {
         Booth booth = boothRepository.findById(dto.getBoothId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + dto.getBoothId()));
 
+        Festival festival = festivalRepository.findById(dto.getFestivalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + dto.getFestivalId()));
+
         PaymentMethod paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
 
         Reservation reservation = new Reservation(
                 user,
                 booth,
+                festival,
                 dto.getReservationTime(),
                 dto.getNumberOfPeople()
         );
@@ -119,6 +122,7 @@ public class ReservationService {
         dto.setUserName(reservation.getUser().getName());
         dto.setBoothId(reservation.getBooth().getId());
         dto.setBoothName(reservation.getBooth().getName());
+        dto.setFestivalId(reservation.getBooth().getFestival().getId());
         dto.setFestivalName(reservation.getBooth().getFestival().getName());
         dto.setBoothStartDate(reservation.getBooth().getStartDateTime());
         dto.setBoothPosterImageUrl(reservation.getBooth().getPosterImageUrl());
