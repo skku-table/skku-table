@@ -19,10 +19,11 @@ interface Reservation {
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
+  const yy = String(date.getFullYear()).slice(2);
   const mm = date.getMonth() + 1;
   const dd = date.getDate();
   const weekday = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
-  return `${mm}.${dd} ${weekday}`;
+  return `${yy}.${mm}.${dd} ${weekday}`;
 }
 
 export default function ReservationPage() {

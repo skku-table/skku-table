@@ -32,6 +32,8 @@ type Festivaltype = {
   }[]
 }
 
+
+
 export default async function BoothDetailPage({ params }:{ params: Promise<{ festivalId: string; boothId: string }> }) {
   const { festivalId, boothId } = await params;
   const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);

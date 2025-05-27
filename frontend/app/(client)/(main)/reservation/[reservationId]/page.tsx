@@ -1,14 +1,4 @@
-// // 예약 수정 페이지
-// export default function EditReservationPage() {
-//     return (
-//       <div>
-//         <h1>예약 수정</h1>
-//         <p>예약 수정 페이지 입니다!</p>
-//       </div>
-//     );
-//   }
-
-// app/(client)/(main)/festival/[festivalId]/booth/[boothId]/reservations/page.tsx
+// 예약 수정 페이지 !!!!
 
 'use client';
 
@@ -36,25 +26,6 @@ interface BoothType {
   updatedAt: string;
 }
 
-// interface BoothType {
-//   boothId:number;
-//   festivalId: number;
-//   name: string;
-//   host: string;
-//   location: string;
-//   description: string;
-//   startDate: string;
-//   endDate: string;
-//   openTime: string;
-//   closeTime: string;
-//   likeCount: number;
-//   posterImageUrl: string;
-//   eventImageUrl: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
-
 interface FestivalType {
   id: number;
   posterImageUrl: string;
@@ -67,19 +38,6 @@ interface FestivalType {
   likeCount: number;
   booths: BoothType[];
 }
-
-// interface FestivalType {
-//   festivalId: number;
-//   name: string;
-//   startDate: string;
-//   endDate: string;
-//   location: string;
-//   description: string;
-//   likeCount: number;
-//   booths: BoothType[];
-// }
-
-
 
 export default function BoothReservationPage() {
   const params = useParams();
