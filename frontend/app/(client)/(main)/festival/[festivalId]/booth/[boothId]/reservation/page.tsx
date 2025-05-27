@@ -45,14 +45,14 @@ function getDateRange(start: string, end: string): string[] {
 }
 
 // 부스 운영 시간 정보를 받아 해당 범위에 있는 시간 리스트 생성
-function generateTimeSlots(startDateTime: string, endDateTime: string): string[] {
+function generateTimeSlotsFromTimes(start: string, end: string): string[] {
   const result: string[] = [];
 
-  const start = new Date(startDateTime);
-  const end = new Date(endDateTime);
+  const startTime = new Date(`1970-01-01T${start}`);
+  const endTime = new Date(`1970-01-01T${end}`);
 
-  const current = new Date(start);
-  while (current <= end) {
+  const current = new Date(startTime);
+  while (current <= endTime) {
     const hh = current.getHours().toString().padStart(2, '0');
     const mm = current.getMinutes().toString().padStart(2, '0');
     result.push(`${hh}:${mm}`);
@@ -111,16 +111,16 @@ export default function BoothReservationPage() {
         setBooth(foundBooth ?? null);
 
         if (foundBooth) {
+          setBooth(foundBooth);
+          const fullDateList = getDateRange(foundBooth.startDateTime, foundBooth.endDateTime);
+          setSelectedDate(fullDateList[0]);
+          setDateList(fullDateList);
 
-            // 날짜 범위 추출
-            const fullDateList = getDateRange(foundBooth.startDateTime, foundBooth.endDateTime);
-            setSelectedDate(fullDateList[0]);
-            setDateList(fullDateList);
-
-            // 시간 범위 추출
-            const fullTimeList = generateTimeSlots(foundBooth.startDateTime, foundBooth.endDateTime);
-            setSelectedTime(fullTimeList[0]);
-            setTimeList(fullTimeList)
+          const startTimeStr = foundBooth.startDateTime.split('T')[1].slice(0, 5); // "HH:mm"
+          const endTimeStr = foundBooth.endDateTime.split('T')[1].slice(0, 5);     // "HH:mm"
+          const timeList = generateTimeSlotsFromTimes(startTimeStr, endTimeStr);
+          setSelectedTime(timeList[0]);
+          setTimeList(timeList);
         }
         } catch (error) {
         console.error('데이터 불러오기 실패:', error);
@@ -213,15 +213,15 @@ export default function BoothReservationPage() {
             <div className="overflow-x-auto whitespace-nowrap mt-4">
                 <div className="inline-flex gap-2 px-1">
                 {timeList.map((time) => (
-                 <button
-                    key={`${selectedDate}-${time}`}
+                  <button
+                    key={time}
                     onClick={() => setSelectedTime(time)}
                     className={`min-w-[110px] h-[45px] text-[15px] border rounded-md font-medium ${
-                    selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
+                      selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
                     }`}
-                >
+                  >
                     {formatToKoreanTime(time)}
-                </button>
+                  </button>
                 ))}
                 </div>
             </div>
