@@ -1,44 +1,77 @@
 name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
-  workflow_run:
-    workflows: [ "CI - PR & Main build" ]
-    types: [ completed ]
+  workflow_run: # 'CI - PR & Main build' 워크플로우를 기다리기 위한 트리거
+    workflows: ["CI - PR & Main build"] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
+    types: [completed] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.head_branch == 'main'}}
+    # "CI - PR & Main build" 워크플로우가 성공적으로 완료된 경우에만 실행
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4   # (워크플로 파일이 들어 있는 레포만 체크아웃)
+      - uses: actions/checkout@v4 # 워크플로 파일이 들어 있는 레포 체크아웃
 
-      - name: Set up SSH agent
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
+      # webfactory/ssh-agent 단계는 appleboy/ssh-action이 키를 직접 처리하므로 더 이상 필요하지 않습니다.
 
-      - name: Deploy to Oracle Cloud
+      - name: Deploy to Oracle Cloud - Pull latest and set up .env
+        uses: appleboy/ssh-action@v1.2.2 # 또는 최신 버전을 위해 @v1 사용 가능
+        # 이 env 블록은 GitHub Actions 스텝 자체의 환경 변수를 설정합니다.
+        # 여기서 설정된 SCRIPT_NEXT_PUBLIC_API_URL 변수를 'with.envs'를 통해 원격 스크립트로 전달합니다.
         env:
-          HOST: skkutable.com
-          USER: ubuntu
-        run: |
-          set -ex
+          SCRIPT_NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+        with:
+          host: skkutable.com # 직접 값을 사용하거나, ${{ env.HOST }} 와 같이 job/workflow 레벨에서 HOST 환경 변수를 설정하여 사용 가능
+          username: ubuntu # 직접 값을 사용하거나, ${{ env.USER }} 와 같이 job/workflow 레벨에서 USER 환경 변수를 설정하여 사용 가능
+          key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
+          port: 22 # 기본값이 22이므로 명시하지 않아도 됩니다. 다른 포트인 경우 지정합니다.
+          envs: SCRIPT_NEXT_PUBLIC_API_URL # 여기에 명시된 변수들이 원격 쉘의 환경 변수로 전달됩니다.
+          script: |
+            set -ex  # 명령어 실행 중 오류 발생 시 즉시 중단하고, 실행되는 명령어들을 출력합니다.
 
-          echo "🔄pulling latest"
-          ssh -o StrictHostKeyChecking=no $USER@$HOST <<'EOSSH'
-            set -ex
-            cd ~
+            echo "🔄 Pulling latest repository changes and setting up .env file..."
+            cd ~  # 홈 디렉토리로 이동
+
+            # skku-table 디렉토리 존재 여부 확인 및 git 작업
             if [ ! -d skku-table ]; then
+              echo "Cloning skku-table repository..."
               git clone https://github.com/skku-table/skku-table.git
             else
-              cd skku-table && git pull && cd ..
+              echo "Found skku-table directory, pulling latest changes..."
+              cd skku-table
+              git pull
+              cd ..
             fi
-            cd skku-table
-          
-            cd ~
-          EOSSH
 
-          echo "♻️docker-compose up"
-          ssh -o StrictHostKeyChecking=no $USER@$HOST \
-              "cd ~/skku-table && docker compose pull && docker compose up -d --remove-orphans"
+            echo "Navigating to skku-table/frontend/ to create .env.production..."
+            cd skku-table/frontend/
+
+            # .env.production 파일 생성
+            echo "NEXT_PUBLIC_API_URL=$SCRIPT_NEXT_PUBLIC_API_URL" > .env.production
+            echo ".env.production file created/updated successfully."
+
+            cd ~ # 홈 디렉토리로 이동
+            echo "✅ Script part 1 (pull & .env setup) finished."
+
+      - name: Deploy application using Docker Compose on Oracle Cloud
+        uses: appleboy/ssh-action@v1.2.2 # 또는 최신 버전을 위해 @v1 사용 가능
+        with:
+          host: skkutable.com # 위와 동일한 호스트 정보
+          username: ubuntu # 위와 동일한 사용자 정보
+          key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
+          port: 22 # 기본값
+          script: |
+            set -ex # 명령어 실행 중 오류 발생 시 즉시 중단하고, 실행되는 명령어들을 출력합니다.
+
+            echo "♻️ Running docker-compose pull and up..."
+            cd ~/skku-table # skku-table 디렉토리로 이동
+
+            echo "Pulling latest Docker images..."
+            docker compose pull
+
+            echo "Starting application with docker-compose up -d..."
+            docker compose up -d --build --remove-orphans
+
+            echo "✅ Docker Compose deployment finished."
