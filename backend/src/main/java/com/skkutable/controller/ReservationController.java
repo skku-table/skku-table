@@ -34,6 +34,19 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
     }
 
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long reservationId) {
+        return ResponseEntity.ok(reservationService.getReservationById(reservationId));
+    }
+
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationResponseDTO> patchReservation(
+            @PathVariable Long reservationId,
+            @RequestBody ReservationRequestDTO dto) {
+        ReservationResponseDTO updated = reservationService.patchReservation(reservationId, dto);
+        return ResponseEntity.ok(updated);
+    }
+
     @PutMapping("/{reservationId}")
     public ResponseEntity<ReservationResponseDTO> updateReservation(
             @PathVariable Long reservationId,

@@ -30,9 +30,17 @@ public class Reservation {
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "festival_id")
+    private Festival festival;
+
     private LocalDateTime reservationTime;
 
     private int numberOfPeople;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethod paymentMethod;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,9 +48,10 @@ public class Reservation {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Reservation(User user, Booth booth, LocalDateTime reservationTime, int numberOfPeople) {
+    public Reservation(User user, Booth booth, Festival festival, LocalDateTime reservationTime, int numberOfPeople) {
         this.user = user;
         this.booth = booth;
+        this.festival = festival;
         this.reservationTime = reservationTime;
         this.numberOfPeople = numberOfPeople;
     }

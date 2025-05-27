@@ -1,12 +1,11 @@
 package com.skkutable.service;
 
-import com.skkutable.domain.Booth;
-import com.skkutable.domain.Reservation;
-import com.skkutable.domain.User;
+import com.skkutable.domain.*;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
+import com.skkutable.repository.FestivalRepository;
 import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final BoothRepository boothRepository;
+    private final FestivalRepository festivalRepository;
 
     public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
@@ -31,13 +31,24 @@ public class ReservationService {
         Booth booth = boothRepository.findById(dto.getBoothId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + dto.getBoothId()));
 
+        Festival festival = festivalRepository.findById(dto.getFestivalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + dto.getFestivalId()));
+
+        PaymentMethod paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
+
         Reservation reservation = new Reservation(
-                null, user, booth, dto.getReservationTime(), dto.getNumberOfPeople(), null, null
+                user,
+                booth,
+                festival,
+                dto.getReservationTime(),
+                dto.getNumberOfPeople()
         );
+        reservation.setPaymentMethod(paymentMethod);
 
         Reservation saved = reservationRepository.save(reservation);
         return toResponseDTO(saved);
     }
+
 
     public List<ReservationResponseDTO> getReservationsByUser(Long userId) {
         return reservationRepository.findByUserIdWithBoothAndFestival(userId).stream()
@@ -77,6 +88,32 @@ public class ReservationService {
             throw new ResourceNotFoundException("Reservation not found: " + reservationId);
         }
     }
+    public ReservationResponseDTO getReservationById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        return toResponseDTO(reservation);
+    }
+
+    public ReservationResponseDTO patchReservation(Long id, ReservationRequestDTO dto) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+
+        if (dto.getBoothId() != null) {
+            Booth booth = boothRepository.findById(dto.getBoothId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Booth not found"));
+            reservation.setBooth(booth);
+        }
+
+        if (dto.getReservationTime() != null) {
+            reservation.setReservationTime(dto.getReservationTime());
+        }
+
+        reservation.setNumberOfPeople(dto.getNumberOfPeople());
+        reservation.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
+
+        return toResponseDTO(reservationRepository.save(reservation));
+    }
+
 
     private ReservationResponseDTO toResponseDTO(Reservation reservation) {
         ReservationResponseDTO dto = new ReservationResponseDTO();
@@ -85,11 +122,13 @@ public class ReservationService {
         dto.setUserName(reservation.getUser().getName());
         dto.setBoothId(reservation.getBooth().getId());
         dto.setBoothName(reservation.getBooth().getName());
+        dto.setFestivalId(reservation.getBooth().getFestival().getId());
         dto.setFestivalName(reservation.getBooth().getFestival().getName());
         dto.setBoothStartDate(reservation.getBooth().getStartDateTime());
         dto.setBoothPosterImageUrl(reservation.getBooth().getPosterImageUrl());
         dto.setReservationTime(reservation.getReservationTime());
         dto.setNumberOfPeople(reservation.getNumberOfPeople());
+        dto.setPaymentMethod(reservation.getPaymentMethod().name());
         dto.setCreatedAt(reservation.getCreatedAt());
         return dto;
     }

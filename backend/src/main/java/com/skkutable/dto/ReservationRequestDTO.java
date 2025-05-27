@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 public class ReservationRequestDTO {
     private Long userId;
     private Long boothId;
+    private Long festivalId;
     private LocalDateTime reservationTime;
     private int numberOfPeople;
+    private String paymentMethod;
 }

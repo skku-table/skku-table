@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { formatDate } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 interface BoothType {
   id: number;
   name: string;
@@ -74,7 +75,7 @@ export default function BoothReservationPage() {
   useEffect(() => {
     const fetchData = async () => {
         try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
         const data: FestivalType = await res.json();
 
         const foundBooth = data.booths.find((b) => b.id === Number(boothId));
@@ -116,7 +117,7 @@ export default function BoothReservationPage() {
       // paymentMethod: paymentMethod,
     };
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
+    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reservationBody),

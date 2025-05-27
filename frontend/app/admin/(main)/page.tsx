@@ -4,6 +4,7 @@ import { IoHeartSharp } from "react-icons/io5";
 import Link from "next/link";
 import Header from "@/components/Headers"
 import { formatDate } from "@/libs/utils";
+import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
 
 
 
@@ -37,7 +38,7 @@ type FestivalsData = {
 
 export default async function Page() {
   // 상태로 변경
-  const res= await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals`);
+  const res= await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals`);
   const festivalsData: FestivalsData = await res.json();
     
 

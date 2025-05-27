@@ -5,6 +5,7 @@ import Image from 'next/image';
 import cn from 'classnames';
 import { formatToKoreanTime } from '@/libs/utils';
 import Link from 'next/link';
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 
 interface Reservation {
   reservationId: number;
@@ -34,13 +35,17 @@ export default function ReservationPage() {
   useEffect(() => {
     async function fetchUserInfo() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-          credentials: 'include', // 쿠키 인증 필요 
-
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
+        const contentType = res.headers.get("content-type");
+        if (!contentType?.includes("application/json")) {
+          const text = await res.text();
+          console.error("JSON 아님 - 서버 응답:", text);
+          throw new Error("JSON 파싱 불가");
+        }
 
         const data = await res.json();
         setUserId(data.id);
@@ -57,10 +62,12 @@ export default function ReservationPage() {
 
     async function fetchReservations() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/user/${userId}`);
+
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/user/${userId}`);
         const data = await res.json();
         setReservations(data);
       } catch (error) {
+        // console.log("user Id : ", userId);
         console.error('예약 정보 불러오기 실패:', error);
       }
     }
@@ -96,7 +103,7 @@ export default function ReservationPage() {
       </div>
 
       {/* 예약 카드 목록 */}
-      {filtered.map((r) => {
+     {filtered.map((r) => {
         const timeStr = new Date(r.reservationTime).toTimeString().slice(0, 5);
         const formattedTime = formatToKoreanTime(timeStr);
 
@@ -120,7 +127,6 @@ export default function ReservationPage() {
                   <li>ㆍ{formattedTime} / {r.numberOfPeople}명</li>
                 </ul>
 
-                {/* 수정 및 취소 버튼: current 탭에서만 보여짐 */}
                 {tab === 'current' && (
                   <div className="flex gap-3 mt-2">
                     <Link href={`/reservation/${r.reservationId}`}>
@@ -134,10 +140,9 @@ export default function ReservationPage() {
                         const confirmed = window.confirm('정말 예약을 취소하시겠습니까?');
                         if (!confirmed) return;
                         try {
-                          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
+                          const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
                             method: 'DELETE',
                           });
-
                           if (res.ok) {
                             setReservations(prev => prev.filter(item => item.reservationId !== r.reservationId));
                             alert('예약이 취소되었습니다');
@@ -159,6 +164,7 @@ export default function ReservationPage() {
           </div>
         );
       })}
+
     </div>
   );
 }

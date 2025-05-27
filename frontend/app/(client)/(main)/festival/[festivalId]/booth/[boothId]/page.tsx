@@ -4,6 +4,7 @@ import Header from '@/components/Headers';
 import LikeButton from '@/components/LikeButton';
 import { formatDate } from '@/libs/utils';
 import Link from 'next/link';
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 
 type Festivaltype = {
   id: number;
@@ -33,7 +34,7 @@ type Festivaltype = {
 
 export default async function BoothDetailPage({ params }:{ params: Promise<{ festivalId: string; boothId: string }> }) {
   const { festivalId, boothId } = await params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
+  const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
   const booth = festival.booths.find((booths) => booths.id === Number(boothId));
   // const [liked, setLiked] = useState(false);
