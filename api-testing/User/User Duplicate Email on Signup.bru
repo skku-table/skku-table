@@ -1,0 +1,20 @@
+meta {
+  name: Sign Up - Duplicate Email
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{Url}}/users/signup
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "홍길동",
+    "email": "already@used.com",
+    "password": "test1234",
+    "role": "USER"
+  }
+}

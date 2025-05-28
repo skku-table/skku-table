@@ -1,0 +1,10 @@
+meta {
+  name: Delete Reservation - Not Found
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{Url}}/reservations/99999
+  auth: inherit
+}

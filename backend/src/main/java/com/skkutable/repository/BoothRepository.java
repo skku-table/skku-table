@@ -14,4 +14,6 @@ public interface BoothRepository extends BoothRepositoryCustom {
   Optional<Booth> findByIdAndFestivalId(Long id, Long festivalId);
   List<Booth> findAll();
   List<Booth> findByFestivalId(Long festivalId);
+
+    boolean existsById(Long boothId);
 }

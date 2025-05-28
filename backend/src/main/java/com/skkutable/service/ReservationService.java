@@ -34,7 +34,13 @@ public class ReservationService {
         Festival festival = festivalRepository.findById(dto.getFestivalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + dto.getFestivalId()));
 
-        PaymentMethod paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
+        PaymentMethod paymentMethod;
+
+        try {
+            paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid payment method: " + dto.getPaymentMethod());
+        }
 
         Reservation reservation = new Reservation(
                 user,
@@ -51,6 +57,9 @@ public class ReservationService {
 
 
     public List<ReservationResponseDTO> getReservationsByUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found: " + userId);
+        }
         return reservationRepository.findByUserIdWithBoothAndFestival(userId).stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -58,6 +67,12 @@ public class ReservationService {
 
     public List<ReservationResponseDTO> getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
         List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
+        if (!festivalRepository.existsById(festivalId)) {
+            throw new ResourceNotFoundException("Festival not found: " + festivalId);
+        }
+        if (!boothRepository.existsById(boothId)) {
+            throw new ResourceNotFoundException("Booth not found: " + boothId);
+        }
         return reservations.stream()
                 .map(this::toResponseDTO)
                 .toList();
@@ -108,8 +123,19 @@ public class ReservationService {
             reservation.setReservationTime(dto.getReservationTime());
         }
 
-        reservation.setNumberOfPeople(dto.getNumberOfPeople());
-        reservation.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
+        if (dto.getNumberOfPeople() != null) {
+            reservation.setNumberOfPeople(dto.getNumberOfPeople());
+        } else {
+            throw new IllegalArgumentException("Number of people must not be null");
+        }
+
+        if (dto.getPaymentMethod() != null) {
+            try {
+                reservation.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid payment method: " + dto.getPaymentMethod());
+            }
+        }
 
         return toResponseDTO(reservationRepository.save(reservation));
     }

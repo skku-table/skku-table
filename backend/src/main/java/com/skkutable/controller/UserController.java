@@ -57,8 +57,7 @@ public class UserController {
   /* 현재 로그인 사용자 정보 확인 */
   @GetMapping("/me")
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
-    return userService.findOne(email)
-        .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), REDACTED, u.getRole()))
-        .orElseThrow();
+    User user = userService.findOne(email); // exception 던지기 위해 optional 제거
+    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
   }
 }

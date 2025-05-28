@@ -12,4 +12,7 @@ public interface FestivalRepository extends FestivalRepositoryCustom {
   void deleteById(Long id);
   Optional<Festival> findByName(String name);
   List<Festival> findAll();
+  boolean existsByName(String name);
+
+  boolean existsById(Long festivalId);
 }

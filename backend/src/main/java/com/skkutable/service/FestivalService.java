@@ -5,6 +5,7 @@ import com.skkutable.dto.FestivalPatchDto;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.FestivalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,10 @@ public class FestivalService {
 
   public Festival createFestival(Festival festival) {
     // 중복된 이름 검증 등의 로직이 있다면 여기에 추가
+    boolean exists = festivalRepository.existsByName(festival.getName());
+    if (exists) {
+      throw new IllegalArgumentException("이미 같은 이름의 축제가 존재합니다: " + festival.getName());
+    }
     return festivalRepository.save(festival);
   }
 
@@ -46,12 +51,16 @@ public class FestivalService {
   }
 
   public void deleteFestival(Long festivalId) {
-    festivalRepository.deleteById(festivalId);
+    try {
+      festivalRepository.deleteById(festivalId);
+    } catch (EmptyResultDataAccessException e) {
+      throw new ResourceNotFoundException("Festival not found: " + festivalId);
+    }
   }
 
   public Festival patchUpdateFestival(Long id, FestivalPatchDto dto) {
     Festival fest = festivalRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Festival not found: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Festival not found: " + id));
 
     fest.applyPatch(dto);
     return fest;
