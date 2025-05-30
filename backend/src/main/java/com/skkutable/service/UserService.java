@@ -3,6 +3,9 @@ package com.skkutable.service;
 import com.skkutable.domain.Role;
 import com.skkutable.domain.User;
 import com.skkutable.dto.UserDto;
+import com.skkutable.exception.BadRequestException;
+import com.skkutable.exception.ConflictException;
+import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,7 @@ public class UserService {
   public User join(UserDto dto, String adminSecret) {
     if (dto.getRole() == Role.ADMIN) {
       if (adminSecret == null || !adminSecret.equals("skku2023")) {
-        throw new IllegalArgumentException("관리자 권한을 부여하기 위한 어드민 시크릿과 일치하지 않습니다.");
+        throw new BadRequestException("관리자 권한을 부여하기 위한 어드민 시크릿과 일치하지 않습니다.");
       }
     }
     validateDuplicateUser(dto.getEmail());
@@ -43,16 +46,21 @@ public class UserService {
   private void validateDuplicateUser(String email) {
     userRepository.findByEmail(email)
         .ifPresent(m -> {
-          throw new IllegalStateException("이미 존재하는 회원입니다.");
+          throw new ConflictException("이미 존재하는 회원입니다. : " + email);
         });
   }
 
 
   public List<User> findUsers() { return userRepository.findAll();}
 
-  public Optional<User> findOne(Long userId) {
-      return userRepository.findById(userId);
+  public User findOne(Long userId) {
+    return userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
   }
-  public Optional<User> findOne(String email) {return userRepository.findByEmail(email);}
+
+  public User findOne(String email) {
+    return userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+  }
 
 }

@@ -1,0 +1,17 @@
+meta {
+  name: Patch Festival - Not Found
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{Url}}/festivals/99999
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "없는 축제 이름"
+  }
+}

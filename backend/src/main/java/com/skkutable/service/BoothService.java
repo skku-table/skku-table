@@ -2,6 +2,7 @@ package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
 import com.skkutable.dto.BoothPatchDto;
+import com.skkutable.exception.BadRequestException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.domain.Festival;
@@ -9,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.nio.file.ReadOnlyFileSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,9 @@ public class BoothService {
   }
 
   public Booth createBooth(Long festivalId, Booth booth) {
+    if (festivalId == null || booth == null) {
+      throw new BadRequestException("Festival ID and Booth data must be provided");
+    }
     return boothRepository.createBooth(festivalId, booth);
   }
 
@@ -49,15 +54,23 @@ public class BoothService {
   }
 
   public void deleteBooth(Long boothId) {
-    boothRepository.deleteById(boothId);
+    try {
+      boothRepository.deleteById(boothId);
+    } catch (EmptyResultDataAccessException e) {
+      throw new ResourceNotFoundException("Booth not found: " + boothId);
+    }
   }
 
   public Booth findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
     return boothRepository.findByIdAndFestivalId(boothId, festivalId).
-        orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
+        orElseThrow(() -> new ResourceNotFoundException("Booth not found with id " + boothId + " in festival " + festivalId));
   }
 
   public Booth patchUpdateBooth(Long festivalId, Long boothId, BoothPatchDto dto, FestivalService festivalService) {
+
+    if (festivalId == null || boothId == null) {
+      throw new BadRequestException("Festival ID and Booth ID must be provided");
+    }
 
     festivalService.findFestivalById(festivalId);
     Booth booth = boothRepository.findById(boothId)
