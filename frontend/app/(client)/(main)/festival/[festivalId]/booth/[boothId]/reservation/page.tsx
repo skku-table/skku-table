@@ -1,3 +1,5 @@
+// 예약 하기 페이지 !!
+
 // app/(client)/(main)/festival/[festivalId]/booth/[boothId]/reservations/page.tsx
 
 'use client';
@@ -8,6 +10,8 @@ import { formatDate } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
+import { useRouter } from 'next/navigation'; 
+
 interface BoothType {
   id: number;
   name: string;
@@ -41,14 +45,14 @@ function getDateRange(start: string, end: string): string[] {
 }
 
 // 부스 운영 시간 정보를 받아 해당 범위에 있는 시간 리스트 생성
-function generateTimeSlots(startDateTime: string, endDateTime: string): string[] {
+function generateTimeSlotsFromTimes(start: string, end: string): string[] {
   const result: string[] = [];
 
-  const start = new Date(startDateTime);
-  const end = new Date(endDateTime);
+  const startTime = new Date(`1970-01-01T${start}`);
+  const endTime = new Date(`1970-01-01T${end}`);
 
-  const current = new Date(start);
-  while (current <= end) {
+  const current = new Date(startTime);
+  while (current <= endTime) {
     const hh = current.getHours().toString().padStart(2, '0');
     const mm = current.getMinutes().toString().padStart(2, '0');
     result.push(`${hh}:${mm}`);
@@ -59,6 +63,7 @@ function generateTimeSlots(startDateTime: string, endDateTime: string): string[]
 }
 
 export default function BoothReservationPage() {
+  const router = useRouter();
   const params = useParams();
   const festivalId = params?.festivalId as string;
   const boothId = params?.boothId as string;
@@ -68,9 +73,32 @@ export default function BoothReservationPage() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState('');
   const [numberOfPeople, setNumberOfPeople] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'BANK'>('CARD');
   const [dateList, setDateList] = useState<string[]>([]);
   const [timeList, setTimeList] = useState<string[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
+
+
+  useEffect(() => {
+  const fetchUserInfo = async () => {
+    try {
+      const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`);
+      const contentType = res.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        const text = await res.text();
+        console.error('유저 정보 응답이 JSON이 아님:', text);
+        return;
+      }
+      const userData = await res.json();
+      setUserId(userData.id);
+    } catch (err) {
+      console.error('유저 정보 불러오기 실패:', err);
+    }
+  };
+
+  fetchUserInfo();
+}, []);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,16 +111,16 @@ export default function BoothReservationPage() {
         setBooth(foundBooth ?? null);
 
         if (foundBooth) {
+          setBooth(foundBooth);
+          const fullDateList = getDateRange(foundBooth.startDateTime, foundBooth.endDateTime);
+          setSelectedDate(fullDateList[0]);
+          setDateList(fullDateList);
 
-            // 날짜 범위 추출
-            const fullDateList = getDateRange(foundBooth.startDateTime, foundBooth.endDateTime);
-            setSelectedDate(fullDateList[0]);
-            setDateList(fullDateList);
-
-            // 시간 범위 추출
-            const fullTimeList = generateTimeSlots(foundBooth.startDateTime, foundBooth.endDateTime);
-            setSelectedTime(fullTimeList[0]);
-            setTimeList(fullTimeList)
+          const startTimeStr = foundBooth.startDateTime.split('T')[1].slice(0, 5); // "HH:mm"
+          const endTimeStr = foundBooth.endDateTime.split('T')[1].slice(0, 5);     // "HH:mm"
+          const timeList = generateTimeSlotsFromTimes(startTimeStr, endTimeStr);
+          setSelectedTime(timeList[0]);
+          setTimeList(timeList);
         }
         } catch (error) {
         console.error('데이터 불러오기 실패:', error);
@@ -103,6 +131,11 @@ export default function BoothReservationPage() {
 
   const handleReserve = async () => {
 
+    if (!userId) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+
     // 예외 처리
     if (!selectedDate || !selectedTime || numberOfPeople <= 0) {
     alert('날짜, 시간, 인원을 모두 선택해주세요.');
@@ -110,8 +143,10 @@ export default function BoothReservationPage() {
     }
 
     const reservationBody = {
+      userId: Number(userId),
       boothId: Number(boothId),
-      reservationDateTime: `${selectedDate}T${selectedTime}:00`,
+      festivalId: Number(festivalId),
+      reservationTime: `${selectedDate}T${selectedTime}:00`,
       numberOfPeople: numberOfPeople,
       paymentMethod: paymentMethod,
     };
@@ -122,8 +157,17 @@ export default function BoothReservationPage() {
       body: JSON.stringify(reservationBody),
     });
 
-    if (res.ok) alert('예약 완료');
-    else alert('예약 실패');
+
+    if (res.ok) {
+      const confirmed = window.confirm('예약 완료');
+      if (confirmed) {
+        router.push('/'); // 메인 화면 경로로 이동
+      }
+    } else {
+      const errorText = await res.text();
+      console.error('예약 실패 응답:', errorText);
+      alert('예약 실패');
+    }
   };
 
   if (!booth || !festival) return null;
@@ -169,15 +213,15 @@ export default function BoothReservationPage() {
             <div className="overflow-x-auto whitespace-nowrap mt-4">
                 <div className="inline-flex gap-2 px-1">
                 {timeList.map((time) => (
-                 <button
+                  <button
                     key={time}
                     onClick={() => setSelectedTime(time)}
                     className={`min-w-[110px] h-[45px] text-[15px] border rounded-md font-medium ${
-                    selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
+                      selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
                     }`}
-                >
+                  >
                     {formatToKoreanTime(time)}
-                </button>
+                  </button>
                 ))}
                 </div>
             </div>
@@ -188,13 +232,13 @@ export default function BoothReservationPage() {
             <h3 className="text-lg font-bold">결제 수단</h3>
             <div className="mt-3 w-full h-[140px] rounded-[10px] border border-gray-200 bg-white flex flex-col justify-center items-center gap-2 shadow-sm">
                 {[
-                { value: 'card', label: '카드' },
-                { value: 'bank', label: '계좌 이체' },
+                { value: 'CARD', label: '카드' },
+                { value: 'BANK', label: '계좌 이체' },
                 ].map((option, idx) => (
                 <div key={option.value} className="flex items-center justify-between w-[80%] h-[50%]">
                     <span className="text-sm font-medium">{option.label}</span>
                     <div
-                    onClick={() => setPaymentMethod(option.value as 'card' | 'bank')}
+                    onClick={() => setPaymentMethod(option.value as 'CARD' | 'BANK')}
                     className={`w-[16px] h-[16px] rounded-full border-[2px] cursor-pointer ${
                         paymentMethod === option.value ? 'bg-[#335533]' : 'bg-white'
                     } border-[#335533]`}
