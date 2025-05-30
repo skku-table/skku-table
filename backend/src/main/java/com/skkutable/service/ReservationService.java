@@ -66,13 +66,13 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
-        List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
         if (!festivalRepository.existsById(festivalId)) {
             throw new ResourceNotFoundException("Festival not found: " + festivalId);
         }
         if (!boothRepository.existsById(boothId)) {
             throw new ResourceNotFoundException("Booth not found: " + boothId);
         }
+        List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
         return reservations.stream()
                 .map(this::toResponseDTO)
                 .toList();

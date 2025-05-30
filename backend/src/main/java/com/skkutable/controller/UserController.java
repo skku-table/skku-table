@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import com.skkutable.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -58,6 +59,12 @@ public class UserController {
   @GetMapping("/me")
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
     User user = userService.findOne(email); // exception 던지기 위해 optional 제거
+    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
+  }
+
+  @GetMapping("{id}")
+  public UserDto getUserById(@PathVariable("id") Long userId) {
+    User user = userService.findOne(userId);
     return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
   }
 }
