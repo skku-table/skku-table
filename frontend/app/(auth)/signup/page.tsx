@@ -2,8 +2,8 @@
 
 import Header from "@/components/Headers"
 import { useSearchParams } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { set, useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 type FormData = {
@@ -15,17 +15,21 @@ type FormData = {
 export default function SignupPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const isAdmin = searchParams.get('isAdmin') === 'true'
     const [error, setError] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
+    useEffect(()=> {
+        const value = searchParams.get('isAdmin')
+        setIsAdmin(value === 'true')
+    }, [searchParams])
 
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
     const onSubmit = async (data: FormData) => {
         setError('')
         const role = isAdmin ? 'ADMIN' : 'USER'
-        data.role = role
+        const payload = { ...data, role }
         try {
-            const body = JSON.stringify(data)
+            const body = JSON.stringify(payload)
             const headers: HeadersInit = {
                 'Content-Type': 'application/json',
             }
