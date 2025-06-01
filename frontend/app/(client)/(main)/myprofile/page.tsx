@@ -1,4 +1,6 @@
-export default function ProfilePage() {
+//프로필
+
+export default function MyPage() {
     return (
       <div>
         <h1>프로필</h1>
