@@ -99,7 +99,7 @@ export default function LoginPage() {
             placeholder="비밀번호를 입력하세요"
           />
           <span className="absolute right-2 bottom-[-20px] text-xs border-b-1 text-gray-500 hover:underline cursor-pointer">
-            <Link href={{ pathname: '/signup', query: { isAdmin } }}>
+            <Link href={{ pathname: '/signup', query: { isAdmin:isAdmin } }}>
               회원가입
             </Link>
           </span>

@@ -24,8 +24,6 @@ export default function SignupPage() {
         setError('')
         const role = isAdmin ? 'ADMIN' : 'USER'
         data.role = role
-        console.log('회원가입 데이터:', data)
-        console.log('key', process.env.NEXT_PUBLIC_ADMIN_SECRET)
         try {
             const body = JSON.stringify(data)
             const headers: HeadersInit = {
@@ -59,11 +57,11 @@ export default function SignupPage() {
         <>
         <Header isBackButton={true} title="back" />
         <main className="flex flex-col items-center py-40 min-h-screen bg-white">
-            <h1 className="text-2xl font-bold text-center mb-4">
+            <h1 className="text-2xl font-bold text-center mb-10">
             {isAdmin ? '관리자 회원가입' : '일반 사용자 회원가입'}
             </h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-2/3">
             <div>
                 <label className="block text-sm">이름</label>
                 <input
@@ -103,7 +101,7 @@ export default function SignupPage() {
 
             <button
                 type="submit"
-                className="w-full bg-green-800 hover:bg-green-700 text-white font-semibold py-2 rounded"
+                className="w-full mt-10 bg-[#334433] hover:bg-[#496249] text-white font-semibold py-2 rounded"
             >
                 회원가입
             </button>
