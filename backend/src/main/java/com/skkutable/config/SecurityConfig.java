@@ -70,7 +70,7 @@ public class SecurityConfig {
       CorsConfiguration config = new CorsConfiguration();
       config.setAllowedOrigins(List.of("http://localhost:3000", "https://skkutable.com"));
       config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-      config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+      config.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-admin-secret"));
       config.setExposedHeaders(List.of("*"));
       config.setAllowCredentials(true); // ✅ 핵심
       config.setMaxAge(3600L);
