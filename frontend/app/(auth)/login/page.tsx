@@ -57,15 +57,15 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <h1 className="text-3xl font-bold text-green-900 mb-10">SKKU TABLE</h1>
+    <main className="flex flex-col items-center py-40 min-h-screen bg-white">
+      <h1 className="text-4xl font-[900] pb-15 text-[#334433]">SKKU TABLE</h1>
 
       <div className="w-full max-w-xs p-4">
-        <div className="flex mb-6 border-b border-green-600">
+        <div className="flex mb-10 border-b border-[#334433]">
           <button
             onClick={() => setIsAdmin(false)}
             className={`flex-1 py-2 text-sm font-medium ${
-              !isAdmin ? 'border-b-4 border-green-700 text-black' : 'text-gray-500'
+              !isAdmin ? 'border-b-4 border-[#334433] text-black' : 'text-gray-500'
             }`}
           >
             일반사용자 계정
@@ -73,7 +73,7 @@ export default function LoginPage() {
           <button
             onClick={() => setIsAdmin(true)}
             className={`flex-1 py-2 text-sm font-medium ${
-              isAdmin ? 'border-b-4 border-green-700 text-black' : 'text-gray-500'
+              isAdmin ? 'border-b-4 border-[#334433] text-black' : 'text-gray-500'
             }`}
           >
             관리자 계정
@@ -82,7 +82,6 @@ export default function LoginPage() {
 
         <label className="block mb-4">
           <input
-            type="email"
             className="w-full border border-gray-300 p-3 rounded-md text-sm placeholder-gray-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +103,7 @@ export default function LoginPage() {
         </label>
 
         <button
-          className="w-full bg-green-900 hover:bg-green-800 text-white font-semibold py-3 rounded-md"
+          className="w-full bg-[#334433] hover:cursor-pointer hover:bg-[#496249] text-white font-semibold py-3 mt-10 rounded-md"
           onClick={handleLogin}
         >
           로그인
