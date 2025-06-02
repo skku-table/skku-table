@@ -24,7 +24,7 @@ public class UserLikeService {
     private final UserBoothLikeRepository userBoothLikeRepo;
 
     @Transactional
-    public void toggleFestivalLike(Long userId, Long festivalId) {
+    public boolean toggleFestivalLike(Long userId, Long festivalId) {
         User user = userService.findOne(userId);
         Festival festival = festivalService.findFestivalById(festivalId);
 
@@ -34,6 +34,7 @@ public class UserLikeService {
             userFestivalLikeRepo.delete(existingLike.get());
             festival.decrementLikeCount();
             festivalService.save(festival);
+            return false;
         } else {
             // 좋아요 처리
             userFestivalLikeRepo.save(UserFestivalLike.builder()
@@ -42,11 +43,12 @@ public class UserLikeService {
                     .build());
             festival.incrementLikeCount();
             festivalService.save(festival);
+            return true;
         }
     }
 
     @Transactional
-    public void toggleBoothLike(Long userId, Long boothId) {
+    public boolean toggleBoothLike(Long userId, Long boothId) {
         User user = userService.findOne(userId);
         Booth booth = boothService.findBoothById(boothId);
 
@@ -56,6 +58,7 @@ public class UserLikeService {
             userBoothLikeRepo.delete(existingLike.get());
             booth.decrementLikeCount();
             boothService.save(booth);
+            return false;
         } else {
             // 좋아요 처리
             userBoothLikeRepo.save(UserBoothLike.builder()
@@ -64,6 +67,7 @@ public class UserLikeService {
                     .build());
             booth.incrementLikeCount();
             boothService.save(booth);
+            return true;
         }
     }
 

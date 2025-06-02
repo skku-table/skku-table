@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users/{userId}/likes")
@@ -27,15 +28,23 @@ public class UserLikeController {
     }
 
     @PostMapping("/festivals/{festivalId}/toggle")
-    public ResponseEntity<Void> toggleFestivalLike(@PathVariable Long userId, @PathVariable Long festivalId) {
-        userLikeService.toggleFestivalLike(userId, festivalId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Object>> toggleFestivalLike(@PathVariable Long userId, @PathVariable Long festivalId) {
+        boolean isLiked = userLikeService.toggleFestivalLike(userId, festivalId);
+        Map<String, Object> response = Map.of(
+                "isLiked", isLiked,
+                "message", isLiked ? "Festival liked" : "Festival unliked"
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/booths/{boothId}/toggle")
-    public ResponseEntity<Void> toggleBoothLike(@PathVariable Long userId, @PathVariable Long boothId) {
-        userLikeService.toggleBoothLike(userId, boothId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Object>> toggleBoothLike(@PathVariable Long userId, @PathVariable Long boothId) {
+        boolean isLiked = userLikeService.toggleBoothLike(userId, boothId);
+        Map<String, Object> response = Map.of(
+                "isLiked", isLiked,
+                "message", isLiked ? "Booth liked" : "Booth unliked"
+        );
+        return ResponseEntity.ok(response);
     }
 }
 
