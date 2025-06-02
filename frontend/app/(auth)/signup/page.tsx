@@ -1,7 +1,6 @@
 'use client'
 
 import Header from "@/components/Headers"
-import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -14,13 +13,12 @@ type FormData = {
 }
 export default function SignupPage() {
     const router = useRouter()
-    const searchParams = useSearchParams()
     const [error, setError] = useState('')
     const [isAdmin, setIsAdmin] = useState(false)
     useEffect(()=> {
-        const value = searchParams.get('isAdmin')
-        setIsAdmin(value === 'true')
-    }, [searchParams])
+        const params = new URLSearchParams(window.location.search)
+        setIsAdmin(params.get('isAdmin') === 'true')
+    }, [])
 
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
