@@ -53,6 +53,10 @@ public class BoothService {
             ));
   }
 
+  public Booth save(Booth booth) {
+    return boothRepository.save(booth);
+  }
+
   public void deleteBooth(Long boothId) {
     try {
       boothRepository.deleteById(boothId);

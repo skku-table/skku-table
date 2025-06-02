@@ -15,10 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -51,6 +49,7 @@ public class Festival {
   private String location;
   private String description;
 
+  @Setter
   @Column(name="like_count")
   @Builder.Default
   private Integer likeCount = 0;
@@ -82,5 +81,13 @@ public class Festival {
     if (dto.getLikeCount()       != null) this.likeCount   = dto.getLikeCount();
     if (dto.getPosterImageUrl()  != null) this.posterImageUrl= dto.getPosterImageUrl();
     if (dto.getMapImageUrl()     != null) this.mapImageUrl   = dto.getMapImageUrl();
+  }
+
+  public void incrementLikeCount() {
+    this.likeCount += 1;
+  }
+
+  public void decrementLikeCount() {
+    if (this.likeCount > 0) this.likeCount -= 1;
   }
 }

@@ -65,4 +65,8 @@ public class FestivalService {
     fest.applyPatch(dto);
     return fest;
   }
+
+  public Festival save(Festival festival) {
+    return festivalRepository.save(festival);
+  }
 }

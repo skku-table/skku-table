@@ -5,10 +5,8 @@ import com.skkutable.dto.BoothPatchDto;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -40,6 +38,7 @@ public class Booth {
   @Column(name = "end_date_time")
   private LocalDateTime endDateTime;
 
+  @Setter
   @Column(name = "like_count")
   @Builder.Default
   private Integer likeCount = 0;
@@ -79,5 +78,13 @@ public class Booth {
     if (dto.getLikeCount()      != null) this.likeCount      = dto.getLikeCount();
     if (dto.getPosterImageUrl() != null) this.posterImageUrl = dto.getPosterImageUrl();
     if (dto.getEventImageUrl()  != null) this.eventImageUrl  = dto.getEventImageUrl();
+  }
+
+  public void incrementLikeCount() {
+    this.likeCount += 1;
+  }
+
+  public void decrementLikeCount() {
+    if (this.likeCount > 0) this.likeCount -= 1;
   }
 }
