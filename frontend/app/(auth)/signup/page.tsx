@@ -2,7 +2,7 @@
 
 import Header from "@/components/Headers"
 import { useSearchParams } from "next/navigation"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
