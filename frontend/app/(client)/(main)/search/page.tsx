@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'; // 동적 렌더링 사용
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
