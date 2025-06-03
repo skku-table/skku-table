@@ -1,9 +1,7 @@
-import { IoHeart } from 'react-icons/io5';
 import Image from 'next/image';
 import Header from '@/components/Headers';
-import LikeButton from '@/components/LikeButton';
-import { formatDate } from '@/libs/utils';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
+import { BoothCard } from '@/components/BoothCard';
 
 
 type Festivaltype = {
@@ -53,37 +51,7 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
     <>
       <Header isBackButton={true} title={booth.name} />
       <div className="relative p-4 pt-16 space-y-6">
-
-        {/* 포스터 이미지 + 하트 버튼 */}
-        <div className="relative w-full h-[270px]">
-          <Image
-            src={booth.posterImageUrl}
-            alt="부스 포스터"
-            fill
-            className="object-cover"
-          />
-          <LikeButton
-            initialLiked={false}
-            size={25}
-            className="absolute top-2 right-2"
-          />
-        </div>
-
-        {/* 부스 기본 정보 */}
-        <div>
-          <div className="flex items-center gap-2 mt-4">
-            <h2 className="text-xl font-bold">{booth.name}</h2>
-            <div className="flex items-center gap-1 text-[15px] text-black/60">
-              <IoHeart size={18} className="text-red-500" />
-              {booth.likeCount}
-            </div>
-          </div>
-          <ul className="list-disc pl-5 text-sm space-y-1 mt-2">
-            <li><strong>기간</strong> : {formatDate(booth.startDateTime)}-{formatDate(booth.endDateTime)}</li>
-            <li><strong>위치</strong> : {booth.location}</li>
-          </ul>
-        </div>
-
+        <BoothCard booth={booth} />
         {/* 부스 상세 정보 */}
         <div className="pt-4 border-t border-[#335533b3] space-y-2">
           <h1 className="text-xl font-bold">상세 정보</h1>

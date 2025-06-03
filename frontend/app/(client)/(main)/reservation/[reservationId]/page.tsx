@@ -141,6 +141,7 @@ export default function EditReservationPage() {
         location={booth.location}
         posterImageUrl={booth.posterImageUrl}
         likeCount={booth.likeCount}
+        boothId={booth.id}
       />
       <div className="relative p-4 space-y-6">
         <div>
