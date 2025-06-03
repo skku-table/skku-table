@@ -11,6 +11,10 @@ type LikeStore = {
   setBoothLikeCount: (boothId: number, count: number) => void
   fetchUserAndLikes: () => Promise<void>
 }
+type BoothLikeData = {
+  id: number
+  likeCount: number
+}
 
 export const boothLikeStore = create<LikeStore>((set) => ({
   userId: null,
@@ -48,9 +52,9 @@ export const boothLikeStore = create<LikeStore>((set) => ({
       const likesData = await likesRes.json()
 
       set({
-        likedBoothIds: likesData.map((f: any) => f.id),
+        likedBoothIds: likesData.map((f: BoothLikeData) => f.id),
         boothLikeCounts: Object.fromEntries(
-          likesData.map((f: any) => [f.id, f.likeCount])
+          likesData.map((f: BoothLikeData) => [f.id, f.likeCount])
         ),
       })
     } catch (e) {

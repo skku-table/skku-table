@@ -13,6 +13,12 @@ type LikeStore = {
   fetchUserAndLikes: () => Promise<void>
 }
 
+type FestivalLikeData = {
+  id: number
+  likeCount: number
+}
+
+
 export const useLikeStore = create<LikeStore>((set) => ({
   userId: null,
   likedFestivalIds: [],
@@ -49,9 +55,9 @@ export const useLikeStore = create<LikeStore>((set) => ({
       const likesData = await likesRes.json()
 
       set({
-        likedFestivalIds: likesData.map((f: any) => f.id),
+        likedFestivalIds: likesData.map((f: FestivalLikeData) => f.id),
         festivalLikeCounts: Object.fromEntries(
-          likesData.map((f: any) => [f.id, f.likeCount])
+          likesData.map((f: FestivalLikeData) => [f.id, f.likeCount])
         ),
       })
     } catch (e) {

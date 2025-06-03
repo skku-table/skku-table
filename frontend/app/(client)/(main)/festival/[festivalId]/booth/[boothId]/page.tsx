@@ -51,7 +51,7 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
   return (
     <>
       <Header isBackButton={true} title={booth.name} />
-      <div className="relative p-4 pt-16 space-y-6">
+      <div className="flex flex-col justify-center relative p-4 pt-16 space-y-6">
 
         {/* 포스터 이미지 + 하트 버튼 */}
         <BoothCard booth={booth}/>

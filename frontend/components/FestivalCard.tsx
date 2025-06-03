@@ -27,7 +27,7 @@ export function FestivalCard({ festival }: { festival: Festival }) {
     }
   }, [festival.id, festivalLikeCounts])
   return(
-    <div key={festival.id}>
+    <div>
         <div className="relative w-[290px] h-[290px] mx-auto">
           <Link href={`/festival/${festival.id}`}>
             <Image

@@ -29,12 +29,13 @@ export function BoothCard({booth}: {booth: Booth}) {
   return(
       <>
         {/* 포스터 이미지 + 하트 버튼 */}
-        <div className="relative w-full h-[270px]">
+        <div className="relative w-full">
           <Image
             src={booth.posterImageUrl}
             alt="부스 포스터"
-            fill
-            className="object-cover"
+            width={312}
+            height={312}
+            className="w-full rounded-lg"
           />
           <LikeBoothButton boothId={booth.id}/>
         </div>

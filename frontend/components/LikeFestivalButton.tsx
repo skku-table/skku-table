@@ -27,7 +27,7 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
     if (!userId) {
       fetchUserAndLikes()
     }
-  }, [userId])
+  }, [userId, fetchUserAndLikes])
 
   const isLiked = likedFestivalIds.includes(festivalId)
   const likeCount = festivalLikeCounts[festivalId] ?? 0
@@ -63,8 +63,6 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
     } catch (e) {
       console.error('좋아요 토글 실패:', e)
     } finally {
-      setLoading(false)
-      console.log('festivallikecounts:', festivalLikeCounts)
     }
   }
 

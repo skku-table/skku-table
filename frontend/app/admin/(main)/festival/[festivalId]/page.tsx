@@ -49,15 +49,7 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
       <>
           <Header isBackButton={true} title={festival.name}/>
           <div className="relative p-4 pt-16 space-y-6">
-              {/* 뒤로가기 & 제목 */}
-              
 
-              {/* 포스터 */}
-              {/* <img
-                  src={festival.posterImageUrl}
-                  alt="축제 포스터"
-                  className="w-full rounded-lg shadow"
-              /> */}
               <Image
                 src={festival.posterImageUrl}
                 alt="축제 포스터"

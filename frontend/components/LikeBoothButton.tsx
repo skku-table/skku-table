@@ -70,13 +70,13 @@ export default function LikeBoothButton({ boothId }: LikeButtonProps) {
   return (
     <button
       onClick={handleClick}
-      className="absolute top-3 right-3 p-0 bg-transparent border-none"
+      className="absolute top-1/15 right-1/15 p-0 bg-transparent border-none"
       style={{ lineHeight: 0 }}
       disabled={loading || userId === null}
     >
       <Icon
-        width={25}
-        height={25}
+        width={50}
+        height={50}
         style={{
           color: isLiked ? 'red' : 'white',
         }}
