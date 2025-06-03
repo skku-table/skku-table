@@ -3,69 +3,42 @@
 import { useState, useEffect } from 'react'
 import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5'
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials'
+import { useLikeStore } from '@/stores/useLikeStore'
 
 type LikeButtonProps = {
   festivalId: number
 }
 
 export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
-  const [likedFestivalIds, setLikedFestivalIds] = useState<number[]>([])
+  const {
+    userId,
+    likedFestivalIds,
+    festivalLikeCounts,
+    setLikedFestivalIds,
+    setFestivalLikeCount,
+    fetchUserAndLikes,
+  } = useLikeStore()
+
   const [loading, setLoading] = useState(false)
-  const [userId, setUserId] = useState<number | null>(null)
 
-  // 사용자 정보 가져오기 (클라이언트 사이드에서)
+
+  // 사용자 정보 및 좋아요 목록 가져오기
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-          method: 'GET',
-          credentials: 'include',
-        })
-
-        if (userRes.ok) {
-          const userData = await userRes.json()
-          setUserId(userData.id)
-        }
-      } catch {
-        console.error('사용자 정보 조회 실패')
-      }
-    }
-
-    fetchUser()
-  }, [])
-
-  // 좋아요 목록 가져오기
-  const fetchLikedFestivals = async (userId: number) => {
-    try {
-      const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/likes/festivals`, {
-        credentials: 'include',
-      })
-      if (res.ok) {
-        const data = await res.json()
-        const festivalIds = data.map((festival: { id: number }) => festival.id)
-        console.log('좋아요 목록:', festivalIds)
-        setLikedFestivalIds(festivalIds)
-      }
-    } catch {
-      console.error('좋아요 목록 조회 실패')
-    }
-  }
-
-  // 사용자 ID를 기준으로 좋아요 목록 가져오기
-  useEffect(() => {
-    if (userId !== null) {
-      fetchLikedFestivals(userId)
-      console.log('좋아요 목록 가져오기 완료:', likedFestivalIds)
+    if (!userId) {
+      fetchUserAndLikes()
     }
   }, [userId])
+
+  const isLiked = likedFestivalIds.includes(festivalId)
+  const likeCount = festivalLikeCounts[festivalId] ?? 0
+  const Icon = isLiked ? IoHeartSharp : IoHeartOutline
 
   // 좋아요 토글
   const handleClick = async () => {
     if (!userId) return
     setLoading(true)
-
     try {
-      const res = await fetch(
+      const res = await fetchWithCredentials(
         `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/likes/festivals/${festivalId}/toggle`,
         {
           method: 'POST',
@@ -74,25 +47,33 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
       )
 
       if (res.ok) {
-        // 좋아요 목록 다시 가져오기 (즉시 반영)
-        await fetchLikedFestivals(userId)
+        const data = await res.json()
+        const isNowLiked = data.isLiked
+
+        if (isNowLiked) {
+          setLikedFestivalIds([...likedFestivalIds, festivalId])
+        } else {
+          setLikedFestivalIds(likedFestivalIds.filter((id) => id !== festivalId))
+        }
+        setFestivalLikeCount(
+          festivalId,
+          isNowLiked ? likeCount + 1 : likeCount - 1
+        )
       }
-    } catch (err) {
-      console.error('좋아요 토글 실패:', err)
+    } catch (e) {
+      console.error('좋아요 토글 실패:', e)
     } finally {
       setLoading(false)
+      console.log('festivallikecounts:', festivalLikeCounts)
     }
   }
-
-  const isLiked = likedFestivalIds.includes(festivalId)
-  const Icon = isLiked ? IoHeartSharp : IoHeartOutline
 
   return (
     <button
       onClick={handleClick}
       className="absolute top-3 right-3 p-0 bg-transparent border-none"
       style={{ lineHeight: 0 }}
-      disabled={loading || userId === null}
+      disabled={loading}
     >
       <Icon
         width={25}

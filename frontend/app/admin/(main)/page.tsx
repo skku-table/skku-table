@@ -1,10 +1,6 @@
-import Image from "next/image";
-import LikeFestivalButton from "@/components/LikeFestivalButton";
-import { IoHeartSharp } from "react-icons/io5";
-import Link from "next/link";
 import Header from "@/components/Headers"
-import { formatDate } from "@/libs/utils";
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
+import { FestivalCard } from "@/components/FestivalCard";
 
 
 
@@ -67,34 +63,7 @@ export default async function Page() {
 
         <div className="flex flex-col items-center gap-6">
           {festivalsData.map((festival) => (
-            <div key={festival.id}>
-                <div className="relative w-[290px] h-[290px] mx-auto">
-                  <Link href={`/admin/festival/${festival.id}`}>
-                    <Image
-                      src={festival.posterImageUrl}
-                      alt="festival poster"
-                      fill
-                      className="rounded-xl object-cover cursor-pointer"
-                    />
-                  </Link>
-                  <LikeFestivalButton festivalId={festival.id}/>
-                </div>
-
-              <div className="mt-2">
-                <p className="text-lg font-bold">{festival.name}</p>
-                <p className="text-lg">
-                  {formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}
-                </p>
-                {/* <p className="flex items-center gap-1" style={{ fontSize: "15px", color: "rgba(0, 0, 0, 0.6)" }}>
-                  <IoHeartSharp style={{ color: "red" }} />
-                  40
-                </p> */}
-                <p className="flex items-center gap-1 text-[15px] text-black/60">
-                  <IoHeartSharp style={{ color: "red" }} />
-                  {festival.likeCount}
-                </p>
-              </div>
-            </div>
+            <FestivalCard key={festival.id} festival={festival} />
           ))}
         </div>
 

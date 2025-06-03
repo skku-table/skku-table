@@ -3,69 +3,42 @@
 import { useState, useEffect } from 'react'
 import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5'
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials'
+import { boothLikeStore } from '@/stores/boothLikeStores'
 
 type LikeButtonProps = {
   boothId: number
 }
 
 export default function LikeBoothButton({ boothId }: LikeButtonProps) {
-  const [likedBoothIds, setLikedBoothIds] = useState<number[]>([])
+  const {
+    userId,
+    likedBoothIds,
+    boothLikeCounts,
+    setLikedBoothIds,
+    setBoothLikeCount,
+    fetchUserAndLikes,
+  } = boothLikeStore()
+
   const [loading, setLoading] = useState(false)
-  const [userId, setUserId] = useState<number | null>(null)
 
-  // 사용자 정보 가져오기 (클라이언트 사이드에서)
+
+  // 사용자 정보 및 좋아요 목록 가져오기
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-          method: 'GET',
-          credentials: 'include',
-        })
-
-        if (userRes.ok) {
-          const userData = await userRes.json()
-          setUserId(userData.id)
-        }
-      } catch {
-        console.error('사용자 정보 조회 실패')
-      }
+    if (userId === null) {
+      fetchUserAndLikes()
     }
+  }, [userId, fetchUserAndLikes])
 
-    fetchUser()
-  }, [])
-
-  // 좋아요 목록 가져오기
-  const fetchLikedBooths = async (userId: number) => {
-    try {
-      const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/likes/booths`, {
-        credentials: 'include',
-      })
-      if (res.ok) {
-        const data = await res.json()
-        const boothIds = data.map((booth: { id: number }) => booth.id)
-        console.log('좋아요 목록:', boothIds)
-        setLikedBoothIds(boothIds)
-      }
-    } catch {
-      console.error('좋아요 목록 조회 실패')
-    }
-  }
-
-  // 사용자 ID를 기준으로 좋아요 목록 가져오기
-  useEffect(() => {
-    if (userId !== null) {
-      fetchLikedBooths(userId)
-      console.log('좋아요 목록 가져오기 완료:', likedBoothIds)
-    }
-  }, [userId])
+  const isLiked = likedBoothIds.includes(boothId)
+  const likeCount = boothLikeCounts[boothId] ?? 0
+  const Icon = isLiked ? IoHeartSharp : IoHeartOutline
 
   // 좋아요 토글
   const handleClick = async () => {
     if (!userId) return
     setLoading(true)
-
     try {
-      const res = await fetch(
+      const res = await fetchWithCredentials(
         `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/likes/booths/${boothId}/toggle`,
         {
           method: 'POST',
@@ -74,18 +47,25 @@ export default function LikeBoothButton({ boothId }: LikeButtonProps) {
       )
 
       if (res.ok) {
-        // 좋아요 목록 다시 가져오기 (즉시 반영)
-        await fetchLikedBooths(userId)
+        const data = await res.json()
+        const isNowLiked = data.isLiked
+
+        if (isNowLiked) {
+          setLikedBoothIds([...likedBoothIds, boothId])
+        } else {
+          setLikedBoothIds(likedBoothIds.filter((id) => id !== boothId))
+        }
+        setBoothLikeCount(
+          boothId,
+          isNowLiked ? likeCount + 1 : likeCount - 1
+        )
       }
-    } catch (err) {
-      console.error('좋아요 토글 실패:', err)
+    } catch (e) {
+      console.error('좋아요 토글 실패:', e)
     } finally {
       setLoading(false)
     }
   }
-
-  const isLiked = likedBoothIds.includes(boothId)
-  const Icon = isLiked ? IoHeartSharp : IoHeartOutline
 
   return (
     <button
