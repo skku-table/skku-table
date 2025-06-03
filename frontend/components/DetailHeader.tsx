@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { IoHeart } from 'react-icons/io5';
 import Header from '@/components/Headers';
-import LikeButton from '@/components/LikeButton';
+import LikeBoothButton from './LikeBoothButton';
 import { formatDate } from '@/libs/utils';
 interface CommonDetailHeaderProps {
   name: string;
@@ -12,6 +12,7 @@ interface CommonDetailHeaderProps {
   location: string;
   posterImageUrl: string;
   likeCount: number;
+  boothId: number;
 }
 
 export default function CommonDetailHeader({
@@ -21,6 +22,7 @@ export default function CommonDetailHeader({
   location,
   posterImageUrl,
   likeCount,
+  boothId, 
 }: CommonDetailHeaderProps) {
   return (
     <div>
@@ -38,11 +40,7 @@ export default function CommonDetailHeader({
             fill
             className="object-cover"
           />
-          <LikeButton
-            initialLiked={false}
-            size={25}
-            className="absolute top-2 right-2"
-          />
+          <LikeBoothButton boothId={boothId}/>
         </div>
 
         {/* 이름 + 좋아요 수 + 정보 */}

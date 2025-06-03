@@ -64,7 +64,7 @@ export default function RegisterBoothPage() {
   return (
     <>
         <Header isBackButton={true} title="신규 부스 등록" />
-        <div className="p-4 space-y-10">
+        <div className="p-4 mt-16 space-y-10">
 
         {/* 이미지 추가 */}
         <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">

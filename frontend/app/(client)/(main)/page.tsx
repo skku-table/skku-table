@@ -1,5 +1,5 @@
 import Image from "next/image";
-import LikeButton from "@/components/LikeButton";
+import LikeFestivalButton from "@/components/LikeFestivalButton";
 import { IoHeartSharp } from "react-icons/io5";
 import Link from "next/link";
 import Header from "@/components/Headers"
@@ -77,10 +77,7 @@ export default async function Page() {
                       className="rounded-xl object-cover cursor-pointer"
                     />
                   </Link>
-                  <LikeButton
-                    initialLiked={false}
-                    size={25}
-                  />
+                  <LikeFestivalButton festivalId={festival.id}/>
                 </div>
 
               <div className="mt-2">

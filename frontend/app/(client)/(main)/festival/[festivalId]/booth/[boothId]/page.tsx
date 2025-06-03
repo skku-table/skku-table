@@ -1,7 +1,7 @@
 import { IoHeart } from 'react-icons/io5';
 import Image from 'next/image';
 import Header from '@/components/Headers';
-import LikeButton from '@/components/LikeButton';
+import LikeBoothButton from '@/components/LikeBoothButton';
 import { formatDate } from '@/libs/utils';
 import Link from 'next/link';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
@@ -64,11 +64,7 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
             fill
             className="object-cover"
           />
-          <LikeButton
-            initialLiked={false}
-            size={25}
-            className="absolute top-2 right-2"
-          />
+          <LikeBoothButton boothId={booth.id}/>
         </div>
 
         {/* 부스 기본 정보 */}
