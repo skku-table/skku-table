@@ -11,10 +11,12 @@ import com.skkutable.service.CloudinaryService;
 import com.skkutable.service.FestivalService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -63,6 +65,26 @@ class BoothController {
 
     Booth booth = boothMapper.toEntity(dto);
     return boothService.createBooth(festivalId, booth);
+  }
+
+  @PatchMapping(value = "/{boothId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public Booth updateBoothImages(@PathVariable Long festivalId,
+                                 @PathVariable Long boothId,
+                                 @RequestParam(required = false) MultipartFile posterImage,
+                                 @RequestParam(required = false) MultipartFile eventImage) {
+    Map<String, MultipartFile> imageMap = new HashMap<>();
+    if (posterImage != null) imageMap.put("posterImage", posterImage);
+    if (eventImage != null) imageMap.put("eventImage", eventImage);
+
+    Map<String, String> urls = cloudinaryService.uploadMultipleImages(imageMap);
+    return boothService.updateImageUrls(festivalId, boothId, urls);
+  }
+
+  @DeleteMapping("/{boothId}/images")
+  public ResponseEntity<String> deleteBoothImages(@PathVariable Long festivalId,
+                                                  @PathVariable Long boothId) {
+    boothService.removeImageUrls(festivalId, boothId);
+    return ResponseEntity.ok("Booth image URLs removed");
   }
 
 

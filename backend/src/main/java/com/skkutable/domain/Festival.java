@@ -32,9 +32,11 @@ public class Festival {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Setter
   @Column(name="poster_image_url")
   private String posterImageUrl;
 
+  @Setter
   @Column(name="map_image_url")
   private String mapImageUrl;
 

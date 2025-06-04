@@ -43,9 +43,11 @@ public class Booth {
   @Builder.Default
   private Integer likeCount = 0;
 
+  @Setter
   @Column(name = "poster_image_url")
   private String posterImageUrl;
 
+  @Setter
   @Column(name = "event_image_url")
   private String eventImageUrl;
 

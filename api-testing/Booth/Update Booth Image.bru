@@ -1,0 +1,16 @@
+meta {
+  name: Update Booth Image
+  type: http
+  seq: 7
+}
+
+patch {
+  url: http://localhost:8080/festivals/1/booths/13/images
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  posterImage: @file(E:\Download\apple.jpg)
+  eventImage: @file(E:\Download\grape.jpg)
+}
