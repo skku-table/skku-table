@@ -6,11 +6,18 @@ import com.skkutable.dto.FestivalCreateDto;
 import com.skkutable.dto.FestivalPatchDto;
 import com.skkutable.mapper.FestivalMapper;
 import com.skkutable.service.BoothService;
+import com.skkutable.service.CloudinaryService;
 import com.skkutable.service.FestivalService;
 import jakarta.validation.Valid;
+
+import java.sql.Date;
 import java.util.List;
+import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,25 +29,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/festivals")
 class FestivalController {
   private final FestivalService festivalService;
   private final FestivalMapper festivalMapper;
+  private final CloudinaryService cloudinaryService;
 
   @Autowired
   FestivalController(FestivalService festivalService, BoothService boothService,
-      FestivalMapper festivalMapper) {
+                     FestivalMapper festivalMapper, CloudinaryService cloudinaryService) {
     this.festivalService = festivalService;
     this.festivalMapper = festivalMapper;
+    this.cloudinaryService = cloudinaryService;
   }
 
 
-  @PostMapping("/register")
+  @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public Festival registerFestival(@RequestBody @Valid FestivalCreateDto festivalCreateDto) {
-    return festivalService.createFestival(festivalMapper.toEntity(festivalCreateDto));
+  public Festival registerFestival(
+          @RequestParam String name,
+          @RequestParam(required = false) String description,
+          @RequestParam(required = false) String location,
+          @RequestParam Date startDate,
+          @RequestParam Date endDate,
+          @RequestParam MultipartFile posterImage,
+          @RequestParam MultipartFile mapImage) {
+
+    Map<String, String> urls = cloudinaryService.uploadMultipleImages(
+            Map.of("posterImage", posterImage, "mapImage", mapImage));
+
+    FestivalCreateDto dto = new FestivalCreateDto(name, description, location, startDate, endDate,
+            urls.get("posterImage"), urls.get("mapImage"));
+
+    return festivalService.createFestival(festivalMapper.toEntity(dto));
   }
 
   @GetMapping("{id}")
