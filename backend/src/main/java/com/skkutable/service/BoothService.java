@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,25 @@ public class BoothService {
       throw new BadRequestException("Festival ID and Booth data must be provided");
     }
     return boothRepository.createBooth(festivalId, booth);
+  }
+
+  @Transactional
+  public Booth updateImageUrls(Long festivalId, Long boothId, Map<String, String> urls) {
+    Booth booth = findBoothByIdAndFestivalId(boothId, festivalId);
+    if (urls.containsKey("posterImage")) {
+      booth.setPosterImageUrl(urls.get("posterImage"));
+    }
+    if (urls.containsKey("eventImage")) {
+      booth.setEventImageUrl(urls.get("eventImage"));
+    }
+    return booth;
+  }
+
+  @Transactional
+  public void removeImageUrls(Long festivalId, Long boothId) {
+    Booth booth = findBoothByIdAndFestivalId(boothId, festivalId);
+    booth.setPosterImageUrl(null);
+    booth.setEventImageUrl(null);
   }
 
   private void validateFestivalExists(Festival festival) {

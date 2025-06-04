@@ -6,6 +6,10 @@ meta {
 
 post {
   url: http://localhost:8080/images/upload
-  body: none
+  body: multipartForm
   auth: none
+}
+
+body:multipart-form {
+  file: @file(E:\Download\guitar.jpg)
 }

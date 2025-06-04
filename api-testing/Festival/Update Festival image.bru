@@ -1,0 +1,16 @@
+meta {
+  name: Update Festival image
+  type: http
+  seq: 10
+}
+
+patch {
+  url: http://localhost:8080/festivals/1/images
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  posterImage: @file(E:\Download\apple.jpg)
+  mapImage: @file(E:\Download\grape.jpg)
+}

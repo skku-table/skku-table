@@ -6,6 +6,17 @@ meta {
 
 post {
   url: http://localhost:8080/festivals/1/booths/register
-  body: none
+  body: multipartForm
   auth: none
+}
+
+body:multipart-form {
+  name: 햄버거 부스
+  host: 햄버거왕
+  location: 버거킹
+  description: 버거킹 최고
+  startDateTime: 2025-05-11T11:00:00
+  endDateTime: 2025-05-11T17:00:00
+  posterImage: @file(E:\바탕화면\이미지\옛날 겜 2.png)
+  eventImage: @file(E:\Download\guitar.jpg)
 }

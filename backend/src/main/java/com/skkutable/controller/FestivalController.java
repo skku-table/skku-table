@@ -11,6 +11,7 @@ import com.skkutable.service.FestivalService;
 import jakarta.validation.Valid;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,17 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -65,6 +58,24 @@ class FestivalController {
             urls.get("posterImage"), urls.get("mapImage"));
 
     return festivalService.createFestival(festivalMapper.toEntity(dto));
+  }
+
+  @PatchMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public Festival updateFestivalImages(@PathVariable Long id,
+                                       @RequestParam(required = false) MultipartFile posterImage,
+                                       @RequestParam(required = false) MultipartFile mapImage) {
+    Map<String, MultipartFile> imageMap = new HashMap<>();
+    if (posterImage != null) imageMap.put("posterImage", posterImage);
+    if (mapImage != null) imageMap.put("mapImage", mapImage);
+
+    Map<String, String> urls = cloudinaryService.uploadMultipleImages(imageMap);
+    return festivalService.updateImageUrls(id, urls);
+  }
+
+  @DeleteMapping("/{id}/images")
+  public ResponseEntity<String> deleteFestivalImages(@PathVariable Long id) {
+    festivalService.removeImageUrls(id);
+    return ResponseEntity.ok("Festival image URLs removed");
   }
 
   @GetMapping("{id}")

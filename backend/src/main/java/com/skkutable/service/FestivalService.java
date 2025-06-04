@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,6 +40,25 @@ public class FestivalService {
       throw new IllegalArgumentException("이미 같은 이름의 축제가 존재합니다: " + festival.getName());
     }
     return festivalRepository.save(festival);
+  }
+
+  @Transactional
+  public Festival updateImageUrls(Long id, Map<String, String> urls) {
+    Festival festival = findFestivalById(id);
+    if (urls.containsKey("posterImage")) {
+      festival.setPosterImageUrl(urls.get("posterImage"));
+    }
+    if (urls.containsKey("mapImage")) {
+      festival.setMapImageUrl(urls.get("mapImage"));
+    }
+    return festival;
+  }
+
+  @Transactional
+  public void removeImageUrls(Long id) {
+    Festival festival = findFestivalById(id);
+    festival.setPosterImageUrl(null);
+    festival.setMapImageUrl(null);
   }
 
   public List<Festival> findFestivals() {
