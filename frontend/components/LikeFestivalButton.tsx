@@ -21,7 +21,6 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
 
   const [loading, setLoading] = useState(false)
 
-
   // 사용자 정보 및 좋아요 목록 가져오기
   useEffect(() => {
     if (!userId) {
@@ -35,7 +34,11 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
 
   // 좋아요 토글
   const handleClick = async () => {
-    if (!userId) return
+    if (!userId) {
+      console.warn('userId 없음. 다시 fetch 시도')
+      await fetchUserAndLikes()
+      return
+    }
     setLoading(true)
     try {
       const res = await fetchWithCredentials(
@@ -63,21 +66,24 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
     } catch (e) {
       console.error('좋아요 토글 실패:', e)
     } finally {
+      setLoading(false)
     }
   }
 
   return (
     <button
       onClick={handleClick}
-      className="absolute top-3 right-3 p-0 bg-transparent border-none"
+      className="absolute top-3 right-3 p-0 w-1/8 h-1/8 bg-transparent border-none"
       style={{ lineHeight: 0 }}
       disabled={loading}
     >
       <Icon
-        width={25}
-        height={25}
+        width={125}
+        height={125}
         style={{
           color: isLiked ? 'red' : 'white',
+          width: '100%',
+          height: '100%',
         }}
       />
     </button>

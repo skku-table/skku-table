@@ -70,7 +70,7 @@ export default function LikeBoothButton({ boothId }: LikeButtonProps) {
   return (
     <button
       onClick={handleClick}
-      className="absolute top-1/15 right-1/15 p-0 bg-transparent border-none"
+      className="absolute top-1/15 right-1/15 p-0 w-1/8 h-1/8 bg-transparent border-none"
       style={{ lineHeight: 0 }}
       disabled={loading || userId === null}
     >
@@ -79,6 +79,8 @@ export default function LikeBoothButton({ boothId }: LikeButtonProps) {
         height={50}
         style={{
           color: isLiked ? 'red' : 'white',
+          width: '100%',
+          height: '100%',
         }}
       />
     </button>

@@ -1,10 +1,12 @@
 // app/(client)/(main)/[festivalId]/page.tsx
-
 import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
 import Image from "next/image";
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
+import LikeFestivalButton from "@/components/LikeFestivalButton";
+
+
 
 // type Props = {
 //     params: {
@@ -49,21 +51,23 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
       <>
           <Header isBackButton={true} title={festival.name}/>
           <div className="flex flex-col justify-center relative p-4 pt-16 space-y-6">
-
-
-                <Image
-                  src={festival.posterImageUrl}
-                  alt="축제 포스터"
-                  width={312}
-                  height={312}
-                  className="w-full rounded-lg"
-                />
+                <div className="relative">
+                  <Image
+                    src={festival.posterImageUrl}
+                    alt="축제 포스터"
+                    width={312}
+                    height={312}
+                    className="w-full rounded-lg"
+                  />
+                  <LikeFestivalButton festivalId={festival.id}/>
+                </div>
 
               {/* 간단 정보 */}
               <div>
                   <h2 className="text-xl font-semibold mt-4">{festival.description}</h2>
                   <p className="mt-1">📅 {formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</p>
                   <p>📍 {festival.location}</p>
+
               </div>
 
               {/* 부스 목록 */}
