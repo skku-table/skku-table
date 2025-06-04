@@ -1,0 +1,21 @@
+meta {
+  name: Register Festival With Image
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://localhost:8080/festivals/register
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  name: 성균관대 대동제
+  description: 성균관대 대동제입니다
+  location: 디도앞 잔디밭
+  startDate: 2025-05-10
+  endDate: 2025-05-13
+  posterImage: @file(E:\Download\guitar.jpg)
+  mapImage: @file(E:\바탕화면\이미지\꼴등.PNG)
+}
