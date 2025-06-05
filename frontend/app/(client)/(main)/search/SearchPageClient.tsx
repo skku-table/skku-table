@@ -100,7 +100,7 @@ export default function SearchPage() {
       setFestivals(allFestivals);
       return;
     }
-    const selected = selectedDate.toISOString().slice(0, 10); // yyyy-mm-dd
+    const selected = selectedDate.toLocaleDateString('sv-SE'); // yyyy-mm-dd
     const filtered = allFestivals.filter((festival) => {
       const start = festival.startDate.slice(0, 10);
       const end = festival.endDate.slice(0, 10);
