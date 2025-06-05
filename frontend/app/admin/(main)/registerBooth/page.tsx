@@ -29,8 +29,8 @@ export default function RegisterBoothPage() {
     description: '',
     startDateTime: '',
     endDateTime: '',
-    posterImageUrl: '/src/booth1.png',
-    eventImageUrl: '/src/booth1_event1.png',
+    posterImage: '',
+    eventImage: '',
   })
 
   useEffect(() => {
@@ -46,7 +46,40 @@ export default function RegisterBoothPage() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'posterImage' | 'eventImage'
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    console.log('CLOUD_NAME:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME)
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!)
+  
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
+  
+    const data = await res.json()
+    if (data.secure_url) {
+      setForm((prev) => ({
+        ...prev,
+        [field]: data.secure_url,
+      }))
+    } else {
+      alert('이미지 업로드에 실패했습니다.')
+    }
+  }
+  
+
   const handleSubmit = async () => {
+    console.log("form:", form)
     const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,9 +100,15 @@ export default function RegisterBoothPage() {
         <div className="p-4 mt-16 space-y-10">
 
         {/* 이미지 추가 */}
-        <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
+        {/* <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
             + 이미지 추가
-        </div>
+        </div> */}
+        <p className="text-base font-semibold">포스터 이미지 등록</p>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleImageChange(e, 'posterImage')}
+        />
 
         {/* 축제 선택 */}
         <div>
@@ -120,10 +159,12 @@ export default function RegisterBoothPage() {
         />
 
         {/* 이미지 URL */}
-        <p className="text-base font-semibold">이벤트 이미지 등록</p>
-        <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
-            + 이미지 추가
-        </div>
+        <p className="text-base font-semibold mt-4">이벤트 이미지 등록</p>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleImageChange(e, 'eventImage')}
+        />
 
 
         <button
