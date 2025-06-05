@@ -21,6 +21,8 @@ import {
 export default function RegisterBoothPage() {
   const router = useRouter()
   const [festivals, setFestivals] = useState<Festival[]>([])
+  const [previewEventUrl, setPreviewEventUrl] = useState<string | null>(null)
+  const [previewBoothUrl, setPreviewBoothUrl] = useState<string | null>(null)
   const [form, setForm] = useState({
     festivalId: '',
     name: '',
@@ -49,10 +51,19 @@ export default function RegisterBoothPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target
     if (files && files[0]) {
+      const file = files[0]
       setForm(prev => ({
         ...prev,
-        [name]: files[0],
+        [name]: file,
       }))
+      if (name === 'eventImage') {
+        const url = URL.createObjectURL(file)
+        setPreviewEventUrl(url)
+      }
+      if (name === 'posterImage') {
+        const url = URL.createObjectURL(file)
+        setPreviewBoothUrl(url)
+      }
     }
   }
   
@@ -91,12 +102,28 @@ export default function RegisterBoothPage() {
         <div className="p-4 mt-16 space-y-10">
 
         {/* 이미지 추가 */}
-        {/* <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
-            + 이미지 추가
-        </div> */}
         <div>
-          <label className="font-semibold">포스터 이미지</label>
-          <input type="file" accept="image/*" name="posterImage" onChange={handleImageChange} />
+          <label className="text-base font-semibold block mb-2">부스 이미지</label>
+          <label htmlFor="posterImage" className="cursor-pointer w-full h-40 bg-gray-100 border-2 border-dashed rounded-lg flex flex-col items-center justify-center hover:bg-gray-200 text-gray-500 overflow-hidden">
+            {previewBoothUrl ? (
+              <img src={previewBoothUrl} alt="미리보기" className="object-contain w-full h-full" />
+            ) : (
+              <>
+                + 이미지 선택
+                {form.posterImage && (
+                  <p className="text-sm text-black mt-2">{form.posterImage.name}</p>
+                )}
+              </>
+            )}
+          </label>
+          <input
+            id="posterImage"
+            name="posterImage"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
         </div>
 
 
@@ -150,9 +177,29 @@ export default function RegisterBoothPage() {
 
         {/* 이미지 URL */}
         <div>
-          <label className="font-semibold">이벤트 이미지</label>
-          <input type="file" accept="image/*" name="eventImage" onChange={handleImageChange} />
+          <label className="text-base font-semibold block mb-2">이벤트 이미지</label>
+          <label htmlFor="eventImage" className="cursor-pointer w-full h-40 bg-gray-100 border-2 border-dashed rounded-lg flex flex-col items-center justify-center hover:bg-gray-200 text-gray-500 overflow-hidden">
+            {previewEventUrl ? (
+              <img src={previewEventUrl} alt="미리보기" className="object-contain w-full h-full" />
+            ) : (
+              <>
+                + 이미지 선택
+                {form.eventImage && (
+                  <p className="text-sm text-black mt-2">{form.eventImage.name}</p>
+                )}
+              </>
+            )}
+          </label>
+          <input
+            id="eventImage"
+            name="eventImage"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
         </div>
+
 
 
         <button
