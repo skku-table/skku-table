@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+	implementation 'org.flywaydb:flyway-core:11.9.1'
 
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
