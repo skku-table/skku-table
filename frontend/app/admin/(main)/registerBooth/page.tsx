@@ -29,8 +29,8 @@ export default function RegisterBoothPage() {
     description: '',
     startDateTime: '',
     endDateTime: '',
-    posterImage: '',
-    eventImage: '',
+    posterImage: null as File | null,
+    eventImage: null as File | null,
   })
 
   useEffect(() => {
@@ -46,53 +46,44 @@ export default function RegisterBoothPage() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleImageChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: 'posterImage' | 'eventImage'
-  ) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    console.log('CLOUD_NAME:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME)
-
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!)
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target
+    if (files && files[0]) {
+      setForm(prev => ({
+        ...prev,
+        [name]: files[0],
+      }))
+    }
+  }
   
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+
+  const handleSubmit = async () => {
+    const formData = new FormData()
+    formData.append('name', form.name)
+    formData.append('host', form.host)
+    formData.append('location', form.location)
+    formData.append('description', form.description)
+    formData.append('startDateTime', form.startDateTime)
+    formData.append('endDateTime', form.endDateTime)
+    if (form.posterImage) formData.append('posterImage', form.posterImage)
+    if (form.eventImage) formData.append('eventImage', form.eventImage)
+  
+    const res = await fetchWithCredentials(
+      `${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`,
       {
         method: 'POST',
         body: formData,
       }
     )
   
-    const data = await res.json()
-    if (data.secure_url) {
-      setForm((prev) => ({
-        ...prev,
-        [field]: data.secure_url,
-      }))
+    if (res.ok) {
+      alert('부스 등록 완료!')
+      router.push('/admin/manageBooth')
     } else {
-      alert('이미지 업로드에 실패했습니다.')
+      alert('부스 등록 실패')
     }
   }
   
-
-  const handleSubmit = async () => {
-    console.log("form:", form)
-    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-
-    if (res.ok) {
-      alert('부스가 성공적으로 등록되었습니다.')
-      router.push('/admin/manageBooth') // 혹은 부스 리스트로 이동
-    } else {
-      alert('등록 실패!')
-    }
-  }
 
   return (
     <>
@@ -103,12 +94,11 @@ export default function RegisterBoothPage() {
         {/* <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
             + 이미지 추가
         </div> */}
-        <p className="text-base font-semibold">포스터 이미지 등록</p>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageChange(e, 'posterImage')}
-        />
+        <div>
+          <label className="font-semibold">포스터 이미지</label>
+          <input type="file" accept="image/*" name="posterImage" onChange={handleImageChange} />
+        </div>
+
 
         {/* 축제 선택 */}
         <div>
@@ -159,12 +149,10 @@ export default function RegisterBoothPage() {
         />
 
         {/* 이미지 URL */}
-        <p className="text-base font-semibold mt-4">이벤트 이미지 등록</p>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageChange(e, 'eventImage')}
-        />
+        <div>
+          <label className="font-semibold">이벤트 이미지</label>
+          <input type="file" accept="image/*" name="eventImage" onChange={handleImageChange} />
+        </div>
 
 
         <button
