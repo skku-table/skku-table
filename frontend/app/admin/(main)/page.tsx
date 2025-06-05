@@ -35,26 +35,12 @@ type FestivalsData = {
 export default async function Page() {
   // 상태로 변경
   const res= await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals`);
+  if (!res.ok) {
+    console.error('Failed to fetch:', res.status)
+    return null
+  }
   const festivalsData: FestivalsData = await res.json();
     
-
-  // 좋아요 토글 함수
-  // const toggleLike = (festivalId: number) => {
-  //   setFestivals(prevFestivals =>
-  //     prevFestivals.map(festival =>
-  //       festival.id === festivalId
-  //         ? {
-  //             ...festival,
-  //             liked: !festival.liked,
-  //             likeCount: festival.liked
-  //               ? festival.likeCount - 1
-  //               : festival.likeCount + 1,
-  //           }
-  //         : festival
-  //     )
-  //   );
-  // };
-
   return (
     <>
       <Header isBackButton={false} title="Current Festivals"/>
