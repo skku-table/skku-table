@@ -7,6 +7,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 import { FestivalCard } from '@/components/FestivalCard';
+import Header from '@/components/Headers';
 
 
 type Booth = {
@@ -95,11 +96,15 @@ export default function SearchPage() {
     fetchFestivals();
   }, [query]);
 
-  useEffect(() => {
-    if (!selectedDate) {
-      setFestivals(allFestivals);
-      return;
-    }
+
+    useEffect(() => {
+      // 검색 중이면 날짜 필터링 로직 실행하지 않음
+      if (isSearching) return;
+
+      if (!selectedDate) {
+        setFestivals(allFestivals);
+        return;
+      }
     const selected = selectedDate.toLocaleDateString('sv-SE'); // yyyy-mm-dd
     const filtered = allFestivals.filter((festival) => {
       const start = festival.startDate.slice(0, 10);
@@ -107,11 +112,12 @@ export default function SearchPage() {
       return selected >= start && selected <= end;
     });
     setFestivals(filtered);
-  }, [selectedDate, allFestivals]);
+  }, [selectedDate, allFestivals, isSearching]);
 
   return (
-    <main className="p-4 space-y-6">
-      <h1 className="text-xl font-bold">Search</h1>
+    <>
+    <Header isBackButton={isSearching} title="Search" />
+    <div className="flex flex-col justify-center relative p-4 pt-16 space-y-6">
 
       {/* 검색창 */}
       <div
@@ -187,6 +193,7 @@ export default function SearchPage() {
           <p className="text-center text-gray-500 mt-10 text-base">검색 결과가 없습니다.</p>
         )}
       </div>
-    </main>
+      </div>
+    </>
   );
 }
