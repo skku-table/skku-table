@@ -45,12 +45,12 @@ class BoothController {
           @RequestParam(required = false) String description,
           @RequestParam LocalDateTime startDateTime,
           @RequestParam LocalDateTime endDateTime,
-          @RequestParam String posterImage,
-          @RequestParam String eventImage
+          @RequestParam MultipartFile posterImage,
+          @RequestParam MultipartFile eventImage
   ) {
-    // Map<String, String> urls = cloudinaryService.uploadMultipleImages(
-    //         Map.of("posterImage", posterImage, "eventImage", eventImage)
-    // );
+    Map<String, String> urls = cloudinaryService.uploadMultipleImages(
+            Map.of("posterImage", posterImage, "eventImage", eventImage)
+    );
 
     BoothCreateDto dto = new BoothCreateDto();
     dto.setFestivalId(festivalId);
@@ -60,8 +60,8 @@ class BoothController {
     dto.setDescription(description);
     dto.setStartDateTime(startDateTime);
     dto.setEndDateTime(endDateTime);
-    dto.setPosterImageUrl(posterImage);
-    dto.setEventImageUrl(eventImage);
+    dto.setPosterImageUrl(urls.get("posterImage"));
+    dto.setEventImageUrl(urls.get("eventImage"));
 
     Booth booth = boothMapper.toEntity(dto);
     return boothService.createBooth(festivalId, booth);
