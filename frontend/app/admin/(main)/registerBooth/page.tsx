@@ -21,6 +21,8 @@ import {
 export default function RegisterBoothPage() {
   const router = useRouter()
   const [festivals, setFestivals] = useState<Festival[]>([])
+  const [previewEventUrl, setPreviewEventUrl] = useState<string | null>(null)
+  const [previewBoothUrl, setPreviewBoothUrl] = useState<string | null>(null)
   const [form, setForm] = useState({
     festivalId: '',
     name: '',
@@ -29,8 +31,8 @@ export default function RegisterBoothPage() {
     description: '',
     startDateTime: '',
     endDateTime: '',
-    posterImageUrl: '/src/booth1.png',
-    eventImageUrl: '/src/booth1_event1.png',
+    posterImage: null as File | null,
+    eventImage: null as File | null,
   })
 
   useEffect(() => {
@@ -46,20 +48,53 @@ export default function RegisterBoothPage() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = async () => {
-    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-
-    if (res.ok) {
-      alert('부스가 성공적으로 등록되었습니다.')
-      router.push('/admin/manageBooth') // 혹은 부스 리스트로 이동
-    } else {
-      alert('등록 실패!')
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target
+    if (files && files[0]) {
+      const file = files[0]
+      setForm(prev => ({
+        ...prev,
+        [name]: file,
+      }))
+      if (name === 'eventImage') {
+        const url = URL.createObjectURL(file)
+        setPreviewEventUrl(url)
+      }
+      if (name === 'posterImage') {
+        const url = URL.createObjectURL(file)
+        setPreviewBoothUrl(url)
+      }
     }
   }
+  
+
+  const handleSubmit = async () => {
+    const formData = new FormData()
+    formData.append('name', form.name)
+    formData.append('host', form.host)
+    formData.append('location', form.location)
+    formData.append('description', form.description)
+    formData.append('startDateTime', form.startDateTime)
+    formData.append('endDateTime', form.endDateTime)
+    if (form.posterImage) formData.append('posterImage', form.posterImage)
+    if (form.eventImage) formData.append('eventImage', form.eventImage)
+  
+    const res = await fetchWithCredentials(
+      `${process.env.NEXT_PUBLIC_API_URL}/festivals/${form.festivalId}/booths/register`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
+  
+    if (res.ok) {
+      alert('부스 등록 완료!')
+      router.push('/admin/manageBooth')
+    } else {
+      alert('부스 등록 실패')
+    }
+  }
+  
 
   return (
     <>
@@ -67,9 +102,30 @@ export default function RegisterBoothPage() {
         <div className="p-4 mt-16 space-y-10">
 
         {/* 이미지 추가 */}
-        <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
-            + 이미지 추가
+        <div>
+          <label className="text-base font-semibold block mb-2">부스 이미지</label>
+          <label htmlFor="posterImage" className="cursor-pointer w-full h-40 bg-gray-100 border-2 border-dashed rounded-lg flex flex-col items-center justify-center hover:bg-gray-200 text-gray-500 overflow-hidden">
+            {previewBoothUrl ? (
+              <img src={previewBoothUrl} alt="미리보기" className="object-contain w-full h-full" />
+            ) : (
+              <>
+                + 이미지 선택
+                {form.posterImage && (
+                  <p className="text-sm text-black mt-2">{form.posterImage.name}</p>
+                )}
+              </>
+            )}
+          </label>
+          <input
+            id="posterImage"
+            name="posterImage"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
         </div>
+
 
         {/* 축제 선택 */}
         <div>
@@ -120,10 +176,30 @@ export default function RegisterBoothPage() {
         />
 
         {/* 이미지 URL */}
-        <p className="text-base font-semibold">이벤트 이미지 등록</p>
-        <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-lg rounded">
-            + 이미지 추가
+        <div>
+          <label className="text-base font-semibold block mb-2">이벤트 이미지</label>
+          <label htmlFor="eventImage" className="cursor-pointer w-full h-40 bg-gray-100 border-2 border-dashed rounded-lg flex flex-col items-center justify-center hover:bg-gray-200 text-gray-500 overflow-hidden">
+            {previewEventUrl ? (
+              <img src={previewEventUrl} alt="미리보기" className="object-contain w-full h-full" />
+            ) : (
+              <>
+                + 이미지 선택
+                {form.eventImage && (
+                  <p className="text-sm text-black mt-2">{form.eventImage.name}</p>
+                )}
+              </>
+            )}
+          </label>
+          <input
+            id="eventImage"
+            name="eventImage"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
+          />
         </div>
+
 
 
         <button
