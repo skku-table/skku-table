@@ -3,7 +3,6 @@ spring:
     name: skku-table-backend
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/skku-table}
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 1234
@@ -11,8 +10,14 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate  # Flyway가 스키마를 관리하므로 validate로 변경
       format_sql: true
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true  # 기존 DB가 있을 경우 필요
+    locations: classpath:db/migration  # 기본은 마이그레이션만
+    baseline-version: 0  # 기존 스키마를 버전 0으로 설정
 
 server:
   forward-headers-strategy: native
