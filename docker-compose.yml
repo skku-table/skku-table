@@ -33,7 +33,7 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: skku-table
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - skku-table-database:/var/lib/mysql
     ports:
