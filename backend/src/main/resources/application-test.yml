@@ -3,7 +3,7 @@ spring:
     active: test
   
   datasource:
-    url: jdbc:mysql://localhost:3306/skku-table-test
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/skku-table-test}
     username: root
     password: 1234
   
