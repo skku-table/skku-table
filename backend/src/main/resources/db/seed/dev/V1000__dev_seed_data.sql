@@ -3,7 +3,7 @@
 -- Note: Version 1000+ is used for seed data to avoid conflicts with schema migrations
 
 -- Insert test users
--- passowrd: password123
+-- password: password123
 INSERT INTO user (name, email, password, role, created_at, updated_at) VALUES
                                                                            ('김철수', 'user1@skku.edu', '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO', 'USER', NOW(), NOW()), -- password: password123
                                                                            ('이영희', 'user2@skku.edu', '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO', 'USER', NOW(), NOW()),
