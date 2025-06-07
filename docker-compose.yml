@@ -57,9 +57,9 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev # 필요한 프로파일 설정 (예: 개발 환경)
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/skku-table
-      CLOUDINARY_CLOUD_NAME: "diwui4rkj"
-      CLOUDINARY_API_KEY: "225197146453546"
-      CLOUDINARY_API_SECRET: "liDFspFr6JKJeUlGf_DkZUtaoUo"
+      CLOUDINARY_CLOUD_NAME: ${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_AP|_KEY: SINEXT_PUBLIC_CLOUDINARY_APIKEY}
+      CLOUDINARY_API SECRET: ${NEXT_PUBLIC_CLOUDINARY_AP|SECRET}
     networks:
       - web
 
