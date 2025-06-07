@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: prod
+  
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: false  # 프로덕션에서는 false
+    locations: classpath:db/migration  # prod에서는 seed 데이터 제외
+    validate-on-migrate: true
+
+logging:
+  level:
+    root: WARN
+    com.skkutable: INFO
