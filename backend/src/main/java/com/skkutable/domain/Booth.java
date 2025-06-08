@@ -39,6 +39,7 @@ public class Booth {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by")
+  @JsonBackReference
   private User createdBy;
 
   private String name;
