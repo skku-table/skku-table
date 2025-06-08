@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -47,6 +49,7 @@ class FestivalController {
 
   @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasRole('ADMIN')")
   public Festival registerFestival(
       @RequestParam String name,
       @RequestParam(required = false) String description,
@@ -54,7 +57,8 @@ class FestivalController {
       @RequestParam Date startDate,
       @RequestParam Date endDate,
       @RequestParam MultipartFile posterImage,
-      @RequestParam MultipartFile mapImage) {
+      @RequestParam MultipartFile mapImage,
+      @AuthenticationPrincipal(expression = "username") String email) {
 
     Map<String, String> urls = cloudinaryService.uploadMultipleImages(
         Map.of("posterImage", posterImage, "mapImage", mapImage));
@@ -62,7 +66,7 @@ class FestivalController {
     FestivalCreateDto dto = new FestivalCreateDto(name, description, location, startDate, endDate,
         urls.get("posterImage"), urls.get("mapImage"));
 
-    return festivalService.createFestival(festivalMapper.toEntity(dto));
+    return festivalService.createFestival(festivalMapper.toEntity(dto), email);
   }
 
   @PatchMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

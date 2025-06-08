@@ -1,7 +1,9 @@
 package com.skkutable.controller;
 
 import com.skkutable.domain.User;
+import com.skkutable.dto.HostContentResponseDto;
 import com.skkutable.dto.UserDto;
+import com.skkutable.service.HostContentService;
 import com.skkutable.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -9,6 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +28,12 @@ public class UserController {
 
   private final String REDACTED = "[REDACTED]";
   private final UserService userService;
+  private final HostContentService hostContentService;
 
   @Autowired
-  public UserController(UserService userService) {
+  public UserController(UserService userService, HostContentService hostContentService) {
     this.userService = userService;
+    this.hostContentService = hostContentService;
   }
 
   // Admin용으로 모든 사용자 조회
@@ -68,5 +73,14 @@ public class UserController {
   public UserDto getUserById(@PathVariable("id") Long userId) {
     User user = userService.findOne(userId);
     return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
+  }
+
+  /* 호스트가 생성한 부스 조회 */
+  @GetMapping("/me/booths")
+  @PreAuthorize("hasRole('HOST') or hasRole('ADMIN')")
+  public ResponseEntity<HostContentResponseDto> getHostContent(
+      @AuthenticationPrincipal(expression = "username") String email) {
+    HostContentResponseDto response = hostContentService.getHostContent(email);
+    return ResponseEntity.ok(response);
   }
 }
