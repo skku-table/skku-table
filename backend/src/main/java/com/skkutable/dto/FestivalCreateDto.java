@@ -3,7 +3,6 @@ package com.skkutable.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

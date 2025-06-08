@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReservationJpaRepository extends JpaRepository<Reservation, Long>,
     ReservationRepository, ReservationRepositoryCustom {
+
   @Override
   List<Reservation> findByBoothFestivalIdAndBoothId(Long festivalId, Long boothId);
 }

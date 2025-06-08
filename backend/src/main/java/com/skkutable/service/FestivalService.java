@@ -4,14 +4,12 @@ import com.skkutable.domain.Festival;
 import com.skkutable.dto.FestivalPatchDto;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.FestivalRepository;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Transactional

@@ -1,22 +1,17 @@
 package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
+import com.skkutable.domain.Festival;
 import com.skkutable.dto.BoothPatchDto;
 import com.skkutable.exception.BadRequestException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
-import com.skkutable.domain.Festival;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import java.nio.file.ReadOnlyFileSystemException;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -70,7 +65,7 @@ public class BoothService {
     return boothRepository.findById(boothId).
         orElseThrow((
             () -> new ResourceNotFoundException("Booth not found: " + boothId)
-            ));
+        ));
   }
 
   public Booth save(Booth booth) {
@@ -87,10 +82,12 @@ public class BoothService {
 
   public Booth findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
     return boothRepository.findByIdAndFestivalId(boothId, festivalId).
-        orElseThrow(() -> new ResourceNotFoundException("Booth not found with id " + boothId + " in festival " + festivalId));
+        orElseThrow(() -> new ResourceNotFoundException(
+            "Booth not found with id " + boothId + " in festival " + festivalId));
   }
 
-  public Booth patchUpdateBooth(Long festivalId, Long boothId, BoothPatchDto dto, FestivalService festivalService) {
+  public Booth patchUpdateBooth(Long festivalId, Long boothId, BoothPatchDto dto,
+      FestivalService festivalService) {
 
     if (festivalId == null || boothId == null) {
       throw new BadRequestException("Festival ID and Booth ID must be provided");

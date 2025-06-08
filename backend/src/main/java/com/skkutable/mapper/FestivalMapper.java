@@ -7,5 +7,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface FestivalMapper {
+
   Festival toEntity(FestivalCreateDto dto);
 }

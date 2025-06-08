@@ -8,7 +8,6 @@ import com.skkutable.exception.ConflictException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,10 +36,10 @@ public class UserService {
 
     return userRepository.save(
         new User(
-        dto.getName(),
-        dto.getEmail(),
-        passwordEncoder.encode(dto.getPassword()),
-        dto.getRole()));
+            dto.getName(),
+            dto.getEmail(),
+            passwordEncoder.encode(dto.getPassword()),
+            dto.getRole()));
   }
 
   private void validateDuplicateUser(String email) {
@@ -51,16 +50,18 @@ public class UserService {
   }
 
 
-  public List<User> findUsers() { return userRepository.findAll();}
+  public List<User> findUsers() {
+    return userRepository.findAll();
+  }
 
   public User findOne(Long userId) {
     return userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
   }
 
   public User findOne(String email) {
     return userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
   }
 
 }

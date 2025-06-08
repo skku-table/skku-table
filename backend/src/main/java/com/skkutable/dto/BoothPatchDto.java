@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)  // null 필드는 JSON에 아예 직렬화하지 않음
 public class BoothPatchDto {
+
   private Long festivalId;
   private String name;
   private String host;

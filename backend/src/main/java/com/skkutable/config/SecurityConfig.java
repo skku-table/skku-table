@@ -1,6 +1,9 @@
 package com.skkutable.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.skkutable.service.CustomUserDetailsService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +17,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.List;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
   private final CustomUserDetailsService userDetailsService;
 
   @Bean
@@ -52,33 +53,34 @@ public class SecurityConfig {
             .loginProcessingUrl("/users/login")      // POST
             .usernameParameter("email")              // ← email 로 로그인
             .passwordParameter("password")
-            .successHandler((req,res,auth) -> res.setStatus(200))
-            .failureHandler((req,res,ex) -> res.sendError(401, "Login Failed"))
+            .successHandler((req, res, auth) -> res.setStatus(200))
+            .failureHandler((req, res, ex) -> res.sendError(401, "Login Failed"))
             .permitAll())
 
         /* 로그아웃 */
         .logout(out -> out
             .logoutUrl("/users/logout")              // POST /users/logout
-            .logoutSuccessHandler((req,res,auth)->res.setStatus(200))
+            .logoutSuccessHandler((req, res, auth) -> res.setStatus(200))
             .deleteCookies("JSESSIONID"));
 
     http.userDetailsService(userDetailsService);
     return http.build();
   }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-      CorsConfiguration config = new CorsConfiguration();
-      config.setAllowedOrigins(List.of("http://localhost:3000", "https://skkutable.com"));
-      config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-      config.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-admin-secret"));
-      config.setExposedHeaders(List.of("*"));
-      config.setAllowCredentials(true); // ✅ 핵심
-      config.setMaxAge(3600L);
 
-      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      source.registerCorsConfiguration("/**", config);
-      return source;
-    }
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:3000", "https://skkutable.com"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-admin-secret"));
+    config.setExposedHeaders(List.of("*"));
+    config.setAllowCredentials(true); // ✅ 핵심
+    config.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
 
   @Bean
   public PasswordEncoder passwordEncoder() {

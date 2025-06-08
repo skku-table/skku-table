@@ -15,8 +15,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -25,7 +28,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Builder
 @Entity
-@Table(name="festival")
+@Table(name = "festival")
 public class Festival {
 
   @Id
@@ -33,26 +36,26 @@ public class Festival {
   private Long id;
 
   @Setter
-  @Column(name="poster_image_url")
+  @Column(name = "poster_image_url")
   private String posterImageUrl;
 
   @Setter
-  @Column(name="map_image_url")
+  @Column(name = "map_image_url")
   private String mapImageUrl;
 
   private String name;
 
-  @Column(name="start_date")
+  @Column(name = "start_date")
   private Date startDate;
 
-  @Column(name="end_date")
+  @Column(name = "end_date")
   private Date endDate;
 
   private String location;
   private String description;
 
   @Setter
-  @Column(name="like_count")
+  @Column(name = "like_count")
   @Builder.Default
   private Integer likeCount = 0;
 
@@ -62,11 +65,11 @@ public class Festival {
   private List<Booth> booths = new ArrayList<>();
 
   @CreationTimestamp
-  @Column(name = "created_at", columnDefinition="TIMESTAMP")
+  @Column(name = "created_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updated_at", columnDefinition="TIMESTAMP")
+  @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime UpdatedAt;
 
   public void addBooth(Booth booth) {
@@ -75,14 +78,30 @@ public class Festival {
   }
 
   public void applyPatch(FestivalPatchDto dto) {
-    if (dto.getName()            != null) this.name          = dto.getName();
-    if (dto.getDescription()     != null) this.description   = dto.getDescription();
-    if (dto.getLocation()        != null) this.location      = dto.getLocation();
-    if (dto.getStartDate()       != null) this.startDate     = dto.getStartDate();
-    if (dto.getEndDate()         != null) this.endDate       = dto.getEndDate();
-    if (dto.getLikeCount()       != null) this.likeCount   = dto.getLikeCount();
-    if (dto.getPosterImageUrl()  != null) this.posterImageUrl= dto.getPosterImageUrl();
-    if (dto.getMapImageUrl()     != null) this.mapImageUrl   = dto.getMapImageUrl();
+    if (dto.getName() != null) {
+      this.name = dto.getName();
+    }
+    if (dto.getDescription() != null) {
+      this.description = dto.getDescription();
+    }
+    if (dto.getLocation() != null) {
+      this.location = dto.getLocation();
+    }
+    if (dto.getStartDate() != null) {
+      this.startDate = dto.getStartDate();
+    }
+    if (dto.getEndDate() != null) {
+      this.endDate = dto.getEndDate();
+    }
+    if (dto.getLikeCount() != null) {
+      this.likeCount = dto.getLikeCount();
+    }
+    if (dto.getPosterImageUrl() != null) {
+      this.posterImageUrl = dto.getPosterImageUrl();
+    }
+    if (dto.getMapImageUrl() != null) {
+      this.mapImageUrl = dto.getMapImageUrl();
+    }
   }
 
   public void incrementLikeCount() {
@@ -90,6 +109,8 @@ public class Festival {
   }
 
   public void decrementLikeCount() {
-    if (this.likeCount > 0) this.likeCount -= 1;
+    if (this.likeCount > 0) {
+      this.likeCount -= 1;
+    }
   }
 }

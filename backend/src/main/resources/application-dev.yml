@@ -19,7 +19,7 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     baseline-description: "Initial baseline"
-    locations: 
+    locations:
       - classpath:db/migration
       - classpath:db/seed/dev
     validate-on-migrate: false

@@ -1,15 +1,15 @@
 package com.skkutable.dto;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class ReservationRequestDTO {
-    private Long userId;
-    private Long boothId;
-    private Long festivalId;
-    private LocalDateTime reservationTime;
-    private Integer numberOfPeople;
-    private String paymentMethod;
+
+  private Long userId;
+  private Long boothId;
+  private Long festivalId;
+  private LocalDateTime reservationTime;
+  private Integer numberOfPeople;
+  private String paymentMethod;
 }

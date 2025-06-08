@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import java.util.List;
 
 public class ReservationJpaRepositoryImpl implements ReservationRepositoryCustom {
+
   @PersistenceContext
   private EntityManager em;
 

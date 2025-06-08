@@ -12,15 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/images")
 public class ImageController {
-    private final CloudinaryService cloudinaryService;
 
-    public ImageController(CloudinaryService cloudinaryService) {
-        this.cloudinaryService = cloudinaryService;
-    }
+  private final CloudinaryService cloudinaryService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        String imageUrl = cloudinaryService.uploadImage(file);
-        return ResponseEntity.ok(imageUrl);
-    }
+  public ImageController(CloudinaryService cloudinaryService) {
+    this.cloudinaryService = cloudinaryService;
+  }
+
+  @PostMapping("/upload")
+  public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    String imageUrl = cloudinaryService.uploadImage(file);
+    return ResponseEntity.ok(imageUrl);
+  }
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 public class BoothJpaRepositoryImpl implements BoothRepositoryCustom {
+
   @PersistenceContext
   private EntityManager em;
 
@@ -17,7 +18,9 @@ public class BoothJpaRepositoryImpl implements BoothRepositoryCustom {
   public Booth createBooth(Long festivalId, Booth booth) {
     // ① 영속성 컨텍스트 안에서 proxy reference 획득
     Festival festivalRef = em.find(Festival.class, festivalId);
-    if (festivalRef == null) throw new ResourceNotFoundException("Festival not found: " + festivalId);
+    if (festivalRef == null) {
+      throw new ResourceNotFoundException("Festival not found: " + festivalId);
+    }
     // ② 양방향 동기화
     festivalRef.addBooth(booth);   // festival.booths 에도 추가
     return booth;

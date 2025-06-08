@@ -19,25 +19,27 @@ public class GlobalExceptionHandler {
   private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   private ResponseEntity<ApiError> buildErrorResponse(
-          HttpStatus status, String message, HttpServletRequest req) {
+      HttpStatus status, String message, HttpServletRequest req) {
 
     ApiError body = new ApiError(
-            Instant.now(),
-            status.value(),
-            status.getReasonPhrase(),
-            message,
-            req.getRequestURI()
+        Instant.now(),
+        status.value(),
+        status.getReasonPhrase(),
+        message,
+        req.getRequestURI()
     );
     return ResponseEntity.status(status).body(body);
   }
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), req);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest req) {
+  public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
   }
 
@@ -52,35 +54,42 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ForbiddenOperationException.class)
-  public ResponseEntity<ApiError> handleForbidden(ForbiddenOperationException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleForbidden(ForbiddenOperationException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage(), req);
   }
 
   @ExceptionHandler(UnauthorizedAccessException.class)
-  public ResponseEntity<ApiError> handleUnauthorized(UnauthorizedAccessException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleUnauthorized(UnauthorizedAccessException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
-  public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.CONFLICT, "데이터 무결성 제약 조건 위반", req);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex,
+      HttpServletRequest req) {
     String message = ex.getBindingResult().getFieldErrors().stream()
-            .map(err -> err.getField() + ": " + err.getDefaultMessage())
-            .findFirst()
-            .orElse("유효성 검증 실패");
+        .map(err -> err.getField() + ": " + err.getDefaultMessage())
+        .findFirst()
+        .orElse("유효성 검증 실패");
     return buildErrorResponse(HttpStatus.BAD_REQUEST, message, req);
   }
 
   @ExceptionHandler(AccessDeniedException.class)
-  public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
+  public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex,
+      HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.", req);
   }
 
-  /** 예상치 못한 런타임 예외 */
+  /**
+   * 예상치 못한 런타임 예외
+   */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiError> handleGeneral(Exception ex, HttpServletRequest req) {
     log.error("Unhandled exception", ex);

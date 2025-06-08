@@ -2,11 +2,20 @@ package com.skkutable.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.skkutable.dto.BoothPatchDto;
-import jakarta.persistence.*;
-import java.time.LocalDate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,7 +24,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Builder
 @Entity
-@Table(name="booth")
+@Table(name = "booth")
 public class Booth {
 
   @Id
@@ -52,11 +61,11 @@ public class Booth {
   private String eventImageUrl;
 
   @CreationTimestamp
-  @Column(name = "created_at", columnDefinition="TIMESTAMP")
+  @Column(name = "created_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updated_at", columnDefinition="TIMESTAMP")
+  @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime UpdatedAt;
 
   public void setFestival(Festival festival) {
@@ -71,15 +80,33 @@ public class Booth {
     }
 
     // ② 일반 필드들
-    if (dto.getName()           != null) this.name           = dto.getName();
-    if (dto.getHost()           != null) this.host           = dto.getHost();
-    if (dto.getLocation()       != null) this.location       = dto.getLocation();
-    if (dto.getDescription()    != null) this.description    = dto.getDescription();
-    if (dto.getStartDateTime()  != null) this.startDateTime  = dto.getStartDateTime();
-    if (dto.getEndDateTime()    != null) this.endDateTime    = dto.getEndDateTime();
-    if (dto.getLikeCount()      != null) this.likeCount      = dto.getLikeCount();
-    if (dto.getPosterImageUrl() != null) this.posterImageUrl = dto.getPosterImageUrl();
-    if (dto.getEventImageUrl()  != null) this.eventImageUrl  = dto.getEventImageUrl();
+    if (dto.getName() != null) {
+      this.name = dto.getName();
+    }
+    if (dto.getHost() != null) {
+      this.host = dto.getHost();
+    }
+    if (dto.getLocation() != null) {
+      this.location = dto.getLocation();
+    }
+    if (dto.getDescription() != null) {
+      this.description = dto.getDescription();
+    }
+    if (dto.getStartDateTime() != null) {
+      this.startDateTime = dto.getStartDateTime();
+    }
+    if (dto.getEndDateTime() != null) {
+      this.endDateTime = dto.getEndDateTime();
+    }
+    if (dto.getLikeCount() != null) {
+      this.likeCount = dto.getLikeCount();
+    }
+    if (dto.getPosterImageUrl() != null) {
+      this.posterImageUrl = dto.getPosterImageUrl();
+    }
+    if (dto.getEventImageUrl() != null) {
+      this.eventImageUrl = dto.getEventImageUrl();
+    }
   }
 
   public void incrementLikeCount() {
@@ -87,6 +114,8 @@ public class Booth {
   }
 
   public void decrementLikeCount() {
-    if (this.likeCount > 0) this.likeCount -= 1;
+    if (this.likeCount > 0) {
+      this.likeCount -= 1;
+    }
   }
 }

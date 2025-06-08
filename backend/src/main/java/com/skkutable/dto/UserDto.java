@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class UserDto {
+
   private final Long id;
 
   @NotBlank(message = "이름을 입력해야 합니다.")
@@ -21,7 +22,7 @@ public class UserDto {
   private final String email;
 
   @NotBlank
-  @Size(min=6)
+  @Size(min = 6)
   private final String password;
 
   private final Role role;
