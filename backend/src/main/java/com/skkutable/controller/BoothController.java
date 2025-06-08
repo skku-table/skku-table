@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -46,7 +47,8 @@ class BoothController {
       @RequestParam String host, @RequestParam(required = false) String location,
       @RequestParam(required = false) String description, @RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime, @RequestParam MultipartFile posterImage,
-      @RequestParam MultipartFile eventImage) {
+      @RequestParam MultipartFile eventImage,
+      @AuthenticationPrincipal(expression = "username") String email) {
     Map<String, String> urls = cloudinaryService.uploadMultipleImages(
         Map.of("posterImage", posterImage, "eventImage", eventImage));
 
@@ -62,7 +64,7 @@ class BoothController {
     dto.setEventImageUrl(urls.get("eventImage"));
 
     Booth booth = boothMapper.toEntity(dto);
-    return boothService.createBooth(festivalId, booth);
+    return boothService.createBooth(festivalId, booth, email);
   }
 
   @PatchMapping(value = "/{boothId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

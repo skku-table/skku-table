@@ -1,9 +1,13 @@
 package com.skkutable.service;
 
 import com.skkutable.domain.Festival;
+import com.skkutable.domain.Role;
+import com.skkutable.domain.User;
 import com.skkutable.dto.FestivalPatchDto;
+import com.skkutable.exception.ForbiddenOperationException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.FestivalRepository;
+import com.skkutable.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +21,14 @@ public class FestivalService {
 
   private final FestivalRepository festivalRepository;
   private final BoothService boothService;
+  private final UserRepository userRepository;
 
   @Autowired
-  public FestivalService(FestivalRepository festivalRepository, BoothService boothService) {
+  public FestivalService(FestivalRepository festivalRepository, BoothService boothService,
+      UserRepository userRepository) {
     this.festivalRepository = festivalRepository;
     this.boothService = boothService;
+    this.userRepository = userRepository;
   }
 
   public List<Festival> search(String keyword) {
@@ -31,12 +38,21 @@ public class FestivalService {
     return festivalRepository.searchDynamic(keyword);
   }
 
-  public Festival createFestival(Festival festival) {
-    // 중복된 이름 검증 등의 로직이 있다면 여기에 추가
+  public Festival createFestival(Festival festival, String userEmail) {
+    // ADMIN 권한 확인
+    User creator = userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userEmail));
+
+    if (creator.getRole() != Role.ADMIN) {
+      throw new ForbiddenOperationException("Only administrators can create festivals");
+    }
+
+    // 중복된 이름 검증
     boolean exists = festivalRepository.existsByName(festival.getName());
     if (exists) {
       throw new IllegalArgumentException("이미 같은 이름의 축제가 존재합니다: " + festival.getName());
     }
+
     return festivalRepository.save(festival);
   }
 

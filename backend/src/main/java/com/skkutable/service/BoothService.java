@@ -2,10 +2,12 @@ package com.skkutable.service;
 
 import com.skkutable.domain.Booth;
 import com.skkutable.domain.Festival;
+import com.skkutable.domain.User;
 import com.skkutable.dto.BoothPatchDto;
 import com.skkutable.exception.BadRequestException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
+import com.skkutable.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +20,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoothService {
 
   private final BoothRepository boothRepository;
+  private final UserRepository userRepository;
 
   @Autowired
-  public BoothService(BoothRepository boothRepository) {
+  public BoothService(BoothRepository boothRepository, UserRepository userRepository) {
     this.boothRepository = boothRepository;
+    this.userRepository = userRepository;
   }
 
-  public Booth createBooth(Long festivalId, Booth booth) {
+  public Booth createBooth(Long festivalId, Booth booth, String userEmail) {
     if (festivalId == null || booth == null) {
       throw new BadRequestException("Festival ID and Booth data must be provided");
     }
+
+    // 생성자 정보 설정
+    User creator = userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userEmail));
+    booth.setCreatedBy(creator);
+
     return boothRepository.createBooth(festivalId, booth);
   }
 

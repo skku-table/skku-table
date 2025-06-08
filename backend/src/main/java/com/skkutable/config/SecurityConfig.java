@@ -47,7 +47,10 @@ public class SecurityConfig {
             /* GET /users → ADMIN 권한만 */
             .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
             .anyRequest().authenticated())
-
+        /* ① 인증 실패 → 401 로 응답 */
+        .exceptionHandling(ex -> ex
+            .authenticationEntryPoint(
+                (req, res, authEx) -> res.sendError(401, "Unauthorized")))
         /* 폼 로그인 -> REST 에서도 x-www-form-urlencoded 전송이면 OK */
         .formLogin(form -> form
             .loginProcessingUrl("/users/login")      // POST

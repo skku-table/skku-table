@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.skkutable.dto.BoothPatchDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +36,10 @@ public class Booth {
   @JoinColumn(name = "festival_id")
   @JsonBackReference
   private Festival festival;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by")
+  private User createdBy;
 
   private String name;
   private String host;
@@ -117,5 +122,9 @@ public class Booth {
     if (this.likeCount > 0) {
       this.likeCount -= 1;
     }
+  }
+
+  public void setCreatedBy(User user) {
+    this.createdBy = user;
   }
 }

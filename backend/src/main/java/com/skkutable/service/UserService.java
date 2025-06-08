@@ -35,18 +35,14 @@ public class UserService {
     validateDuplicateUser(dto.getEmail());
 
     return userRepository.save(
-        new User(
-            dto.getName(),
-            dto.getEmail(),
-            passwordEncoder.encode(dto.getPassword()),
+        new User(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()),
             dto.getRole()));
   }
 
   private void validateDuplicateUser(String email) {
-    userRepository.findByEmail(email)
-        .ifPresent(m -> {
-          throw new ConflictException("이미 존재하는 회원입니다. : " + email);
-        });
+    userRepository.findByEmail(email).ifPresent(m -> {
+      throw new ConflictException("이미 존재하는 회원입니다. : " + email);
+    });
   }
 
 
@@ -62,6 +58,10 @@ public class UserService {
   public User findOne(String email) {
     return userRepository.findByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+  }
+
+  public User getCurrentUser(String email) {
+    return findOne(email);
   }
 
 }

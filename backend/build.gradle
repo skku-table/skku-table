@@ -1,56 +1,74 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.0'
-	id 'io.spring.dependency-management' version '1.1.7'
+buildscript {
+    dependencies {
+        classpath "org.flywaydb:flyway-mysql:11.9.1"
+    }
 }
-bootJar{
-	archiveFileName = "${rootProject.name}.jar"
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.flywaydb.flyway' version '11.9.1'
+}
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
 }
 
 group = 'com.skkutable'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+}
+
+flyway {
+    url = 'jdbc:mysql://localhost:3306/skku-table-dev'
+    user = 'root'
+    password = '1234'
+    locations = ['classpath:db/migration', 'classpath:db/seed/dev']
+    cleanDisabled = false
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.mapstruct:mapstruct:1.6.3'
-	implementation 'com.cloudinary:cloudinary-http44:1.39.0'
-	implementation 'org.flywaydb:flyway-core:11.9.0'
-	implementation 'org.flywaydb:flyway-mysql:11.9.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'com.cloudinary:cloudinary-http44:1.39.0'
+    implementation 'org.flywaydb:flyway-core:11.9.1'
+    implementation 'org.flywaydb:flyway-mysql:11.9.1'
+    runtimeOnly 'com.mysql:mysql-connector-j:9.3.0'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
 
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
 
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
 
-	compileOnly 'org.projectlombok:lombok:1.18.38'
-
-	annotationProcessor 'org.projectlombok:lombok:1.18.38'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'com.h2database:h2'
 }
+
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
+
