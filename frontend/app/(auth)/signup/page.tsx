@@ -24,7 +24,7 @@ export default function SignupPage() {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
     const onSubmit = async (data: FormData) => {
         setError('')
-        const role = isAdmin ? 'ADMIN' : 'USER'
+        const role = isAdmin ? 'HOST' : 'USER'
         const payload = { ...data, role }
         try {
             const body = JSON.stringify(payload)

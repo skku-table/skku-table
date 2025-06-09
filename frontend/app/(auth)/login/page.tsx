@@ -46,9 +46,10 @@ export default function LoginPage() {
 
       if (role === 'USER') {
         router.push('/')
-      } else if (role === 'ADMIN') {
+      } else if (role === 'ADMIN' || role === 'HOST') {
         router.push('/admin')
       } else {
+        
         setError('알 수 없는 사용자 유형입니다.')
       }
     } catch (err) {
