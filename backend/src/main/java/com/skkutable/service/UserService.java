@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -43,6 +44,40 @@ public class UserService {
     userRepository.findByEmail(email).ifPresent(m -> {
       throw new ConflictException("이미 존재하는 회원입니다. : " + email);
     });
+  }
+
+  @Autowired
+  private CloudinaryService cloudinaryService;
+
+  public String updateProfileImage(String email, MultipartFile imageFile) {
+    User user = findOne(email);
+
+    // 기존 이미지 삭제
+    if (user.getProfileImageUrl() != null) {
+      String publicId = extractPublicIdFromUrl(user.getProfileImageUrl());
+      cloudinaryService.deleteImage(publicId);
+    }
+
+    String newImageUrl = cloudinaryService.uploadImage(imageFile);
+    user.setProfileImageUrl(newImageUrl);
+    return newImageUrl;
+  }
+
+  public void deleteProfileImage(String email) {
+    User user = findOne(email);
+    if (user.getProfileImageUrl() != null) {
+      String publicId = extractPublicIdFromUrl(user.getProfileImageUrl());
+      cloudinaryService.deleteImage(publicId);
+      user.setProfileImageUrl(null);
+    }
+  }
+
+  private String extractPublicIdFromUrl(String imageUrl) {
+    String[] parts = imageUrl.split("/");
+    String filename = parts[parts.length - 1];
+    String publicId = filename.substring(0, filename.lastIndexOf("."));
+    String folder = parts[parts.length - 2];
+    return folder + "/" + publicId;
   }
 
 

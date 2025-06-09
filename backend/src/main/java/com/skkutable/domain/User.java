@@ -64,6 +64,13 @@ public class User {
   @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime UpdatedAt;
 
+  @Column(name = "profile_image_url")
+  private String profileImageUrl;
+
+  public void setProfileImageUrl(String url) {
+    this.profileImageUrl = url;
+  }
+
   // 생성자에서 createdAt, updatedAt은 제외
   public User(String name, String email, String encodedPw, Role role) {
     this.name = name;
