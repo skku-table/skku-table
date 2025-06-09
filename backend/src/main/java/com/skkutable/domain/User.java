@@ -9,10 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,6 +27,7 @@ public class User {
   private Long id;
 
 
+  @Setter
   @Column(nullable = false)
   private String name;
 
@@ -47,12 +46,15 @@ public class User {
   @Column(nullable = false)
   private Role role = Role.USER;
 
+  @Setter
   @Column(nullable = true)
   private String university;
 
+  @Setter
   @Column(nullable = true)
   private String major;
 
+  @Setter
   @Column(name = "profile_image_url")
   private String profileImageUrl;
 
@@ -64,14 +66,8 @@ public class User {
   @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime UpdatedAt;
 
-  @Column(name = "profile_image_url")
-  private String profileImageUrl;
 
-  public void setProfileImageUrl(String url) {
-    this.profileImageUrl = url;
-  }
-
-  // 생성자에서 createdAt, updatedAt은 제외
+    // 생성자에서 createdAt, updatedAt은 제외
   public User(String name, String email, String encodedPw, Role role) {
     this.name = name;
     this.email = email;

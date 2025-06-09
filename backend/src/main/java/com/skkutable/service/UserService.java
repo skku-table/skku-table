@@ -8,6 +8,8 @@ import com.skkutable.exception.ConflictException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -97,6 +99,26 @@ public class UserService {
 
   public User getCurrentUser(String email) {
     return findOne(email);
+  }
+
+  @Transactional
+  public User updatePartial(String email, Map<String, Object> updates) {
+    User user = findOne(email);
+
+    if (updates.containsKey("name")) {
+      user.setName((String) updates.get("name"));
+    }
+    if (updates.containsKey("university")) {
+      user.setUniversity((String) updates.get("university"));
+    }
+    if (updates.containsKey("major")) {
+      user.setMajor((String) updates.get("major"));
+    }
+    if (updates.containsKey("profileImageUrl")) {
+      user.setProfileImageUrl((String) updates.get("profileImageUrl"));
+    }
+
+    return user;
   }
 
 }

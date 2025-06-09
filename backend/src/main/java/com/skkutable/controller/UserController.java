@@ -8,6 +8,8 @@ import com.skkutable.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -130,4 +132,23 @@ public class UserController {
     HostContentResponseDto response = hostContentService.getHostContent(email);
     return ResponseEntity.ok(response);
   }
+
+    @PatchMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDto> updateMe(
+            @AuthenticationPrincipal(expression = "username") String email,
+            @RequestBody Map<String, Object> updates
+    ) {
+        User updatedUser = userService.updatePartial(email, updates);
+        return ResponseEntity.ok(new UserDto(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getEmail(),
+                "[REDACTED]",
+                updatedUser.getRole(),
+                updatedUser.getUniversity(),
+                updatedUser.getMajor(),
+                updatedUser.getProfileImageUrl()
+        ));
+    }
 }
