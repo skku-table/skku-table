@@ -40,7 +40,8 @@ public class UserController {
   @GetMapping
   public List<UserDto> getUsers() {
     return userService.findUsers().stream()
-        .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), REDACTED, u.getRole()))
+        .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), REDACTED, u.getRole(),
+        u.getUniversity(),u.getMajor()))
         .toList();
   }
 
@@ -50,8 +51,9 @@ public class UserController {
       @RequestHeader(value = "X-ADMIN-SECRET", required = false) String adminSecret) {
     var createUser = userService.join(dto, adminSecret);
     return new UserDto(createUser.getId(), createUser.getName(), createUser.getEmail(), REDACTED,
-        createUser.getRole());
+        createUser.getRole(), createUser.getUniversity(), createUser.getMajor());
   }
+
 
   /* 로그인은 Spring Security 필터가 처리 (POST /users/login) */
 
@@ -66,13 +68,15 @@ public class UserController {
   @GetMapping("/me")
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
     User user = userService.findOne(email); // exception 던지기 위해 optional 제거
-    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
+    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole(),
+    user.getUniversity(), user.getMajor());
   }
 
   @GetMapping("{id}")
   public UserDto getUserById(@PathVariable("id") Long userId) {
     User user = userService.findOne(userId);
-    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole());
+    return new UserDto(user.getId(), user.getName(), user.getEmail(), REDACTED, user.getRole(),
+    user.getUniversity(), user.getMajor());
   }
 
   /* 호스트가 생성한 부스 조회 */

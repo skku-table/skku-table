@@ -47,6 +47,12 @@ public class User {
   @Column(nullable = false)
   private Role role = Role.USER;
 
+  @Column(nullable = true)
+  private String university;
+
+  @Column(nullable = true)
+  private String major;
+
   @CreationTimestamp
   @Column(name = "created_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime createdAt;
