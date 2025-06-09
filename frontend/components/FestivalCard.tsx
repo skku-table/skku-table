@@ -7,6 +7,7 @@ import LikeFestivalButton from './LikeFestivalButton';
 import { formatDate } from '@/libs/utils';
 import { IoHeartSharp } from 'react-icons/io5';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 type Festival = {
   id: number;
@@ -29,14 +30,32 @@ export function FestivalCard({ festival }: { festival: Festival }) {
   return(
     <div>
         <div className="relative w-[290px] h-[290px] mx-auto">
-          <Link href={`/festival/${festival.id}`}>
+          {usePathname() === '/admin' ? 
+                  <Link href={`admin/festival/${festival.id}`}>
+                    <Image
+                      src={festival.posterImageUrl}
+                      alt="festival poster"
+                      fill
+                      className="rounded-xl object-cover cursor-pointer"
+                    />
+                  </Link>
+                  :
+                  <Link href={`/festival/${festival.id}`}>
+                    <Image
+                      src={festival.posterImageUrl}
+                      alt="festival poster"
+                      fill
+                      className="rounded-xl object-cover cursor-pointer"
+                    />
+                </Link>}
+          {/* <Link href={`/festival/${festival.id}`}>
             <Image
               src={festival.posterImageUrl}
               alt="festival poster"
               fill
               className="rounded-xl object-cover cursor-pointer"
             />
-          </Link>
+          </Link> */}
           <LikeFestivalButton festivalId={festival.id}/>
         </div>
 

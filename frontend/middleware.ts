@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
         const user = await res.json()
         const role = user.role
 
-        if (role !== 'ADMIN') {
+        if (role === 'USER') {
           return NextResponse.redirect(new URL('/', request.url))
         }
       } else {
