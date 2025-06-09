@@ -31,8 +31,11 @@ public class UserDto {
 
   private final String major;
 
+  private final String profileImageUrl;
 
-  public UserDto(Long id, String name, String email, String password, Role role, String university, String major) {
+
+  public UserDto(Long id, String name, String email, String password, Role role, 
+                  String university, String major, String profileImageUrl) {
     this.id = id;
     this.name = name;
     this.email = email;
@@ -40,5 +43,6 @@ public class UserDto {
     this.role = role == null ? Role.USER : role;
     this.university = university;
     this.major = major;
+    this.profileImageUrl = profileImageUrl;
   }
 }

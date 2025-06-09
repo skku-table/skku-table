@@ -53,6 +53,9 @@ public class User {
   @Column(nullable = true)
   private String major;
 
+  @Column(name = "profile_image_url")
+  private String profileImageUrl;
+
   @CreationTimestamp
   @Column(name = "created_at", columnDefinition = "TIMESTAMP")
   private LocalDateTime createdAt;
