@@ -5,8 +5,10 @@ import com.skkutable.domain.Festival;
 import com.skkutable.domain.PaymentMethod;
 import com.skkutable.domain.Reservation;
 import com.skkutable.domain.User;
+import com.skkutable.dto.ReservationByBoothResponseDTO;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
+import com.skkutable.exception.BadRequestException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.repository.FestivalRepository;
@@ -28,6 +30,9 @@ public class ReservationService {
   private final FestivalRepository festivalRepository;
 
   public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
+    if (dto == null) {
+      throw new BadRequestException("Reservation data must be provided");
+    }
     User user = userRepository.findById(dto.getUserId())
         .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.getUserId()));
 
@@ -69,20 +74,50 @@ public class ReservationService {
         .collect(Collectors.toList());
   }
 
-  public List<ReservationResponseDTO> getReservationsByFestivalAndBooth(Long festivalId,
-      Long boothId) {
-    if (!festivalRepository.existsById(festivalId)) {
-      throw new ResourceNotFoundException("Festival not found: " + festivalId);
+  public ReservationByBoothResponseDTO getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
+    if (festivalId == null || boothId == null) {
+      throw new BadRequestException("Festival ID and Booth ID must be provided");
     }
-    if (!boothRepository.existsById(boothId)) {
-      throw new ResourceNotFoundException("Booth not found: " + boothId);
+
+    Booth booth = boothRepository.findById(boothId)
+            .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
+
+    if (!booth.getFestival().getId().equals(festivalId)) {
+      throw new ResourceNotFoundException("Booth does not belong to the given festival");
     }
-    List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(
-        festivalId, boothId);
-    return reservations.stream()
-        .map(this::toResponseDTO)
-        .toList();
+
+    List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
+
+    ReservationByBoothResponseDTO response = new ReservationByBoothResponseDTO();
+
+    ReservationByBoothResponseDTO.BoothInfo boothInfo = new ReservationByBoothResponseDTO.BoothInfo();
+    boothInfo.setId(booth.getId());
+    boothInfo.setName(booth.getName());
+    boothInfo.setLocation(booth.getLocation());
+    boothInfo.setStartTime(booth.getStartDateTime());
+    boothInfo.setEndTime(booth.getEndDateTime());
+    boothInfo.setPosterImageUrl(booth.getPosterImageUrl());
+    boothInfo.setLikeCount(booth.getLikeCount());
+    response.setBooth(boothInfo);
+
+    List<ReservationByBoothResponseDTO.UserReservationInfo> userReservations = reservations.stream()
+            .map(r -> {
+              ReservationByBoothResponseDTO.UserReservationInfo info = new ReservationByBoothResponseDTO.UserReservationInfo();
+              info.setReservationId(r.getId());
+              info.setUserId(r.getUser().getId());
+              info.setUserName(r.getUser().getName());
+              info.setReservationTime(r.getReservationTime());
+              info.setNumberOfPeople(r.getNumberOfPeople());
+              info.setPaymentMethod(r.getPaymentMethod().name());
+              info.setCreatedAt(r.getCreatedAt());
+              return info;
+            })
+            .collect(Collectors.toList());
+
+    response.setReservations(userReservations);
+    return response;
   }
+
 
   public ReservationResponseDTO updateReservation(Long reservationId, ReservationRequestDTO dto) {
     Reservation reservation = reservationRepository.findById(reservationId)
@@ -118,6 +153,10 @@ public class ReservationService {
   }
 
   public ReservationResponseDTO patchReservation(Long id, ReservationRequestDTO dto) {
+    if (dto == null) {
+      throw new BadRequestException("Patch data must be provided");
+    }
+
     Reservation reservation = reservationRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
 

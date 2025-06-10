@@ -8,10 +8,13 @@ import com.skkutable.exception.ConflictException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -45,23 +48,91 @@ public class UserService {
     });
   }
 
+  @Autowired
+  private CloudinaryService cloudinaryService;
+
+  public String updateProfileImage(String email, MultipartFile imageFile) {
+    if (imageFile == null || imageFile.isEmpty()) {
+      throw new BadRequestException("업로드할 프로필 이미지가 제공되지 않았습니다.");
+    }
+
+    User user = findOne(email);
+
+    // 기존 이미지 삭제
+    if (user.getProfileImageUrl() != null) {
+      String publicId = extractPublicIdFromUrl(user.getProfileImageUrl());
+      cloudinaryService.deleteImage(publicId);
+    }
+
+    String newImageUrl = cloudinaryService.uploadImage(imageFile);
+    user.setProfileImageUrl(newImageUrl);
+    return newImageUrl;
+  }
+
+  public void deleteProfileImage(String email) {
+    User user = findOne(email);
+    if (user.getProfileImageUrl() != null) {
+      String publicId = extractPublicIdFromUrl(user.getProfileImageUrl());
+      cloudinaryService.deleteImage(publicId);
+      user.setProfileImageUrl(null);
+    }
+  }
+
+  private String extractPublicIdFromUrl(String imageUrl) {
+    try {
+      String[] parts = imageUrl.split("/");
+      String filename = parts[parts.length - 1];
+      String publicId = filename.substring(0, filename.lastIndexOf("."));
+      String folder = parts[parts.length - 2];
+      return folder + "/" + publicId;
+    } catch (Exception e) {
+      throw new BadRequestException("이미지 URL 포맷이 잘못되었습니다.");
+    }
+  }
+
 
   public List<User> findUsers() {
     return userRepository.findAll();
   }
 
   public User findOne(Long userId) {
+    if (userId == null) {
+      throw new BadRequestException("사용자 ID가 필요합니다.");
+    }
     return userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
   }
 
   public User findOne(String email) {
+    if (email == null || email.isBlank()) {
+      throw new BadRequestException("이메일이 필요합니다.");
+    }
     return userRepository.findByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
   }
 
   public User getCurrentUser(String email) {
     return findOne(email);
+  }
+
+  @Transactional
+  public User updatePartial(String email, Map<String, Object> updates) {
+    User user = findOne(email);
+
+    if (updates.containsKey("name")) {
+      user.setName((String) updates.get("name"));
+    }
+    if (updates.containsKey("university")) {
+      user.setUniversity((String) updates.get("university"));
+    }
+    if (updates.containsKey("major")) {
+      user.setMajor((String) updates.get("major"));
+    }
+    if (updates.containsKey("profileImageUrl")) {
+      user.setProfileImageUrl((String) updates.get("profileImageUrl"));
+    }
+
+    return user;
   }
 
 }

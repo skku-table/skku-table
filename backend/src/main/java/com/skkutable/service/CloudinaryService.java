@@ -47,4 +47,12 @@ public class CloudinaryService {
     }
     return result;
   }
+
+  public void deleteImage(String publicId) {
+    try {
+      cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+    } catch (IOException e) {
+      throw new RuntimeException("이미지 삭제 실패", e);
+    }
+  }
 }

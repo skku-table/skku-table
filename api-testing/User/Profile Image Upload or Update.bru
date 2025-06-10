@@ -1,0 +1,15 @@
+meta {
+  name: Profile Image Upload or Update
+  type: http
+  seq: 13
+}
+
+put {
+  url: http://localhost:8080/users/me/profile-image
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  image: @file(E:\Download\grape.jpg)
+}

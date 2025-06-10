@@ -27,12 +27,22 @@ public class UserDto {
 
   private final Role role;
 
+  private final String university;
 
-  public UserDto(Long id, String name, String email, String password, Role role) {
+  private final String major;
+
+  private final String profileImageUrl;
+
+
+  public UserDto(Long id, String name, String email, String password, Role role, 
+                  String university, String major, String profileImageUrl) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
     this.role = role == null ? Role.USER : role;
+    this.university = university;
+    this.major = major;
+    this.profileImageUrl = profileImageUrl;
   }
 }

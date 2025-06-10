@@ -43,6 +43,14 @@ public class BoothService {
 
   @Transactional
   public Booth updateImageUrls(Long festivalId, Long boothId, Map<String, String> urls) {
+    if (festivalId == null || boothId == null) {
+      throw new BadRequestException("Festival ID and Booth ID must be provided");
+    }
+
+    if (urls == null || urls.isEmpty()) {
+      throw new BadRequestException("No image URLs provided");
+    }
+
     Booth booth = findBoothByIdAndFestivalId(boothId, festivalId);
     if (urls.containsKey("posterImage")) {
       booth.setPosterImageUrl(urls.get("posterImage"));
@@ -55,6 +63,9 @@ public class BoothService {
 
   @Transactional
   public void removeImageUrls(Long festivalId, Long boothId) {
+    if (festivalId == null || boothId == null) {
+      throw new BadRequestException("Festival ID and Booth ID must be provided");
+    }
     Booth booth = findBoothByIdAndFestivalId(boothId, festivalId);
     booth.setPosterImageUrl(null);
     booth.setEventImageUrl(null);
@@ -62,16 +73,21 @@ public class BoothService {
 
   private void validateFestivalExists(Festival festival) {
     if (festival == null || festival.getId() == null) {
-      throw new IllegalArgumentException("Festival must be provided");
+      throw new BadRequestException("Festival must be provided");
     }
   }
 
   public List<Booth> findBoothsByFestival(Long festivalId) {
+    if (festivalId == null) {
+      throw new BadRequestException("Festival ID must be provided");
+    }
     return boothRepository.findByFestivalId(festivalId);
   }
 
   public Booth findBoothById(Long boothId) {
-
+    if (boothId == null) {
+      throw new BadRequestException("Booth ID must be provided");
+    }
     return boothRepository.findById(boothId).
         orElseThrow((
             () -> new ResourceNotFoundException("Booth not found: " + boothId)
@@ -79,10 +95,16 @@ public class BoothService {
   }
 
   public Booth save(Booth booth) {
+    if (booth == null) {
+      throw new BadRequestException("Booth data must be provided");
+    }
     return boothRepository.save(booth);
   }
 
   public void deleteBooth(Long boothId) {
+    if (boothId == null) {
+      throw new BadRequestException("Booth ID must be provided");
+    }
     try {
       boothRepository.deleteById(boothId);
     } catch (EmptyResultDataAccessException e) {
@@ -91,6 +113,9 @@ public class BoothService {
   }
 
   public Booth findBoothByIdAndFestivalId(Long boothId, Long festivalId) {
+    if (boothId == null || festivalId == null) {
+      throw new BadRequestException("Booth ID and Festival ID must be provided");
+    }
     return boothRepository.findByIdAndFestivalId(boothId, festivalId).
         orElseThrow(() -> new ResourceNotFoundException(
             "Booth not found with id " + boothId + " in festival " + festivalId));
