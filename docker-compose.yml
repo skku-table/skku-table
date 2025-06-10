@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   nextjs:
     build:
@@ -62,6 +60,46 @@ services:
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
     networks:
       - web
+
+  dev-flyway-info:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-dev?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=1234
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - info
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  dev-flyway-clean:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-dev?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=1234
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - -cleanDisabled=false
+      - clean
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  dev-flyway-migrate:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-dev?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=1234
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - migrate
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
 
 volumes:
   caddy_data:
