@@ -139,7 +139,7 @@ export default function MyPage() {
         <div className="grid grid-cols-2 gap-3">
         {tab === 'univ' && likedFestivals.map(festival => (
           <div key={festival.id} className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px]">
-            <div className="relative w-full h-[100px]">
+            <div className="relative w-full h-full">
               <Image
                 src={festival.posterImageUrl}
                 alt={festival.name}
@@ -153,7 +153,7 @@ export default function MyPage() {
 
         {tab === 'booth' && likedBooths.map(booth => (
           <div key={booth.id} className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px]">
-            <div className="relative w-full h-[100px]">
+            <div className="relative w-full h-full">
               {booth.posterImageUrl ? (
                 <Image
                   src={booth.posterImageUrl}
