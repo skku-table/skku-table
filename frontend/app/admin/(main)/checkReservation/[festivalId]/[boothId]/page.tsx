@@ -4,6 +4,7 @@ import Header from "@/components/Headers"
 import { redirect } from "next/navigation"
 import Image from "next/image"
 import { useParams } from 'next/navigation';
+import { cookies } from "next/headers";
 
 import {
     Select,
@@ -39,6 +40,21 @@ import {
     likeCount: number;
     booths: MyBoothdata[]
     }[];
+  type BoothforReservation = {
+    reservationId: number;
+    userId: number;
+    userName: string;
+    festivalId: number;
+    festivalName: string;
+    boothId: number;
+    boothName: string;
+    boothStartDate: string;
+    boothPosterImageUrl: string;
+    reservationTime: string;
+    numberOfPeople: number;
+    paymentMethod: string;
+    crestedAt: string;
+  }[];
   
 // const mockAdminBooths: AdminBoothList = [
 //   {
@@ -101,14 +117,43 @@ import {
 //   },
 // ]
 
-export default function CheckReservationDetail() {
+export default async function CheckReservationDetail() {
+    // const params = useParams();
+    // const boothId = params.boothId;
+    // const booth:Booth = mockAdminBooths.find((booth) => booth.id === Number(boothId)) as Booth;
+    const cookieHeader = cookies().toString();
+
+    //try fetchwithcredential
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/booths`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+      cache: 'no-store', // 서버 컴포넌트에서 fetch는 기본적으로 SSG라 no-store 권장
+    });
+    if (!res.ok) {
+      console.error('Failed to fetch:', res.status)
+      return null
+    }
+    const json = await res.json();
+    const festivalsData: MyFestivalBoothData = json.festivals ?? [];
+    const boothsdata: MyBoothdata[] = festivalsData.flatMap(festival => festival.booths ?? []);
     const params = useParams();
+    const festivalId = params.festivalId;
     const boothId = params.boothId;
-    const booth:Booth = mockAdminBooths.find((booth) => booth.id === Number(boothId)) as Booth;
+    const boothres=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+      cache: 'no-store', // 서버 컴포넌트에서 fetch는 기본적으로 SSG라 no-store 권장
+    });
+    
+
+    const booth: BoothforReservation = boothres.ok ? await boothres.json() : []
+    
 
 
     
-    function redirectBoothId(boothId: number) {
+    function redirectBoothId(festivalId: number, boothId: number) {
         redirect(`/admin/checkReservation/${boothId}`);
     }
 
@@ -119,10 +164,10 @@ export default function CheckReservationDetail() {
         <div className="relative p-4 pt-16 space-y-6">
             <Select>
                 <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={booth.name} />
+                    <SelectValue placeholder={booth[0].boothName} />
                 </SelectTrigger>
                 <SelectContent>
-                    {mockAdminBooths.map((booth) => (
+                    {boothsdata.map((booth) => (
                         <SelectItem key={booth.id} value={booth.name} onClick={() => redirectBoothId(booth.festivalId, booth.id)}>
                             {booth.name}
                         </SelectItem>
@@ -130,18 +175,18 @@ export default function CheckReservationDetail() {
                 </SelectContent>
             </Select>
             <Image
-                src={booth.imageUrl}
+                src={booth[0].boothPosterImageUrl}
                 alt="부스 포스터"
                 width={312}
                 height={312}
               />
             <div>
               <div className="flex items-center gap-2 mt-4">
-                <h2 className="text-xl font-bold">{booth.name}</h2>
-                <div className="flex items-center gap-1 text-[15px] text-black/60">
+                <h2 className="text-xl font-bold">{booth[0].boothName}</h2>
+                {/* <div className="flex items-center gap-1 text-[15px] text-black/60">
                   <IoHeart size={18} className="text-red-500" />
                   {booth.likeCount}
-                </div>
+                </div> */}
               </div>
               <ul className="list-disc pl-5 text-sm space-y-1 mt-2">
                 <li><strong>기간</strong> : {booth.period}</li>
