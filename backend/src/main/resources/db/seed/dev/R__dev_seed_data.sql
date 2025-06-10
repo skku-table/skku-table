@@ -1,10 +1,32 @@
 /* ──────────────────────────────────────────────────────────────
-Flyway  V1000__dev_seed_data.sql   –   DEV/LOCAL 전용 시드 데이터
-스키마 전제: booth.created_by  NOT NULL FK → user(id)
+Repeatable  R__dev_seed_data.sql  –  DEV/LOCAL 초기화 + 시드
+① 부팅마다 기존 데이터 전체 삭제(TRUNCATE)
+② 최신 시드 데이터 다시 삽입
+※ 운영 경로에는 포함하지 마세요!
 ────────────────────────────────────────────────────────────── */
 /* =============================================================
-1. USERS
--- password: password123
+0. RESET  –  FK 잠시 해제 후 TRUNCATE
+------------------------------------------------------------- */
+SET
+  FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE reservation;
+
+TRUNCATE TABLE user_booth_like;
+
+TRUNCATE TABLE user_festival_like;
+
+TRUNCATE TABLE booth;
+
+TRUNCATE TABLE festival;
+
+TRUNCATE TABLE user;
+
+SET
+  FOREIGN_KEY_CHECKS = 1;
+
+/* =============================================================
+1. USERS   –  비밀번호는 모두 'password123'
 ------------------------------------------------------------- */
 INSERT INTO
   user(
@@ -13,6 +35,9 @@ INSERT INTO
     email,
     password,
     role,
+    university,
+    major,
+    profile_image_url,
     created_at,
     updated_at
   )
@@ -23,6 +48,9 @@ VALUES
     'user1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
+    '성균관대학교',
+    '컴퓨터교육',
+    'https://example.com/img/user1.png',
     NOW(),
     NOW()
   ),
@@ -32,6 +60,9 @@ VALUES
     'user2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
+    '성균관대학교',
+    '경제학',
+    'https://example.com/img/user2.png',
     NOW(),
     NOW()
   ),
@@ -41,6 +72,9 @@ VALUES
     'admin@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'ADMIN',
+    '성균관대학교',
+    '경영학',
+    'https://example.com/img/admin.png',
     NOW(),
     NOW()
   ),
@@ -50,6 +84,9 @@ VALUES
     'host1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
+    '성균관대학교',
+    '전자공학',
+    'https://example.com/img/host1.png',
     NOW(),
     NOW()
   ),
@@ -59,12 +96,15 @@ VALUES
     'host2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
+    '성균관대학교',
+    '디자인',
+    'https://example.com/img/host2.png',
     NOW(),
     NOW()
   );
 
 /* =============================================================
-2. FESTIVALS  (ADMIN이 생성)
+2. FESTIVALS   –  ADMIN(3)이 생성
 ------------------------------------------------------------- */
 INSERT INTO
   festival (
@@ -122,13 +162,13 @@ VALUES
   );
 
 /* =============================================================
-3. BOOTHS  – created_by ▲ 추가
+3. BOOTHS  – created_by FK 필수
 ------------------------------------------------------------- */
 INSERT INTO
   booth (
     id,
     festival_id,
-    created_by, -- ▲ FK HOST
+    created_by,
     name,
     host,
     location,
@@ -142,7 +182,7 @@ INSERT INTO
     updated_at
   )
 VALUES
-  /* ── 봄 축제 (host1, id 4) ─────────────────────────────── */
+  /* 봄 축제 – host1 */
   (
     1,
     1,
@@ -207,7 +247,7 @@ VALUES
     NOW(),
     NOW()
   ),
-  /* ── 가을 축제 (host1) ──────────────────────────────────── */
+  /* 가을 축제 – host1 */
   (
     5,
     2,
@@ -256,7 +296,7 @@ VALUES
     NOW(),
     NOW()
   ),
-  /* ── 대동제 (host2, id 5) ─────────────────────────────── */
+  /* 대동제 – host2 */
   (
     8,
     3,
@@ -305,7 +345,7 @@ VALUES
     NOW(),
     NOW()
   ),
-  /* ── 추가 부스 (페이지네이션 샘플) ─────────────────────── */
+  /* 추가 부스 (페이지네이션 샘플) */
   (
     11,
     1,

@@ -12,7 +12,7 @@ SET
     FROM
       user
     WHERE
-      email = 'admin@test.com'
+      role = 'ADMIN'
   )
 WHERE
   created_by IS NULL;
