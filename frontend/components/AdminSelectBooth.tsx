@@ -7,7 +7,6 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-  import { redirect } from "next/navigation"
   import { useRouter } from "next/navigation";
 
   type MyBoothdata = {
