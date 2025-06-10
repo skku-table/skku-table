@@ -6,6 +6,7 @@ import { formatDate } from '@/libs/utils';
 import { formatTime } from '@/libs/utils';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 import AdminSelectBooth from '@/components/AdminSelectBooth';
+import CheckReservationCard from '@/components/CheckReservationCard';
 
   type MyBoothdata = {
     id: number;
@@ -56,7 +57,7 @@ import AdminSelectBooth from '@/components/AdminSelectBooth';
   
 
 export default async function CheckReservationDetail({params}: {params: {festivalId: string, boothId: string}}) {
-    const cookieHeader = await cookies().toString();
+    const cookieHeader = cookies().toString();
 
     //try fetchwithcredential
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/booths`, {
@@ -73,8 +74,8 @@ export default async function CheckReservationDetail({params}: {params: {festiva
     const festivalsData: MyFestivalBoothData = json.festivals ?? [];
     const boothsdata: MyBoothdata[] = festivalsData.flatMap(festival => festival.booths ?? []);
 
-    const festivalId = await Number(params.festivalId);
-    const boothId = await Number(params.boothId);
+    const festivalId = Number(params.festivalId);
+    const boothId = Number(params.boothId);
     const boothres=await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
       headers: {
         Cookie: cookieHeader,
@@ -115,28 +116,7 @@ export default async function CheckReservationDetail({params}: {params: {festiva
             </div>
             <div className="pt-4 border-t border-[#335533b3] space-y-2">
               <h1 className="text-xl font-bold mb-5">예약 현황</h1>
-              <div className="text-sm space-y-1">
-                {booth.reservations.map((reservation) => (
-                  <div key={reservation.reservationId}>
-                      <hr className="my-2 border-t border-gray-300" />
-                      <div className='flex justify-between content-center items-center'>
-                        <div>
-                          <p className='text-lg font-bold mb-2'>{reservation.userName}</p>
-                          <ul>
-                            <li><strong>예약일</strong> : {formatDate(reservation.reservationTime)}</li>
-                            <li><strong>예약시간</strong> : {formatTime(reservation.reservationTime)}</li>
-                            <li><strong>예약인원</strong> : {reservation.numberOfPeople}</li>
-                          </ul>
-                        </div>
-                        <button className="bg-red-500 text-white w-20 h-8 rounded-md mt-2">
-                        <p>예약 취소</p>
-                        </button>
-                      </div>
-                      <hr className="my-2 border-t border-gray-300" />
-                    
-                  </div>
-                ))}
-              </div>
+              <CheckReservationCard reservation={booth.reservations} cookieHeader={cookieHeader} />
             </div>
         </div>
       </div>
