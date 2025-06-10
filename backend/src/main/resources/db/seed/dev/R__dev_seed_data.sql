@@ -1,10 +1,32 @@
 /* ──────────────────────────────────────────────────────────────
-Flyway  V1000__dev_seed_data.sql   –   DEV/LOCAL 전용 시드 데이터
-스키마 전제: booth.created_by  NOT NULL FK → user(id)
+Repeatable  R__dev_seed_data.sql  –  DEV/LOCAL 초기화 + 시드
+① 부팅마다 기존 데이터 전체 삭제(TRUNCATE)
+② 최신 시드 데이터 다시 삽입
+※ 운영 경로에는 포함하지 마세요!
 ────────────────────────────────────────────────────────────── */
 /* =============================================================
-1. USERS
--- password: password123
+0. RESET  –  FK 잠시 해제 후 TRUNCATE
+------------------------------------------------------------- */
+SET
+  FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE reservation;
+
+TRUNCATE TABLE user_booth_like;
+
+TRUNCATE TABLE user_festival_like;
+
+TRUNCATE TABLE booth;
+
+TRUNCATE TABLE festival;
+
+TRUNCATE TABLE user;
+
+SET
+  FOREIGN_KEY_CHECKS = 1;
+
+/* =============================================================
+1. USERS   –  비밀번호는 모두 'password123'
 ------------------------------------------------------------- */
 INSERT INTO
   user(
@@ -13,6 +35,9 @@ INSERT INTO
     email,
     password,
     role,
+    university,
+    major,
+    profile_image_url,
     created_at,
     updated_at
   )
@@ -23,6 +48,9 @@ VALUES
     'user1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
+    '성균관대학교',
+    '컴퓨터교육',
+    '/src/userprofile.png',
     NOW(),
     NOW()
   ),
@@ -32,6 +60,9 @@ VALUES
     'user2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
+    '성균관대학교',
+    '경제학',
+    '/src/userprofile.png',
     NOW(),
     NOW()
   ),
@@ -41,6 +72,9 @@ VALUES
     'admin@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'ADMIN',
+    '성균관대학교',
+    '경영학',
+    '/src/userprofile.png',
     NOW(),
     NOW()
   ),
@@ -50,6 +84,9 @@ VALUES
     'host1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
+    '성균관대학교',
+    '전자공학',
+    '/src/userprofile.png',
     NOW(),
     NOW()
   ),
@@ -59,12 +96,15 @@ VALUES
     'host2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
+    '성균관대학교',
+    '디자인',
+    '/src/userprofile.png',
     NOW(),
     NOW()
   );
 
 /* =============================================================
-2. FESTIVALS  (ADMIN이 생성)
+2. FESTIVALS   –  ADMIN(3)이 생성
 ------------------------------------------------------------- */
 INSERT INTO
   festival (
@@ -88,8 +128,8 @@ VALUES
     '성균관대학교 자연과학캠퍼스',
     '2024-05-15',
     '2024-05-17',
-    'https://example.com/spring-festival-poster.jpg',
-    'https://example.com/spring-festival-map.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455884/kcicwce5sgn5onqfzea8.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455854/plzvsshapqguzjbjpixy.png',
     150,
     NOW(),
     NOW()
@@ -101,8 +141,8 @@ VALUES
     '성균관대학교 인문사회과학캠퍼스',
     '2024-10-20',
     '2024-10-22',
-    'https://example.com/fall-festival-poster.jpg',
-    'https://example.com/fall-festival-map.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456311/snjku9czhglrsjxbcnwl.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455854/plzvsshapqguzjbjpixy.png',
     200,
     NOW(),
     NOW()
@@ -114,21 +154,21 @@ VALUES
     '성균관대학교 자연과학캠퍼스',
     '2024-11-10',
     '2024-11-12',
-    'https://example.com/daedong-poster.jpg',
-    'https://example.com/daedong-map.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457780/werbb5bcsyuzn4eooy77.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456313/zogfhbmwdthzkdcrjdg1.jpg',
     300,
     NOW(),
     NOW()
   );
 
 /* =============================================================
-3. BOOTHS  – created_by ▲ 추가
+3. BOOTHS  – created_by FK 필수
 ------------------------------------------------------------- */
 INSERT INTO
   booth (
     id,
     festival_id,
-    created_by, -- ▲ FK HOST
+    created_by,
     name,
     host,
     location,
@@ -142,7 +182,7 @@ INSERT INTO
     updated_at
   )
 VALUES
-  /* ── 봄 축제 (host1, id 4) ─────────────────────────────── */
+  /* 봄 축제 – host1 */
   (
     1,
     1,
@@ -154,8 +194,8 @@ VALUES
     '2024-05-15 11:00',
     '2024-05-15 18:00',
     50,
-    'https://example.com/tteokbokki-poster.jpg',
-    'https://example.com/tteokbokki-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749451072/wa37se78uujl1cxlgqwp.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119788/cld-sample-4.jpg',
     NOW(),
     NOW()
   ),
@@ -170,8 +210,8 @@ VALUES
     '2024-05-15 10:00',
     '2024-05-17 20:00',
     80,
-    'https://example.com/photo-poster.jpg',
-    'https://example.com/photo-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452445/txlx2ubqm7nkhnkynuvn.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452444/yxqv3hkmpx4lw3uu7ouk.jpg',
     NOW(),
     NOW()
   ),
@@ -186,8 +226,8 @@ VALUES
     '2024-05-16 12:00',
     '2024-05-16 17:00',
     30,
-    'https://example.com/tarot-poster.jpg',
-    'https://example.com/tarot-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455091/lxnqsi8efdbjr7ek620k.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455088/fi2tyk0xw3f59mstdbhx.jpg',
     NOW(),
     NOW()
   ),
@@ -202,12 +242,12 @@ VALUES
     '2024-05-15 17:00',
     '2024-05-17 21:00',
     100,
-    'https://example.com/busking-poster.jpg',
-    'https://example.com/busking-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455362/suq5t8iaricxlgd86vez.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455360/o1lsd2kqls6nj7mszugc.jpg',
     NOW(),
     NOW()
   ),
-  /* ── 가을 축제 (host1) ──────────────────────────────────── */
+  /* 가을 축제 – host1 */
   (
     5,
     2,
@@ -219,8 +259,8 @@ VALUES
     '2024-10-20 11:00',
     '2024-10-22 18:00',
     60,
-    'https://example.com/hotteok-poster.jpg',
-    'https://example.com/hotteok-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456545/j78bhadk7nzfet4vcvrv.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456558/sjj67jexg8w48li3ik7w.png',
     NOW(),
     NOW()
   ),
@@ -235,8 +275,8 @@ VALUES
     '2024-10-20 10:00',
     '2024-10-22 19:00',
     90,
-    'https://example.com/flea-poster.jpg',
-    'https://example.com/flea-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456822/ghog4i3zhin6vazojn1z.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456820/w9gd6276jkf4tf3fl3hn.png',
     NOW(),
     NOW()
   ),
@@ -251,12 +291,12 @@ VALUES
     '2024-10-21 12:00',
     '2024-10-21 18:00',
     40,
-    'https://example.com/game-poster.jpg',
-    'https://example.com/game-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
     NOW(),
     NOW()
   ),
-  /* ── 대동제 (host2, id 5) ─────────────────────────────── */
+  /* 대동제 – host2 */
   (
     8,
     3,
@@ -268,8 +308,8 @@ VALUES
     '2024-11-10 17:00',
     '2024-11-12 23:00',
     150,
-    'https://example.com/bar-poster.jpg',
-    'https://example.com/bar-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
     NOW(),
     NOW()
   ),
@@ -284,8 +324,8 @@ VALUES
     '2024-11-10 15:00',
     '2024-11-12 22:00',
     120,
-    'https://example.com/ghost-poster.jpg',
-    'https://example.com/ghost-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
     NOW(),
     NOW()
   ),
@@ -300,12 +340,12 @@ VALUES
     '2024-11-10 11:00',
     '2024-11-12 21:00',
     200,
-    'https://example.com/foodtruck-poster.jpg',
-    'https://example.com/foodtruck-event.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
     NOW(),
     NOW()
   ),
-  /* ── 추가 부스 (페이지네이션 샘플) ─────────────────────── */
+  /* 추가 부스 (페이지네이션 샘플) */
   (
     11,
     1,
@@ -317,8 +357,8 @@ VALUES
     '2024-05-16 11:00',
     '2024-05-16 17:00',
     25,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
     NOW(),
     NOW()
   ),
@@ -333,8 +373,8 @@ VALUES
     '2024-05-15 12:00',
     '2024-05-17 18:00',
     35,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
     NOW(),
     NOW()
   ),
@@ -349,8 +389,8 @@ VALUES
     '2024-10-20 09:00',
     '2024-10-22 18:00',
     45,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
     NOW(),
     NOW()
   ),
@@ -365,8 +405,8 @@ VALUES
     '2024-10-21 11:00',
     '2024-10-21 17:00',
     20,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
     NOW(),
     NOW()
   ),
@@ -381,8 +421,8 @@ VALUES
     '2024-11-10 13:00',
     '2024-11-12 20:00',
     55,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
     NOW(),
     NOW()
   ),
@@ -397,8 +437,8 @@ VALUES
     '2024-11-11 15:00',
     '2024-11-11 22:00',
     70,
-    NULL,
-    NULL,
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
+    'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
     NOW(),
     NOW()
   );

@@ -55,7 +55,7 @@ public class FestivalService {
     // 중복된 이름 검증
     boolean exists = festivalRepository.existsByName(festival.getName());
     if (exists) {
-      throw new BadRequestException("이미 같은 이름의 축제가 존재합니다: " + festival.getName());
+      throw new IllegalArgumentException("이미 같은 이름의 축제가 존재합니다: " + festival.getName());
     }
 
     return festivalRepository.save(festival);
