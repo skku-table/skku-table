@@ -52,6 +52,10 @@ public class UserService {
   private CloudinaryService cloudinaryService;
 
   public String updateProfileImage(String email, MultipartFile imageFile) {
+    if (imageFile == null || imageFile.isEmpty()) {
+      throw new BadRequestException("업로드할 프로필 이미지가 제공되지 않았습니다.");
+    }
+
     User user = findOne(email);
 
     // 기존 이미지 삭제
@@ -75,11 +79,15 @@ public class UserService {
   }
 
   private String extractPublicIdFromUrl(String imageUrl) {
-    String[] parts = imageUrl.split("/");
-    String filename = parts[parts.length - 1];
-    String publicId = filename.substring(0, filename.lastIndexOf("."));
-    String folder = parts[parts.length - 2];
-    return folder + "/" + publicId;
+    try {
+      String[] parts = imageUrl.split("/");
+      String filename = parts[parts.length - 1];
+      String publicId = filename.substring(0, filename.lastIndexOf("."));
+      String folder = parts[parts.length - 2];
+      return folder + "/" + publicId;
+    } catch (Exception e) {
+      throw new BadRequestException("이미지 URL 포맷이 잘못되었습니다.");
+    }
   }
 
 
@@ -88,11 +96,17 @@ public class UserService {
   }
 
   public User findOne(Long userId) {
+    if (userId == null) {
+      throw new BadRequestException("사용자 ID가 필요합니다.");
+    }
     return userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
   }
 
   public User findOne(String email) {
+    if (email == null || email.isBlank()) {
+      throw new BadRequestException("이메일이 필요합니다.");
+    }
     return userRepository.findByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
   }

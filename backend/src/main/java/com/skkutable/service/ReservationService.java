@@ -8,6 +8,7 @@ import com.skkutable.domain.User;
 import com.skkutable.dto.ReservationByBoothResponseDTO;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
+import com.skkutable.exception.BadRequestException;
 import com.skkutable.exception.ResourceNotFoundException;
 import com.skkutable.repository.BoothRepository;
 import com.skkutable.repository.FestivalRepository;
@@ -29,6 +30,9 @@ public class ReservationService {
   private final FestivalRepository festivalRepository;
 
   public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
+    if (dto == null) {
+      throw new BadRequestException("Reservation data must be provided");
+    }
     User user = userRepository.findById(dto.getUserId())
         .orElseThrow(() -> new ResourceNotFoundException("User not found: " + dto.getUserId()));
 
@@ -71,6 +75,10 @@ public class ReservationService {
   }
 
   public ReservationByBoothResponseDTO getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
+    if (festivalId == null || boothId == null) {
+      throw new BadRequestException("Festival ID and Booth ID must be provided");
+    }
+
     Booth booth = boothRepository.findById(boothId)
             .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
 
@@ -145,6 +153,10 @@ public class ReservationService {
   }
 
   public ReservationResponseDTO patchReservation(Long id, ReservationRequestDTO dto) {
+    if (dto == null) {
+      throw new BadRequestException("Patch data must be provided");
+    }
+
     Reservation reservation = reservationRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
 
