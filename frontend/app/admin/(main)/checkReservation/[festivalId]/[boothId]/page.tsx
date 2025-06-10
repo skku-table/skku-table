@@ -1,18 +1,11 @@
-'use client'
 import { IoHeart } from 'react-icons/io5';
 import Header from "@/components/Headers"
-import { redirect } from "next/navigation"
 import Image from "next/image"
-import { useParams } from 'next/navigation';
 import { cookies } from "next/headers";
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
+import { formatDate } from '@/libs/utils';
+import { formatTime } from '@/libs/utils';
+import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
+import AdminSelectBooth from '@/components/AdminSelectBooth';
 
   type MyBoothdata = {
     id: number;
@@ -41,87 +34,29 @@ import {
     booths: MyBoothdata[]
     }[];
   type BoothforReservation = {
-    reservationId: number;
-    userId: number;
-    userName: string;
-    festivalId: number;
-    festivalName: string;
-    boothId: number;
-    boothName: string;
-    boothStartDate: string;
-    boothPosterImageUrl: string;
-    reservationTime: string;
-    numberOfPeople: number;
-    paymentMethod: string;
-    crestedAt: string;
-  }[];
+    booth: {
+      id: number;
+      name: string;
+      location: string;
+      startTime: string;
+      endTime: string;
+      posterImageUrl: string;
+      likeCount: number;
+    }
+    reservations: {
+      reservationId: number;
+      userId: number;
+      userName: string;
+      reservationTime: string;
+      numberOfPeople: number;
+      paymentMethod: string;
+      createdAt: string;
+    }[];
+  };
   
-// const mockAdminBooths: AdminBoothList = [
-//   {
-//     id: 1,
-//     name: '다같이 추억 숲으로',
-//     location: '삼성학술정보관 앞 잔디밭 3번 부스',
-//     period: '5.16 - 5.17',
-//     imageUrl: '/src/booth1.png',
-//     likeCount: 24,
-//     reservations: [
-//       {
-//         reservationId:10,
-//         username: '심오비',
-//         date: '25.05.16',
-//         time: '오후 6:00',
-//         people: 4,
-//       },
-//       {
-//         reservationId:11,
-//         username: '타메르',
-//         date: '25.05.17',
-//         time: '오후 7:30',
-//         people: 2,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: 'Hotel AKDONG',
-//     location: '율전 캠퍼스 중앙광장',
-//     period: '5.16 - 5.17',
-//     imageUrl: '/src/booth2.png',
-//     likeCount: 12,
-//     reservations: [
-//       {
-//         reservationId:12,
-//         username: '유세윤',
-//         date: '25.05.17',
-//         time: '오후 5:00',
-//         people: 3,
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: '술이술이 마술이',
-//     location: '제2과학관 옆 잔디밭',
-//     period: '5.16 - 5.17',
-//     imageUrl: '/src/booth3.png',
-//     likeCount: 30,
-//     reservations: [
-//       {
-//         reservationId:13,
-//         username: '이장군',
-//         date: '25.05.16',
-//         time: '오후 6:30',
-//         people: 5,
-//       },
-//     ],
-//   },
-// ]
 
-export default async function CheckReservationDetail() {
-    // const params = useParams();
-    // const boothId = params.boothId;
-    // const booth:Booth = mockAdminBooths.find((booth) => booth.id === Number(boothId)) as Booth;
-    const cookieHeader = cookies().toString();
+export default async function CheckReservationDetail({params}: {params: {festivalId: string, boothId: string}}) {
+    const cookieHeader = await cookies().toString();
 
     //try fetchwithcredential
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/booths`, {
@@ -137,60 +72,45 @@ export default async function CheckReservationDetail() {
     const json = await res.json();
     const festivalsData: MyFestivalBoothData = json.festivals ?? [];
     const boothsdata: MyBoothdata[] = festivalsData.flatMap(festival => festival.booths ?? []);
-    const params = useParams();
-    const festivalId = params.festivalId;
-    const boothId = params.boothId;
-    const boothres=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
+
+    const festivalId = await Number(params.festivalId);
+    const boothId = await Number(params.boothId);
+    const boothres=await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
       headers: {
         Cookie: cookieHeader,
       },
+
       cache: 'no-store', // 서버 컴포넌트에서 fetch는 기본적으로 SSG라 no-store 권장
     });
     
 
     const booth: BoothforReservation = boothres.ok ? await boothres.json() : []
-    
-
-
-    
-    function redirectBoothId(festivalId: number, boothId: number) {
-        redirect(`/admin/checkReservation/${boothId}`);
-    }
-
 
     return (
       <div>
         <Header isBackButton={false} title="Check Reservation" />
         <div className="relative p-4 pt-16 space-y-6">
-            <Select>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={booth[0].boothName} />
-                </SelectTrigger>
-                <SelectContent>
-                    {boothsdata.map((booth) => (
-                        <SelectItem key={booth.id} value={booth.name} onClick={() => redirectBoothId(booth.festivalId, booth.id)}>
-                            {booth.name}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+          <AdminSelectBooth boothsdata={boothsdata} boothname={booth.booth.name}/>
+          <div className="flex justify-center mb-4">
             <Image
-                src={booth[0].boothPosterImageUrl}
+                src={booth.booth.posterImageUrl}
                 alt="부스 포스터"
                 width={312}
                 height={312}
+                className="rounded-lg shadow-lg"
               />
+          </div>
             <div>
-              <div className="flex items-center gap-2 mt-4">
-                <h2 className="text-xl font-bold">{booth[0].boothName}</h2>
-                {/* <div className="flex items-center gap-1 text-[15px] text-black/60">
+              <div className="flex items-center gap-2 mt-4 ml-2">
+                <h2 className="text-xl font-bold">{booth.booth.name}</h2>
+                <div className="flex items-center gap-1 text-[15px] text-black/60">
                   <IoHeart size={18} className="text-red-500" />
-                  {booth.likeCount}
-                </div> */}
+                  {booth.booth.likeCount}
+                </div>
               </div>
               <ul className="list-disc pl-5 text-sm space-y-1 mt-2">
-                <li><strong>기간</strong> : {booth.period}</li>
-                <li><strong>위치</strong> : {booth.location}</li>
+                <li><strong>기간</strong> : {formatDate(booth.booth.startTime)} ~ {formatDate(booth.booth.endTime)}</li>
+                <li><strong>위치</strong> : {booth.booth.location}</li>
               </ul>
             </div>
             <div className="pt-4 border-t border-[#335533b3] space-y-2">
@@ -201,11 +121,11 @@ export default async function CheckReservationDetail() {
                       <hr className="my-2 border-t border-gray-300" />
                       <div className='flex justify-between content-center items-center'>
                         <div>
-                          <p className='text-lg font-bold mb-2'>{reservation.username}</p>
+                          <p className='text-lg font-bold mb-2'>{reservation.userName}</p>
                           <ul>
-                            <li><strong>예약일</strong> : {reservation.date}</li>
-                            <li><strong>예약시간</strong> : {reservation.time}</li>
-                            <li><strong>예약인원</strong> : {reservation.people}</li>
+                            <li><strong>예약일</strong> : {formatDate(reservation.reservationTime)}</li>
+                            <li><strong>예약시간</strong> : {formatTime(reservation.reservationTime)}</li>
+                            <li><strong>예약인원</strong> : {reservation.numberOfPeople}</li>
                           </ul>
                         </div>
                         <button className="bg-red-500 text-white w-20 h-8 rounded-md mt-2">
