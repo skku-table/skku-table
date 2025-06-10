@@ -1,5 +1,6 @@
 package com.skkutable.controller;
 
+import com.skkutable.dto.ReservationByBoothResponseDTO;
 import com.skkutable.dto.ReservationRequestDTO;
 import com.skkutable.dto.ReservationResponseDTO;
 import com.skkutable.service.ReservationService;
@@ -37,11 +38,11 @@ public class ReservationController {
   }
 
   @GetMapping("/festival/{festivalId}/booth/{boothId}")
-  public ResponseEntity<List<ReservationResponseDTO>> getReservationsByFestivalAndBooth(
-      @PathVariable Long festivalId,
-      @PathVariable Long boothId) {
+  public ResponseEntity<ReservationByBoothResponseDTO> getReservationsByFestivalAndBooth(
+          @PathVariable Long festivalId,
+          @PathVariable Long boothId) {
     return ResponseEntity.ok(
-        reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
+            reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
   }
 
   @GetMapping("/{reservationId}")
