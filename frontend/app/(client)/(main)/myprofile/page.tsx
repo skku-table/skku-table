@@ -110,7 +110,7 @@ export default function MyPage() {
           >
             프로필 수정
           </div>
-          <div className="border-b py-3">비밀번호 변경</div>
+          <div className="border-b py-3">로그아웃</div>
         </div>
       </div>
 
