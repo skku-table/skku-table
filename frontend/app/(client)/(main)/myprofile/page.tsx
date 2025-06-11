@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 
 
@@ -41,22 +41,22 @@ interface Booth {
 
 
 export default function MyPage() {
-  // const [tab, setTab] = useState<'univ' | 'booth'>('univ');
-  const searchParams = useSearchParams();
-  const defaultTab = searchParams.get('tab') === 'booth' ? 'booth' : 'univ';
-  const [tab, setTab] = useState<'univ' | 'booth'>(defaultTab);
+  const [tab, setTab] = useState<'univ' | 'booth'>('univ');
+  // const searchParams = useSearchParams();
+  // const defaultTab = searchParams.get('tab') === 'booth' ? 'booth' : 'univ';
+  // const [tab, setTab] = useState<'univ' | 'booth'>(defaultTab);
   const [user, setUser] = useState<User | null>(null);
   const [likedFestivals, setLikedFestivals] = useState<Festival[]>([]);
   const [likedBooths, setLikedBooths] = useState<Booth[]>([]);
   const [boothToFestivalMap, setBoothToFestivalMap] = useState<Record<number, number>>({});
   const router = useRouter();
 
-  const handleTabChange = (nextTab: 'univ' | 'booth') => { 
-    setTab(nextTab);
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('tab', nextTab);
-    window.history.replaceState({}, '', newUrl.toString());
-  };
+  // const handleTabChange = (nextTab: 'univ' | 'booth') => { 
+  //   setTab(nextTab);
+  //   const newUrl = new URL(window.location.href);
+  //   newUrl.searchParams.set('tab', nextTab);
+  //   window.history.replaceState({}, '', newUrl.toString());
+  // };
 
 
   useEffect(() => {
@@ -147,14 +147,14 @@ export default function MyPage() {
         {/* 탭 버튼 */}
         <div className="flex w-full justify-start gap-4 mb-4">
           <button
-            onClick={() => handleTabChange('univ')}
+            onClick={() => setTab('univ')}
             className={`w-[110px] h-[35px] rounded-[20px] text-base font-bold transition
               ${tab === 'univ' ? 'bg-[#335533] text-white' : 'bg-[#335533]/10 text-black'}`}
           >
             축제
           </button>
           <button
-            onClick={() => handleTabChange('booth')}
+            onClick={() => setTab('booth')}
             className={`w-[110px] h-[35px] rounded-[20px] text-base font-bold transition
               ${tab === 'booth' ? 'bg-[#335533] text-white' : 'bg-[#335533]/10 text-black'}`}
           >
