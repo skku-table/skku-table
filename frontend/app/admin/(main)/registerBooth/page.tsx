@@ -181,7 +181,7 @@ export default function RegisterBoothPage() {
           <label className="text-base font-semibold block mb-2">이벤트 이미지</label>
           <label htmlFor="eventImage" className="cursor-pointer w-full h-40 bg-gray-100 border-2 border-dashed rounded-lg flex flex-col items-center justify-center hover:bg-gray-200 text-gray-500 overflow-hidden">
             {previewEventUrl ? (
-              <img src={previewEventUrl} alt="미리보기" className="object-contain w-full h-full" />
+              <Image src={previewEventUrl} alt="미리보기" className="object-contain w-full h-full" />
             ) : (
               <>
                 + 이미지 선택

@@ -3,7 +3,6 @@ import Header from "@/components/Headers"
 import Image from "next/image"
 import { cookies } from "next/headers";
 import { formatDate } from '@/libs/utils';
-import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 import AdminSelectBooth from '@/components/AdminSelectBooth';
 import CheckReservationCard from '@/components/CheckReservationCard';
 
