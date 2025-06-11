@@ -57,6 +57,20 @@ export default function MyPage() {
   //   newUrl.searchParams.set('tab', nextTab);
   //   window.history.replaceState({}, '', newUrl.toString());
   // };
+  const handleLogout = async () => {
+  try {
+    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/logout`, {
+      method: 'POST',
+    });
+
+    if (!res.ok) throw new Error('로그아웃 실패');
+
+    router.push('/'); // 또는 '/login' 등 원하는 경로로
+  } catch (err) {
+    console.error('로그아웃 오류:', err);
+    alert('로그아웃에 실패했습니다.');
+  }
+};
 
 
   useEffect(() => {
@@ -111,13 +125,15 @@ export default function MyPage() {
 
       {/* 사용자 정보 */}
       <div className="flex items-center mb-6">
-        <Image
-          src={user.profileImageUrl ?? '/src/userprofile.png'}
-          alt="프로필 사진"
-          width={60}
-          height={60}
-          className="rounded-full border border-gray-300"
-        />
+        <div className="w-[60px] h-[60px] rounded-full overflow-hidden border border-gray-300">
+          <Image
+            src={user.profileImageUrl ?? '/src/userprofile.png'}
+            alt="프로필 사진"
+            width={60}
+            height={60}
+            className="object-cover w-full h-full"
+          />
+        </div>
         <div className="ml-4">
           <div className="font-semibold">{user.name}</div>
           <div className="text-sm text-black">
@@ -136,7 +152,12 @@ export default function MyPage() {
           >
             프로필 수정
           </div>
-          <div className="border-b py-3">로그아웃</div>
+          <div
+            className="border-b py-3 cursor-pointer"
+            onClick={handleLogout}
+          >
+            로그아웃
+          </div>
         </div>
       </div>
 
