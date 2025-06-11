@@ -1,11 +1,10 @@
 'use client'
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
-import LikeFestivalButton from '@/components/LikeFestivalButton';
-import LikeBoothButton from '@/components/LikeBoothButton';
 
 
 interface User {
@@ -25,6 +24,7 @@ interface Festival {
   startDate: string;
   endDate: string;
   likeCount: number;
+  booths?: Booth[];
 }
 
 interface Booth {
@@ -41,11 +41,23 @@ interface Booth {
 
 
 export default function MyPage() {
-  const [tab, setTab] = useState<'univ' | 'booth'>('univ');
+  // const [tab, setTab] = useState<'univ' | 'booth'>('univ');
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get('tab') === 'booth' ? 'booth' : 'univ';
+  const [tab, setTab] = useState<'univ' | 'booth'>(defaultTab);
   const [user, setUser] = useState<User | null>(null);
   const [likedFestivals, setLikedFestivals] = useState<Festival[]>([]);
   const [likedBooths, setLikedBooths] = useState<Booth[]>([]);
+  const [boothToFestivalMap, setBoothToFestivalMap] = useState<Record<number, number>>({});
   const router = useRouter();
+
+  const handleTabChange = (nextTab: 'univ' | 'booth') => { 
+    setTab(nextTab);
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('tab', nextTab);
+    window.history.replaceState({}, '', newUrl.toString());
+  };
+
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -54,9 +66,10 @@ export default function MyPage() {
         const userData = await userRes.json();
         setUser(userData);
 
-        const [festivalRes, boothRes] = await Promise.all([
+        const [festivalRes, boothRes, allFestivalsRes] = await Promise.all([
           fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/${userData.id}/likes/festivals`),
-          fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/${userData.id}/likes/booths`)
+          fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/${userData.id}/likes/booths`),
+          fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals`)
         ]);
 
         if (festivalRes.ok) {
@@ -67,6 +80,19 @@ export default function MyPage() {
         if (boothRes.ok) {
           const boothData = await boothRes.json();
           setLikedBooths(boothData);
+        }
+
+        if (allFestivalsRes.ok) {
+          const allFestivalData: Festival[] = await allFestivalsRes.json();
+          const map: Record<number, number> = {};
+
+          allFestivalData.forEach(festival => {
+            festival.booths?.forEach(booth => {
+              map[booth.id] = festival.id;
+            });
+          });
+
+          setBoothToFestivalMap(map);
         }
 
       } catch (error) {
@@ -86,7 +112,7 @@ export default function MyPage() {
       {/* 사용자 정보 */}
       <div className="flex items-center mb-6">
         <Image
-          src={user.profileImageUrl ?? '/src/users/basic_profile.png'}
+          src={user.profileImageUrl ?? '/src/userprofile.png'}
           alt="프로필 사진"
           width={60}
           height={60}
@@ -121,14 +147,14 @@ export default function MyPage() {
         {/* 탭 버튼 */}
         <div className="flex w-full justify-start gap-4 mb-4">
           <button
-            onClick={() => setTab('univ')}
+            onClick={() => handleTabChange('univ')}
             className={`w-[110px] h-[35px] rounded-[20px] text-base font-bold transition
               ${tab === 'univ' ? 'bg-[#335533] text-white' : 'bg-[#335533]/10 text-black'}`}
           >
-            대학교
+            축제
           </button>
           <button
-            onClick={() => setTab('booth')}
+            onClick={() => handleTabChange('booth')}
             className={`w-[110px] h-[35px] rounded-[20px] text-base font-bold transition
               ${tab === 'booth' ? 'bg-[#335533] text-white' : 'bg-[#335533]/10 text-black'}`}
           >
@@ -136,41 +162,47 @@ export default function MyPage() {
           </button>
         </div>
         {/* 좋아요한 축제 / 부스 */}
+        {/* 카드 리스트 */}
         <div className="grid grid-cols-2 gap-3">
-        {tab === 'univ' && likedFestivals.map(festival => (
-          <div key={festival.id} className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px]">
-            <div className="relative w-full h-full">
-              <Image
-                src={festival.posterImageUrl}
-                alt={festival.name}
-                fill
-                className="object-cover"
-              />
-              <LikeFestivalButton festivalId={festival.id} />
-            </div>
-          </div>
-        ))}
-
-        {tab === 'booth' && likedBooths.map(booth => (
-          <div key={booth.id} className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px]">
-            <div className="relative w-full h-full">
-              {booth.posterImageUrl ? (
-                <Image
-                  src={booth.posterImageUrl}
-                  alt={booth.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[12px] text-gray-500">
-                  이미지 없음
+          {tab === 'univ' && likedFestivals.map(festival => (
+            <Link key={festival.id} href={`/festival/${festival.id}`}>
+              <div className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px] cursor-pointer">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={festival.posterImageUrl}
+                    alt={festival.name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-              )}
-              <LikeBoothButton boothId={booth.id} />
-            </div>
-          </div>
-        ))}
-      </div>
+              </div>
+            </Link>
+          ))}
+
+          {tab === 'booth' && likedBooths.map(booth => {
+            const festivalId = boothToFestivalMap[booth.id];
+            return (
+              <Link key={booth.id} href={festivalId ? `/festival/${festivalId}/booth/${booth.id}` : '#'} passHref>
+                <div className="rounded-lg overflow-hidden border border-gray-200 w-[150px] h-[150px] cursor-pointer">
+                  <div className="relative w-full h-full">
+                    {booth.posterImageUrl ? (
+                      <Image
+                        src={booth.posterImageUrl}
+                        alt={booth.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center text-[12px] text-gray-500">
+                        이미지 없음
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
