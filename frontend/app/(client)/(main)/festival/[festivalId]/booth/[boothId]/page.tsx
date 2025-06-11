@@ -36,13 +36,6 @@ export default async function BoothDetailPage({ params }:{ params: Promise<{ fes
   const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
   const booth = festival.booths.find((booths) => booths.id === Number(boothId));
-  // const [liked, setLiked] = useState(false);
-  // const [likeCount, setLikeCount] = useState(booth.likeCount);
-
-  // const toggleLike = () => {
-  //   setLiked(prev => !prev);
-  //   setLikeCount(prev => prev + (liked ? -1 : 1));
-  // };
 
   if (!booth) {
     return <div>부스를 찾을 수 없습니다.</div>;

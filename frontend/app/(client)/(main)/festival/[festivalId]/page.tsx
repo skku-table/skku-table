@@ -6,15 +6,6 @@ import Image from "next/image";
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
 import LikeFestivalButton from "@/components/LikeFestivalButton";
 
-
-
-// type Props = {
-//     params: {
-//         festivalId: string;
-//     };
-// };
-
-
 type Festivaltype = {
   id: number;
   posterImageUrl: string;
@@ -45,7 +36,6 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
   const { festivalId } = await params;
   const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
-
 
   return (
       <>
@@ -90,12 +80,6 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
                         className="object-cover rounded cursor-pointer"
                       />
                     </Link>
-                      // <img
-                      // key={booth.boothId}
-                      // src={booth.posterImageUrl}
-                      // alt={`부스 ${booth.boothId}`}
-                      // className="w-32 h-32 object-cover rounded"
-                      // />
                   ))}
                   </div>
               </div>
