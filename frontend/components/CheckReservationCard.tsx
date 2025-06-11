@@ -59,7 +59,7 @@ export default function CheckReservationCard({reservation, cookieHeader}: {reser
                 </div>
                 <button
                   onClick={() => handleCancel(reservation.reservationId)}
-                  className="bg-red-500 text-white w-20 h-8 rounded-md mt-2"
+                  className="bg-red-500 text-white w-20 h-8 rounded-md mt-2 hover:cursor-pointer"
                 >
                   <p>예약 취소</p>
                 </button>

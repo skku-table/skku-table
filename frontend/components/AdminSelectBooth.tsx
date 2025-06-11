@@ -38,10 +38,10 @@ import {
     return(
         <>
         <Select onValueChange={handleValueChange}> {/* 여기에 onValueChange를 사용합니다. */}
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] hover:cursor-pointer">
                     <SelectValue placeholder={boothname}/>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="hover:cursor-pointer">
                     {boothsdata.map((booth) => (
                         <SelectItem key={booth.id} value={booth.name}> {/* onClick 대신 value만 사용합니다. */}
                             {booth.name}

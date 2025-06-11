@@ -73,7 +73,7 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
   return (
     <button
       onClick={handleClick}
-      className="absolute top-3 right-3 p-0 w-1/8 h-1/8 bg-transparent border-none"
+      className="absolute top-3 right-3 p-0 w-1/8 h-1/8 bg-transparent border-none hover:cursor-pointer"
       style={{ lineHeight: 0 }}
       disabled={loading}
     >
@@ -81,7 +81,7 @@ export default function LikeFestivalButton({ festivalId }: LikeButtonProps) {
         width={125}
         height={125}
         style={{
-          color: isLiked ? 'red' : 'white',
+          color: isLiked ? 'red' : 'gray',
           width: '100%',
           height: '100%',
         }}

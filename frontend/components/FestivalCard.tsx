@@ -26,7 +26,7 @@ export function FestivalCard({ festival }: { festival: Festival }) {
     if (festivalLikeCounts[festival.id] === undefined) {
       setFestivalLikeCount(festival.id, festival.likeCount)
     }
-  }, [festival.id, festivalLikeCounts])
+  }, [festival.id, festivalLikeCounts, setFestivalLikeCount, festival.likeCount])
   return(
     <div>
         <div className="relative w-[290px] h-[290px] mx-auto">

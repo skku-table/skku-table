@@ -55,7 +55,7 @@ import CheckReservationCard from '@/components/CheckReservationCard';
   };
   
 
-export default async function CheckReservationDetail({params}: {params: {festivalId: string, boothId: string}}) {
+export default async function CheckReservationDetail({ params }:{ params: Promise<{ festivalId: string; boothId: string }> }) {
     const cookieHeader = cookies().toString();
 
     //try fetchwithcredential
@@ -73,9 +73,8 @@ export default async function CheckReservationDetail({params}: {params: {festiva
     const festivalsData: MyFestivalBoothData = json.festivals ?? [];
     const boothsdata: MyBoothdata[] = festivalsData.flatMap(festival => festival.booths ?? []);
 
-    const festivalId = Number(params.festivalId);
-    const boothId = Number(params.boothId);
-    const boothres=await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
+    const { festivalId, boothId } = await params;
+    const boothres=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations/festival/${festivalId}/booth/${boothId}`, {
       headers: {
         Cookie: cookieHeader,
       },
@@ -84,7 +83,12 @@ export default async function CheckReservationDetail({params}: {params: {festiva
     });
     
 
-    const booth: BoothforReservation = boothres.ok ? await boothres.json() : []
+    if (!boothres.ok) {  
+      console.error('Failed to fetch booth data:', boothres.status);  
+      return <div>Error loading booth data</div>;  
+    }  
+    const booth: BoothforReservation = await boothres.json(); 
+
 
     return (
       <div>

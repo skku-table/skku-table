@@ -24,8 +24,8 @@ type MyBoothdata = {
 export default function ManageBoothCard({boothsdata}:{boothsdata: MyBoothdata[]}) {
     const router = useRouter()
 
-    const handleBoothClick = (id: number) => {
-    router.push(`/admin/checkReservation/${id}`)
+    const handleBoothClick = (festivalId: number, boothId: number) => {
+    router.push(`/admin/checkReservation/${festivalId}/${boothId}`)
     }
 
     const handleRegisterClick = () => {
@@ -42,14 +42,14 @@ export default function ManageBoothCard({boothsdata}:{boothsdata: MyBoothdata[]}
             <li
                 key={booth.id}
                 className="flex items-center gap-6 cursor-pointer rounded-md"
-                onClick={() => handleBoothClick(booth.id)}
+                onClick={() => handleBoothClick(booth.festivalId, booth.id)}
             >
                 <Image
                 src={booth.posterImageUrl}
                 alt={booth.name}
                 width={120}
                 height={120}
-                className="rounded-md object-cover"
+                className="rounded-md object-cover hover:ring-blue-500"
                 />
                 <div className="text-base">
                 <h4 className="text-lg font-bold">{booth.name}</h4>

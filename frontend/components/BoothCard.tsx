@@ -25,7 +25,7 @@ export function BoothCard({booth}: {booth: Booth}) {
     if (boothLikeCounts[booth.id] === undefined) {
       setBoothLikeCount(booth.id, booth.likeCount)
     }
-  }, [booth.id, boothLikeCounts])
+  }, [booth.id, boothLikeCounts, setBoothLikeCount, booth.likeCount])
   return(
       <>
         {/* 포스터 이미지 + 하트 버튼 */}

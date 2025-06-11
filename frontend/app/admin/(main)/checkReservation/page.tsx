@@ -42,7 +42,11 @@ export default async function CheckReservationPage() {
     const text = await res.text();
     if (!res.ok) {
       console.error('Failed to fetch:', res.status)
-      return null
+      return (
+        <div className="flex items-center justify-center h-screen">  
+          <p className="text-red-500">부스 데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.</p>  
+        </div>
+      )
     }
     const json = JSON.parse(text);
     const festivalsData: MyFestivalBoothData = json.festivals ?? [];

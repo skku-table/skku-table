@@ -1,17 +1,10 @@
 // app/admin/(main)/[festivalId]/page.tsx
-
+import LikeFestivalButton from "@/components/LikeFestivalButton";
 import Header from "@/components/Headers";
 import Link from "next/link";
 import { formatDate } from "@/libs/utils";
 import Image from "next/image";
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
-
-// type Props = {
-//     params: {
-//         festivalId: string;
-//     };
-// };
-
 
 type Festivaltype = {
   id: number;
@@ -44,19 +37,20 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
   const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${festivalId}`);
   const festival : Festivaltype = await res.json();
 
-
   return (
       <>
           <Header isBackButton={true} title={festival.name}/>
-          <div className="relative p-4 pt-16 space-y-6">
-
-              <Image
-                src={festival.posterImageUrl}
-                alt="축제 포스터"
-                width={312}
-                height={312}
-                className="rounded-lg shadow"
-              />
+          <div className="flex flex-col justify-center relative p-4 pt-16 space-y-6">
+                <div className="relative">
+                  <Image
+                    src={festival.posterImageUrl}
+                    alt="축제 포스터"
+                    width={312}
+                    height={312}
+                    className="w-full rounded-lg"
+                  />
+                  <LikeFestivalButton festivalId={festival.id}/>
+                </div>
 
               {/* 간단 정보 */}
               <div>
@@ -85,12 +79,6 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
                         className="object-cover rounded cursor-pointer"
                       />
                     </Link>
-                      // <img
-                      // key={booth.boothId}
-                      // src={booth.posterImageUrl}
-                      // alt={`부스 ${booth.boothId}`}
-                      // className="w-32 h-32 object-cover rounded"
-                      // />
                   ))}
                   </div>
               </div>
