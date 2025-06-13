@@ -1,2 +1,7 @@
 import MyProfilePage from '@/components/MyProfilePage';
-export default MyProfilePage;
+
+export default function ProfilePage() {
+  return (
+    <MyProfilePage />
+  );
+}

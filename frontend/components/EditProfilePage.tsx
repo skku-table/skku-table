@@ -123,7 +123,7 @@ export default function EditProfilePage() {
 
           <div className="flex gap-4 mt-3">
             <label
-              className="w-[130px] h-[30px] border border-[#335533] rounded-md flex items-center justify-center cursor-pointer font-bold text-sm text-[#335533] bg-white"
+              className="w-[130px] h-[30px] border border-[#335533] rounded-md flex items-center justify-center hover:cursor-pointer font-bold text-sm text-[#335533] bg-white"
               htmlFor="profileImage"
             >
               사진 선택
