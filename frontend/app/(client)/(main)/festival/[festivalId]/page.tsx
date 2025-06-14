@@ -77,6 +77,7 @@ export default async function FestivalDetailPage({ params }: { params: Promise<{
                         alt={`부스 ${booth.id}`}
                         width={128}
                         height={128}
+                        style={{ width: "128px", height: "128px" }}
                         className="object-cover rounded cursor-pointer"
                       />
                     </Link>
