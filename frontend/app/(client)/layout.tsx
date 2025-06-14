@@ -11,11 +11,14 @@ import { IoCalendarClearOutline } from "react-icons/io5";
 import { IoCalendarClear } from "react-icons/io5";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { HiUserCircle } from "react-icons/hi2";
+import { usePushRegister } from '@/hooks/usePushRegister' 
 
 
 import cn from 'classnames'
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
+  usePushRegister();
+
   const pathname=usePathname()
   const isCurrentTab=(tab:string)=>{
     if (tab === ''){
