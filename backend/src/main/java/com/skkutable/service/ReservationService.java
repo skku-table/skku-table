@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.firebase.cloud.FirestoreClient;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +66,44 @@ public class ReservationService {
     reservation.setPaymentMethod(paymentMethod);
 
     Reservation saved = reservationRepository.save(reservation);
-    return toResponseDTO(saved);
+    ReservationResponseDTO response = toResponseDTO(saved);
+
+    // 🔔 Firestore에 예약 알림 정보 저장
+    try {
+        Firestore db = FirestoreClient.getFirestore();
+
+        // 1. 유저 Firestore 문서에서 fcmToken 가져오기
+        DocumentSnapshot userDoc = db.collection("users")
+            .document(String.valueOf(dto.getUserId()))
+            .get()
+            .get(); // 비동기 -> 동기로 대기
+
+        if (!userDoc.exists()) {
+            System.err.println("⚠️ Firestore에 해당 유저 없음: userId = " + dto.getUserId());
+            return response;
+        }
+
+        String fcmToken = userDoc.getString("fcmToken");
+
+        // 2. 알림 예약 데이터 구성
+        Map<String, Object> alarmData = new HashMap<>();
+        alarmData.put("userId", dto.getUserId());
+        alarmData.put("festivalName", response.getFestivalName());
+        alarmData.put("boothName", response.getBoothName());
+        alarmData.put("reservationTime", response.getReservationTime().toString()); // ISO 포맷
+        alarmData.put("pushToken", fcmToken);
+        alarmData.put("notified", false);
+
+        // 3. Firestore에 저장
+        db.collection("reservations").add(alarmData);
+        System.out.println("✅ Firestore 예약 알림 정보 저장 완료");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("❌ Firestore 알림 정보 저장 실패");
+    }
+
+    return response;
   }
 
 
