@@ -2,6 +2,8 @@
 import Header from "@/components/Headers"
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
 import { FestivalCard } from "@/components/FestivalCard";
+import { usePushRegister } from '@/hooks/usePushRegister' 
+
 
 
 
@@ -40,8 +42,17 @@ export default async function Page() {
     console.error('Failed to fetch:', res.status)
     return null
   }
+  const me= await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`);
+  if (!me.ok) {
+    console.error('Failed to fetch user data:', me.status)
+    return null
+  }
+
   
-  const festivalsData: FestivalsData = await res.json();    
+  const festivalsData: FestivalsData = await res.json();  
+  const userData = await me.json();
+  usePushRegister(userData.id);
+
 
   return (
     <>
