@@ -10,6 +10,7 @@ type FormData = {
     email: string;
     password: string;
     role: string;
+    adminSecret?: string;
 }
 export default function SignupPage() {
     const router = useRouter()
@@ -32,7 +33,12 @@ export default function SignupPage() {
                 'Content-Type': 'application/json',
             }
             if (isAdmin) {
-                headers['x-admin-secret'] = process.env.NEXT_PUBLIC_ADMIN_SECRET!
+                // headers['x-admin-secret'] = process.env.NEXT_PUBLIC_ADMIN_SECRET!
+                if (data.adminSecret !== process.env.NEXT_PUBLIC_ADMIN_SECRET) {
+                    setError('잘못된 관리자 비밀키입니다.')
+                    return
+                }
+                headers['x-admin-secret'] = data.adminSecret!
             }
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/signup`, {
                 method: 'POST',
@@ -100,6 +106,18 @@ export default function SignupPage() {
                 />
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
+            {isAdmin && (
+                <div>
+                <label className="block text-sm">관리자 비밀키</label>
+                <input
+                    type="password"
+                    {...register('adminSecret', { required: '관리자 비밀키를 입력하세요' })}
+                    className="w-full border p-2 rounded mt-1"
+                    placeholder="관리자 비밀키를 입력하세요"
+                />
+                {errors.adminSecret && <p className="text-red-500 text-sm mt-1">{errors.adminSecret.message}</p>}
+                </div>
+            )}
 
             <button
                 type="submit"
