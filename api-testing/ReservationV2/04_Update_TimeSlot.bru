@@ -1,0 +1,25 @@
+meta {
+  name: Update TimeSlot
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{Url}}/booths/1/timeslots/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "startTime": "2024-05-15T16:00:00",
+    "endTime": "2024-05-15T17:00:00",
+    "maxCapacity": 15,
+    "status": "AVAILABLE"
+  }
+}
+
+docs {
+  # Update TimeSlot
+  기존 타임슬롯을 수정합니다. HOST, ADMIN 권한 필요.
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Delete TimeSlot
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{Url}}/booths/1/timeslots/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Delete TimeSlot
+  타임슬롯을 삭제합니다. HOST, ADMIN 권한 필요.
+  예약이 있는 타임슬롯은 삭제할 수 없습니다.
+} 

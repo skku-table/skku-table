@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -85,6 +88,26 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex,
       HttpServletRequest req) {
     return buildErrorResponse(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.", req);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ApiError> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+      HttpServletRequest req) {
+    return buildErrorResponse(HttpStatus.BAD_REQUEST, "잘못된 요청 형식입니다: " + ex.getMessage(), req);
+  }
+
+  @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+  public ResponseEntity<ApiError> handleHttpMediaTypeNotSupported(
+      HttpMediaTypeNotSupportedException ex,
+      HttpServletRequest req) {
+    return buildErrorResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getMessage(), req);
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<ApiError> handleHttpRequestMethodNotSupported(
+      HttpRequestMethodNotSupportedException ex,
+      HttpServletRequest req) {
+    return buildErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(), req);
   }
 
   /**

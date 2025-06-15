@@ -9,8 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -67,7 +70,7 @@ public class User {
   private LocalDateTime UpdatedAt;
 
 
-    // 생성자에서 createdAt, updatedAt은 제외
+  // 생성자에서 createdAt, updatedAt은 제외
   public User(String name, String email, String encodedPw, Role role) {
     this.name = name;
     this.email = email;

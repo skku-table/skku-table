@@ -15,8 +15,12 @@ public class ReservationResponseDTO {
   private String boothName;
   private LocalDateTime boothStartDate;
   private String boothPosterImageUrl;
-  private LocalDateTime reservationTime;
   private int numberOfPeople;
   private String paymentMethod;
   private LocalDateTime createdAt;
+
+  // TimeSlot 정보
+  private Long timeSlotId;
+  private LocalDateTime timeSlotStartTime;
+  private LocalDateTime timeSlotEndTime;
 }

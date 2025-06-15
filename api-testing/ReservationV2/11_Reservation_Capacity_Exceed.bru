@@ -1,0 +1,27 @@
+meta {
+  name: Reservation Capacity Exceed
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{Url}}/v2/reservations
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "boothId": 1,
+    "festivalId": 1,
+    "timeSlotId": 1,
+    "numberOfPeople": 50,
+    "paymentMethod": "CARD"
+  }
+}
+
+docs {
+  # Reservation Capacity Exceed
+  타임슬롯 최대 수용 인원을 초과하는 예약 시도 (409 Conflict 예상)
+}

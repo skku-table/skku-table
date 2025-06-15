@@ -1,0 +1,28 @@
+meta {
+  name: Full Booking Scenario
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{Url}}/v2/reservations
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "boothId": 1,
+    "festivalId": 1,
+    "timeSlotId": 3,
+    "numberOfPeople": 6,
+    "paymentMethod": "CARD"
+  }
+}
+
+docs {
+  # Full Booking Scenario
+  타임슬롯을 만석으로 만드는 예약 시나리오
+  (이전에 4명 예약이 있다면 총 10명으로 만석)
+}

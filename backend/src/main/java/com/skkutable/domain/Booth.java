@@ -53,6 +53,9 @@ public class Booth {
   @Column(name = "end_date_time")
   private LocalDateTime endDateTime;
 
+  @Column(name = "reservation_open_time")
+  private LocalDateTime reservationOpenTime;
+
   @Setter
   @Column(name = "like_count")
   @Builder.Default

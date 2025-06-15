@@ -1,0 +1,27 @@
+meta {
+  name: Unauthorized Reservation Creation
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{Url}}/v2/reservations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": 999,
+    "boothId": 1,
+    "festivalId": 1,
+    "timeSlotId": 1,
+    "numberOfPeople": 2,
+    "paymentMethod": "CARD"
+  }
+}
+
+docs {
+  # Unauthorized Reservation Creation
+  비인증 사용자의 예약 생성 시도 (403 Unauthorized 예상)
+}

@@ -1,8 +1,15 @@
 package com.skkutable.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.skkutable.domain.Booth;
 import com.skkutable.domain.Festival;
@@ -40,26 +47,14 @@ class BoothServiceTest {
 
   @BeforeEach
   void setUp() {
-    hostUser = User.builder()
-        .id(1L)
-        .name("Host User")
-        .email("host@test.com")
-        .role(Role.HOST)
+    hostUser = User.builder().id(1L).name("Host User").email("host@test.com").role(Role.HOST)
         .build();
 
-    festival = Festival.builder()
-        .id(1L)
-        .name("Test Festival")
-        .build();
+    festival = Festival.builder().id(1L).name("Test Festival").build();
 
-    booth = Booth.builder()
-        .name("Test Booth")
-        .host("Booth Host")
-        .location("A-1")
-        .description("Test Description")
-        .startDateTime(LocalDateTime.now())
-        .endDateTime(LocalDateTime.now().plusHours(4))
-        .build();
+    booth = Booth.builder().name("Test Booth").host("Booth Host").location("A-1")
+        .description("Test Description").startDateTime(LocalDateTime.now())
+        .endDateTime(LocalDateTime.now().plusHours(4)).build();
   }
 
   @Test
@@ -68,15 +63,9 @@ class BoothServiceTest {
     // given
     Long festivalId = 1L;
     String userEmail = "host@test.com";
-    Booth savedBooth = Booth.builder()
-        .id(1L)
-        .name(booth.getName())
-        .host(booth.getHost())
-        .location(booth.getLocation())
-        .description(booth.getDescription())
-        .startDateTime(booth.getStartDateTime())
-        .endDateTime(booth.getEndDateTime())
-        .likeCount(0)
+    Booth savedBooth = Booth.builder().id(1L).name(booth.getName()).host(booth.getHost())
+        .location(booth.getLocation()).description(booth.getDescription())
+        .startDateTime(booth.getStartDateTime()).endDateTime(booth.getEndDateTime()).likeCount(0)
         .build();
     savedBooth.setCreatedBy(hostUser);
     savedBooth.setFestival(festival);
@@ -155,9 +144,7 @@ class BoothServiceTest {
   @DisplayName("Booth의 setCreatedBy 메서드가 정상적으로 작동한다")
   void testSetCreatedBy() {
     // given
-    Booth testBooth = Booth.builder()
-        .name("Test")
-        .build();
+    Booth testBooth = Booth.builder().name("Test").build();
 
     // when
     testBooth.setCreatedBy(hostUser);
