@@ -12,10 +12,10 @@ import { IoCalendarClear } from "react-icons/io5";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { HiUserCircle } from "react-icons/hi2";
 
-
 import cn from 'classnames'
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
+
   const pathname=usePathname()
   const isCurrentTab=(tab:string)=>{
     if (tab === ''){

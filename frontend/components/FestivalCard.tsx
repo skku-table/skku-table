@@ -8,6 +8,7 @@ import { formatDate } from '@/libs/utils';
 import { IoHeartSharp } from 'react-icons/io5';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { usePushRegister } from '@/hooks/usePushRegister' 
 
 type Festival = {
   id: number;
@@ -18,9 +19,10 @@ type Festival = {
   likeCount: number;
 };
 
-export function FestivalCard({ festival }: { festival: Festival }) {
+export function FestivalCard({ festival, userId }: { festival: Festival, userId: number }) {
   const { festivalLikeCounts, setFestivalLikeCount } = useLikeStore()
   const count = festivalLikeCounts[festival.id] ?? festival.likeCount
+  usePushRegister(userId);
     // 초기값 zustand에 등록
   useEffect(() => {
     if (festivalLikeCounts[festival.id] === undefined) {

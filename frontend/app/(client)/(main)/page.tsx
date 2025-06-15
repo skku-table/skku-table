@@ -5,6 +5,8 @@ import { FestivalCard } from "@/components/FestivalCard";
 
 
 
+
+
 type FestivalsData = {
   id: number;
   posterImageUrl: string;
@@ -40,8 +42,16 @@ export default async function Page() {
     console.error('Failed to fetch:', res.status)
     return null
   }
+  const me= await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`);
+  if (!me.ok) {
+    console.error('Failed to fetch user data:', me.status)
+    return null
+  }
+
   
-  const festivalsData: FestivalsData = await res.json();    
+  const festivalsData: FestivalsData = await res.json();  
+  const userData = await me.json();
+
 
   return (
     <>
@@ -51,7 +61,7 @@ export default async function Page() {
 
         <div className="flex flex-col items-center gap-6">
           {festivalsData.map((festival) => (
-            <FestivalCard key={festival.id} festival={festival} />
+            <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
           ))}
         </div>
 

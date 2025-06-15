@@ -174,4 +174,4 @@ bin/
 .env
 
 #Ignore firebase JSON of resources/firebase
-src/main/resources/firebase/skku-table-firebase-adminsdk-fbsvc-fd5aa3635b.json
+src/main/resources/firebase/service-account.json

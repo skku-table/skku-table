@@ -8,12 +8,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+
 
 @Component
 public class FirebaseInitializer {
 
     @PostConstruct
     public void init() throws IOException {
+        URL resourceUrl = getClass()
+            .getClassLoader()
+            .getResource("firebase/service-account.json");
+        System.out.println("🔍 [DEBUG] Firebase JSON 위치: " + resourceUrl);
         // classpath로부터 JSON 파일 불러오기
         InputStream serviceAccount = getClass()
             .getClassLoader()
