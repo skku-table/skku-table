@@ -80,7 +80,7 @@ public class ReservationService {
         // LocalDateTime → java.util.Date
         Date date = Date.from(
           response.getReservationTime()
-                  .atZone(ZoneId.systemDefault())
+                  .atZone(ZoneId.of("Asia/Seoul"))  // 서울 시간대 설정
                   .toInstant()
         );
 
