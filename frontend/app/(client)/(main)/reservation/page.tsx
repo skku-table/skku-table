@@ -12,6 +12,8 @@ interface Reservation {
   boothId: number;
   boothName: string;
   festivalName: string;
+  timeSlotStartTime: string;
+  timeSlotEndTime: string;
   reservationTime: string;
   numberOfPeople: number;
   boothPosterImageUrl: string;
@@ -23,7 +25,12 @@ function formatDate(dateStr: string): string {
   const mm = date.getMonth() + 1;
   const dd = date.getDate();
   const weekday = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+  
   return `${yy}.${mm}.${dd} ${weekday}`;
+}
+
+function safeDate(dateStr: string): Date {
+  return new Date(dateStr.includes(':00') ? dateStr : `${dateStr}:00`);
 }
 
 export default function ReservationPage() {
@@ -31,6 +38,7 @@ export default function ReservationPage() {
   const [tab, setTab] = useState<'current' | 'past'>('current');
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
+
 
     // 사용자 정보 먼저 불러오기
   useEffect(() => {
@@ -64,7 +72,7 @@ export default function ReservationPage() {
     async function fetchReservations() {
       try {
 
-        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/user/${userId}`);
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/my`);
         const data = await res.json();
         setReservations(data);
       } catch (error) {
@@ -77,7 +85,7 @@ export default function ReservationPage() {
 
   const now = new Date();
   const filtered = reservations.filter((r) => {
-    const reservationDate = new Date(r.reservationTime);
+    const reservationDate = new Date(r.timeSlotStartTime);
     return tab === 'current' ? reservationDate >= now : reservationDate < now;
   });
 
@@ -106,12 +114,15 @@ export default function ReservationPage() {
       {/* 예약 카드 목록 */}
      {filtered.map((r) => {
         const timeStr = new Date(r.reservationTime).toTimeString().slice(0, 5);
-        const formattedTime = formatToKoreanTime(timeStr);
+        const dateObj = safeDate(r.timeSlotStartTime);
+        const hours = dateObj.getHours().toString().padStart(2, '0');
+        const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+        const formattedTime = formatToKoreanTime(`${hours}:${minutes}`);
 
         return (
           <div key={r.reservationId} className="mb-6">
             <p className="font-bold text-[17px] mb-2">
-              {formatDate(r.reservationTime)}
+                {formatDate(r.timeSlotStartTime.includes(':00') ? r.timeSlotStartTime : `${r.timeSlotStartTime}:00`)}
             </p>
             <div className="flex gap-4 items-center">
               <Image
@@ -141,7 +152,7 @@ export default function ReservationPage() {
                         const confirmed = window.confirm('정말 예약을 취소하시겠습니까?');
                         if (!confirmed) return;
                         try {
-                          const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${r.reservationId}`, {
+                          const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/${r.reservationId}`, {
                             method: 'DELETE',
                           });
                           if (res.ok) {
