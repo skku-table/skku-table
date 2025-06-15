@@ -43,6 +43,10 @@ public class Reservation {
   @JoinColumn(name = "festival_id")
   private Festival festival;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "time_slot_id")
+  private TimeSlot timeSlot;
+
   private LocalDateTime reservationTime;
 
   private int numberOfPeople;

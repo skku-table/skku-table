@@ -19,4 +19,9 @@ public class ReservationResponseDTO {
   private int numberOfPeople;
   private String paymentMethod;
   private LocalDateTime createdAt;
+  
+  // TimeSlot 정보
+  private Long timeSlotId;
+  private LocalDateTime timeSlotStartTime;
+  private LocalDateTime timeSlotEndTime;
 }
