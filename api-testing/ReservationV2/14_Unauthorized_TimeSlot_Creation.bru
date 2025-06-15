@@ -1,0 +1,24 @@
+meta {
+  name: Unauthorized TimeSlot Creation
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{Url}}/booths/1/timeslots
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "startTime": "2024-05-15T14:00:00",
+    "endTime": "2024-05-15T15:00:00",
+    "maxCapacity": 10
+  }
+}
+
+docs {
+  # Unauthorized TimeSlot Creation
+  비인증 사용자의 타임슬롯 생성 시도 (403 Unauthorized 예상)
+}

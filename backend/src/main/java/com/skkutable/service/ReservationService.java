@@ -1,5 +1,7 @@
 package com.skkutable.service;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.cloud.FirestoreClient;
 import com.skkutable.domain.Booth;
 import com.skkutable.domain.Festival;
 import com.skkutable.domain.PaymentMethod;
@@ -14,15 +16,13 @@ import com.skkutable.repository.BoothRepository;
 import com.skkutable.repository.FestivalRepository;
 import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.UserRepository;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +59,6 @@ public class ReservationService {
         user,
         booth,
         festival,
-        dto.getReservationTime(),
         dto.getNumberOfPeople()
     );
     reservation.setPaymentMethod(paymentMethod);
@@ -75,13 +74,14 @@ public class ReservationService {
       } else {
         Firestore db = FirestoreClient.getFirestore();
         Map<String, Object> alarmData = new HashMap<>();
-        alarmData.put("userId",      dto.getUserId());
+        alarmData.put("userId", dto.getUserId());
         alarmData.put("festivalName", response.getFestivalName());
-        alarmData.put("boothName",    response.getBoothName());
-        alarmData.put("reservationTime", response.getReservationTime().toString());
-        alarmData.put("pushToken",      fcmToken);
-        alarmData.put("notified",       false);
-  
+        alarmData.put("boothName", response.getBoothName());
+        alarmData.put("timeSlotStartTime", response.getTimeSlotStartTime() != null ? response.getTimeSlotStartTime().toString() : "");
+        alarmData.put("timeSlotEndTime", response.getTimeSlotEndTime() != null ? response.getTimeSlotEndTime().toString() : "");
+        alarmData.put("pushToken", fcmToken);
+        alarmData.put("notified", false);
+
         db.collection("reservations").add(alarmData);
         System.out.println("✅ Firestore 예약 알림 정보 저장 완료");
       }
@@ -102,19 +102,21 @@ public class ReservationService {
         .collect(Collectors.toList());
   }
 
-  public ReservationByBoothResponseDTO getReservationsByFestivalAndBooth(Long festivalId, Long boothId) {
+  public ReservationByBoothResponseDTO getReservationsByFestivalAndBooth(Long festivalId,
+      Long boothId) {
     if (festivalId == null || boothId == null) {
       throw new BadRequestException("Festival ID and Booth ID must be provided");
     }
 
     Booth booth = boothRepository.findById(boothId)
-            .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
+        .orElseThrow(() -> new ResourceNotFoundException("Booth not found: " + boothId));
 
     if (!booth.getFestival().getId().equals(festivalId)) {
       throw new ResourceNotFoundException("Booth does not belong to the given festival");
     }
 
-    List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(festivalId, boothId);
+    List<Reservation> reservations = reservationRepository.findByBoothFestivalIdAndBoothId(
+        festivalId, boothId);
 
     ReservationByBoothResponseDTO response = new ReservationByBoothResponseDTO();
 
@@ -129,18 +131,19 @@ public class ReservationService {
     response.setBooth(boothInfo);
 
     List<ReservationByBoothResponseDTO.UserReservationInfo> userReservations = reservations.stream()
-            .map(r -> {
-              ReservationByBoothResponseDTO.UserReservationInfo info = new ReservationByBoothResponseDTO.UserReservationInfo();
-              info.setReservationId(r.getId());
-              info.setUserId(r.getUser().getId());
-              info.setUserName(r.getUser().getName());
-              info.setReservationTime(r.getReservationTime());
-              info.setNumberOfPeople(r.getNumberOfPeople());
-              info.setPaymentMethod(r.getPaymentMethod().name());
-              info.setCreatedAt(r.getCreatedAt());
-              return info;
-            })
-            .collect(Collectors.toList());
+        .map(r -> {
+          ReservationByBoothResponseDTO.UserReservationInfo info = new ReservationByBoothResponseDTO.UserReservationInfo();
+          info.setReservationId(r.getId());
+          info.setUserId(r.getUser().getId());
+          info.setUserName(r.getUser().getName());
+          info.setTimeSlotStartTime(r.getTimeSlot() != null ? r.getTimeSlot().getStartTime() : null);
+          info.setTimeSlotEndTime(r.getTimeSlot() != null ? r.getTimeSlot().getEndTime() : null);
+          info.setNumberOfPeople(r.getNumberOfPeople());
+          info.setPaymentMethod(r.getPaymentMethod().name());
+          info.setCreatedAt(r.getCreatedAt());
+          return info;
+        })
+        .collect(Collectors.toList());
 
     response.setReservations(userReservations);
     return response;
@@ -159,7 +162,6 @@ public class ReservationService {
 
     reservation.setUser(user);
     reservation.setBooth(booth);
-    reservation.setReservationTime(dto.getReservationTime());
     reservation.setNumberOfPeople(dto.getNumberOfPeople());
 
     Reservation saved = reservationRepository.save(reservation);
@@ -194,10 +196,6 @@ public class ReservationService {
       reservation.setBooth(booth);
     }
 
-    if (dto.getReservationTime() != null) {
-      reservation.setReservationTime(dto.getReservationTime());
-    }
-
     if (dto.getNumberOfPeople() != null) {
       reservation.setNumberOfPeople(dto.getNumberOfPeople());
     } else {
@@ -227,10 +225,16 @@ public class ReservationService {
     dto.setFestivalName(reservation.getBooth().getFestival().getName());
     dto.setBoothStartDate(reservation.getBooth().getStartDateTime());
     dto.setBoothPosterImageUrl(reservation.getBooth().getPosterImageUrl());
-    dto.setReservationTime(reservation.getReservationTime());
     dto.setNumberOfPeople(reservation.getNumberOfPeople());
     dto.setPaymentMethod(reservation.getPaymentMethod().name());
     dto.setCreatedAt(reservation.getCreatedAt());
+    
+    // TimeSlot 정보 추가
+    if (reservation.getTimeSlot() != null) {
+      dto.setTimeSlotId(reservation.getTimeSlot().getId());
+      dto.setTimeSlotStartTime(reservation.getTimeSlot().getStartTime());
+      dto.setTimeSlotEndTime(reservation.getTimeSlot().getEndTime());
+    }
     return dto;
   }
 }

@@ -2,30 +2,30 @@ package com.skkutable.repository;
 
 import com.skkutable.domain.TimeSlot;
 import com.skkutable.domain.TimeSlotStatus;
-import java.time.LocalDateTime;
+import com.skkutable.repository.custom.TimeSlotRepositoryCustom;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
-  
+/**
+ * TimeSlot Repository 인터페이스 Custom query를 제외한 기본적인 JPA 메서드들을 명시적으로 선언 Festival Repository 패턴을 따름
+ */
+public interface TimeSlotRepository extends TimeSlotRepositoryCustom {
+
+  TimeSlot save(TimeSlot timeSlot);
+
+  Optional<TimeSlot> findById(Long id);
+
+  void delete(TimeSlot timeSlot);
+
+  void deleteById(Long id);
+
+  List<TimeSlot> findAll();
+
+  boolean existsById(Long id);
+
   List<TimeSlot> findByBoothId(Long boothId);
-  
+
   List<TimeSlot> findByBoothIdAndStatus(Long boothId, TimeSlotStatus status);
-  
+
   Optional<TimeSlot> findByIdAndBoothId(Long id, Long boothId);
-  
-  @Query("SELECT ts FROM TimeSlot ts WHERE ts.booth.id = :boothId " +
-         "AND ts.startTime >= :startTime AND ts.endTime <= :endTime")
-  List<TimeSlot> findByBoothIdAndTimeBetween(@Param("boothId") Long boothId,
-                                              @Param("startTime") LocalDateTime startTime,
-                                              @Param("endTime") LocalDateTime endTime);
-  
-  @Query("SELECT ts FROM TimeSlot ts WHERE ts.booth.id = :boothId " +
-         "AND ts.status = 'AVAILABLE' AND ts.currentCapacity < ts.maxCapacity")
-  List<TimeSlot> findAvailableTimeSlotsByBoothId(@Param("boothId") Long boothId);
-  
-  boolean existsByBoothIdAndStartTimeAndEndTime(Long boothId, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -1,0 +1,22 @@
+meta {
+  name: TimeSlot Not Found
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{Url}}/booths/1/timeslots/999
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "maxCapacity": 20
+  }
+}
+
+docs {
+  # TimeSlot Not Found
+  존재하지 않는 타임슬롯 수정 시도 (404 Not Found 예상)
+} 

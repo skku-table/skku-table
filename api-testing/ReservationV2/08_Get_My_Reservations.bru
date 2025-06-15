@@ -1,0 +1,16 @@
+meta {
+  name: Get My Reservations
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{Url}}/v2/reservations/my
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get My Reservations
+  사용자의 모든 예약을 조회합니다. 인증 필요.
+} 

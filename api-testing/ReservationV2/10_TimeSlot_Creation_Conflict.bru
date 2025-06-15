@@ -1,0 +1,24 @@
+meta {
+  name: TimeSlot Creation Conflict
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{Url}}/booths/1/timeslots
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "startTime": "2024-05-15T11:00:00",
+    "endTime": "2024-05-15T12:00:00",
+    "maxCapacity": 5
+  }
+}
+
+docs {
+  # TimeSlot Creation Conflict
+  이미 존재하는 시간대에 타임슬롯 생성 시도 (409 Conflict Request 예상)
+}

@@ -1,0 +1,16 @@
+meta {
+  name: Reservation Not Found
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{Url}}/v2/reservations/999
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Reservation Not Found
+  존재하지 않는 예약 취소 시도 (404 Not Found 예상)
+} 

@@ -1,0 +1,26 @@
+meta {
+  name: Invalid TimeSlot Data
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{Url}}/booths/1/timeslots
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "startTime": "2024-05-15T11:00:00",
+    "endTime": "2024-05-15T10:00:00",
+    "maxCapacity": 10
+  }
+}
+
+docs {
+  # Invalid TimeSlot Data
+  잘못된 데이터로 타임슬롯 생성 시도 (400 Bad Request 예상)
+  - endTime이 startTime보다 빠름
+  - maxCapacity가 0
+}

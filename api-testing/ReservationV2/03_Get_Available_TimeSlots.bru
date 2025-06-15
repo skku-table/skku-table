@@ -1,0 +1,16 @@
+meta {
+  name: Get Available TimeSlots
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{Url}}/booths/1/timeslots/available
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get Available TimeSlots
+  특정 부스의 예약 가능한 타임슬롯만 조회합니다. 인증 불필요.
+} 

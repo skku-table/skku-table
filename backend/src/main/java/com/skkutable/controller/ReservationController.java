@@ -39,10 +39,10 @@ public class ReservationController {
 
   @GetMapping("/festival/{festivalId}/booth/{boothId}")
   public ResponseEntity<ReservationByBoothResponseDTO> getReservationsByFestivalAndBooth(
-          @PathVariable Long festivalId,
-          @PathVariable Long boothId) {
+      @PathVariable Long festivalId,
+      @PathVariable Long boothId) {
     return ResponseEntity.ok(
-            reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
+        reservationService.getReservationsByFestivalAndBooth(festivalId, boothId));
   }
 
   @GetMapping("/{reservationId}")

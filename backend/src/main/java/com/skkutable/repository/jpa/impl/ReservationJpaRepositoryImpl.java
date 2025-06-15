@@ -22,4 +22,16 @@ public class ReservationJpaRepositoryImpl implements ReservationRepositoryCustom
         .getResultList();
   }
 
+  @Override
+  public List<Reservation> findByUserIdWithTimeSlot(Long userId) {
+    String query = "SELECT r FROM Reservation r " +
+        "JOIN FETCH r.booth b " +
+        "JOIN FETCH b.festival " +
+        "LEFT JOIN FETCH r.timeSlot ts " +
+        "WHERE r.user.id = :userId";
+    return em.createQuery(query, Reservation.class)
+        .setParameter("userId", userId)
+        .getResultList();
+  }
+
 }

@@ -1,0 +1,28 @@
+meta {
+  name: Create Reservation V2
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{Url}}/v2/reservations
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "boothId": 2,
+    "festivalId": 1,
+    "timeSlotId": 4,
+    "numberOfPeople": 4,
+    "paymentMethod": "CARD",
+    "fcmToken": "fcm_token_string"
+  }
+}
+
+docs {
+  # Create Reservation V2
+  타임슬롯 기반 예약을 생성합니다. USER, HOST, ADMIN 권한 필요.
+}

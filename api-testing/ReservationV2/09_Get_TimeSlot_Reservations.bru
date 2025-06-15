@@ -1,0 +1,16 @@
+meta {
+  name: Get TimeSlot Reservations
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{Url}}/v2/reservations/timeslots/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get TimeSlot Reservations
+  특정 타임슬롯의 모든 예약을 조회합니다. HOST, ADMIN 권한 필요.
+} 

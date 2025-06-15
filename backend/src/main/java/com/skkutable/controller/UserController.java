@@ -9,13 +9,23 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -35,41 +45,41 @@ public class UserController {
   @GetMapping
   public List<UserDto> getUsers() {
     return userService.findUsers().stream()
-            .map(u -> new UserDto(
-                    u.getId(),
-                    u.getName(),
-                    u.getEmail(),
-                    REDACTED,
-                    u.getRole(),
-                    u.getUniversity(),
-                    u.getMajor(),
-                    u.getProfileImageUrl()
-            ))
-            .toList();
+        .map(u -> new UserDto(
+            u.getId(),
+            u.getName(),
+            u.getEmail(),
+            REDACTED,
+            u.getRole(),
+            u.getUniversity(),
+            u.getMajor(),
+            u.getProfileImageUrl()
+        ))
+        .toList();
   }
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
   public UserDto addUser(@RequestBody @Valid UserDto dto,
-                         @RequestHeader(value = "X-ADMIN-SECRET", required = false) String adminSecret) {
+      @RequestHeader(value = "X-ADMIN-SECRET", required = false) String adminSecret) {
     var createUser = userService.join(dto, adminSecret);
     return new UserDto(
-            createUser.getId(),
-            createUser.getName(),
-            createUser.getEmail(),
-            REDACTED,
-            createUser.getRole(),
-            createUser.getUniversity(),
-            createUser.getMajor(),
-            createUser.getProfileImageUrl()
+        createUser.getId(),
+        createUser.getName(),
+        createUser.getEmail(),
+        REDACTED,
+        createUser.getRole(),
+        createUser.getUniversity(),
+        createUser.getMajor(),
+        createUser.getProfileImageUrl()
     );
   }
 
   @PutMapping("/me/profile-image")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<String> updateProfileImage(
-          @AuthenticationPrincipal(expression = "username") String email,
-          @RequestParam("image") MultipartFile imageFile
+      @AuthenticationPrincipal(expression = "username") String email,
+      @RequestParam("image") MultipartFile imageFile
   ) {
     String imageUrl = userService.updateProfileImage(email, imageFile);
     return ResponseEntity.ok(imageUrl);
@@ -78,7 +88,7 @@ public class UserController {
   @DeleteMapping("/me/profile-image")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Void> deleteProfileImage(
-          @AuthenticationPrincipal(expression = "username") String email
+      @AuthenticationPrincipal(expression = "username") String email
   ) {
     userService.deleteProfileImage(email);
     return ResponseEntity.noContent().build();
@@ -98,14 +108,14 @@ public class UserController {
   public UserDto me(@AuthenticationPrincipal(expression = "username") String email) {
     User user = userService.findOne(email);
     return new UserDto(
-            user.getId(),
-            user.getName(),
-            user.getEmail(),
-            REDACTED,
-            user.getRole(),
-            user.getUniversity(),
-            user.getMajor(),
-            user.getProfileImageUrl()
+        user.getId(),
+        user.getName(),
+        user.getEmail(),
+        REDACTED,
+        user.getRole(),
+        user.getUniversity(),
+        user.getMajor(),
+        user.getProfileImageUrl()
     );
   }
 
@@ -113,14 +123,14 @@ public class UserController {
   public UserDto getUserById(@PathVariable("id") Long userId) {
     User user = userService.findOne(userId);
     return new UserDto(
-            user.getId(),
-            user.getName(),
-            user.getEmail(),
-            REDACTED,
-            user.getRole(),
-            user.getUniversity(),
-            user.getMajor(),
-            user.getProfileImageUrl()
+        user.getId(),
+        user.getName(),
+        user.getEmail(),
+        REDACTED,
+        user.getRole(),
+        user.getUniversity(),
+        user.getMajor(),
+        user.getProfileImageUrl()
     );
   }
 
@@ -133,22 +143,22 @@ public class UserController {
     return ResponseEntity.ok(response);
   }
 
-    @PatchMapping("/me")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserDto> updateMe(
-            @AuthenticationPrincipal(expression = "username") String email,
-            @RequestBody Map<String, Object> updates
-    ) {
-        User updatedUser = userService.updatePartial(email, updates);
-        return ResponseEntity.ok(new UserDto(
-                updatedUser.getId(),
-                updatedUser.getName(),
-                updatedUser.getEmail(),
-                "[REDACTED]",
-                updatedUser.getRole(),
-                updatedUser.getUniversity(),
-                updatedUser.getMajor(),
-                updatedUser.getProfileImageUrl()
-        ));
-    }
+  @PatchMapping("/me")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDto> updateMe(
+      @AuthenticationPrincipal(expression = "username") String email,
+      @RequestBody Map<String, Object> updates
+  ) {
+    User updatedUser = userService.updatePartial(email, updates);
+    return ResponseEntity.ok(new UserDto(
+        updatedUser.getId(),
+        updatedUser.getName(),
+        updatedUser.getEmail(),
+        "[REDACTED]",
+        updatedUser.getRole(),
+        updatedUser.getUniversity(),
+        updatedUser.getMajor(),
+        updatedUser.getProfileImageUrl()
+    ));
+  }
 }

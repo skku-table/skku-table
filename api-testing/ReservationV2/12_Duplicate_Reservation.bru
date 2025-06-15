@@ -1,0 +1,27 @@
+meta {
+  name: Duplicate Reservation
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{Url}}/v2/reservations
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "boothId": 1,
+    "festivalId": 1,
+    "timeSlotId": 1,
+    "numberOfPeople": 2,
+    "paymentMethod": "CARD"
+  }
+}
+
+docs {
+  # Duplicate Reservation
+  이미 예약한 타임슬롯에 중복 예약 시도 (403 Forbidden 예상)
+}

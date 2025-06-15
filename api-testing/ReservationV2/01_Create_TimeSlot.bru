@@ -1,0 +1,24 @@
+meta {
+  name: Create TimeSlot
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{Url}}/booths/1/timeslots
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "startTime": "2024-05-15T14:00:00",
+    "endTime": "2024-05-15T15:00:00",
+    "maxCapacity": 10
+  }
+}
+
+docs {
+  # Create TimeSlot
+  부스에 새로운 타임슬롯을 생성합니다. HOST, ADMIN 권한 필요.
+}

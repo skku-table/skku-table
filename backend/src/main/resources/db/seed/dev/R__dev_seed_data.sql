@@ -12,6 +12,8 @@ SET
 
 TRUNCATE TABLE reservation;
 
+TRUNCATE TABLE time_slot;
+
 TRUNCATE TABLE user_booth_like;
 
 TRUNCATE TABLE user_festival_like;
@@ -44,7 +46,7 @@ INSERT INTO
 VALUES
   (
     1,
-    '김철수',
+    '전수민',
     'user1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
@@ -56,7 +58,7 @@ VALUES
   ),
   (
     2,
-    '이영희',
+    '황현진',
     'user2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
@@ -68,7 +70,7 @@ VALUES
   ),
   (
     3,
-    '박관리',
+    '이균서',
     'admin@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'ADMIN',
@@ -80,7 +82,7 @@ VALUES
   ),
   (
     4,
-    '정부스',
+    '권태환',
     'host1@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
@@ -92,7 +94,7 @@ VALUES
   ),
   (
     5,
-    '최부스',
+    '타메르',
     'host2@skku.edu',
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
@@ -175,6 +177,7 @@ INSERT INTO
     description,
     start_date_time,
     end_date_time,
+    reservation_open_time,
     like_count,
     poster_image_url,
     event_image_url,
@@ -193,6 +196,7 @@ VALUES
     '매콤달콤한 떡볶이를 판매합니다!',
     '2024-05-15 11:00',
     '2024-05-15 18:00',
+    '2024-05-14 10:00',
     50,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749451072/wa37se78uujl1cxlgqwp.jpg',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119788/cld-sample-4.jpg',
@@ -209,6 +213,7 @@ VALUES
     '예쁜 사진을 찍어드립니다!',
     '2024-05-15 10:00',
     '2024-05-17 20:00',
+    '2024-05-14 10:00',
     80,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452445/txlx2ubqm7nkhnkynuvn.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452444/yxqv3hkmpx4lw3uu7ouk.jpg',
@@ -225,6 +230,7 @@ VALUES
     '타로로 당신의 운세를 봐드립니다',
     '2024-05-16 12:00',
     '2024-05-16 17:00',
+    '2024-05-15 10:00',
     30,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455091/lxnqsi8efdbjr7ek620k.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455088/fi2tyk0xw3f59mstdbhx.jpg',
@@ -241,6 +247,7 @@ VALUES
     '다양한 장르의 음악 공연',
     '2024-05-15 17:00',
     '2024-05-17 21:00',
+    '2024-05-14 10:00',
     100,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455362/suq5t8iaricxlgd86vez.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455360/o1lsd2kqls6nj7mszugc.jpg',
@@ -258,6 +265,7 @@ VALUES
     '따뜻한 호떡을 판매합니다',
     '2024-10-20 11:00',
     '2024-10-22 18:00',
+    '2024-10-19 10:00',
     60,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456545/j78bhadk7nzfet4vcvrv.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456558/sjj67jexg8w48li3ik7w.png',
@@ -274,6 +282,7 @@ VALUES
     '다양한 수공예품 판매',
     '2024-10-20 10:00',
     '2024-10-22 19:00',
+    '2024-10-19 10:00',
     90,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456822/ghog4i3zhin6vazojn1z.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456820/w9gd6276jkf4tf3fl3hn.png',
@@ -290,6 +299,7 @@ VALUES
     '재미있는 미니게임과 상품!',
     '2024-10-21 12:00',
     '2024-10-21 18:00',
+    '2024-10-20 10:00',
     40,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
@@ -307,6 +317,7 @@ VALUES
     '다양한 안주와 음료 판매',
     '2024-11-10 17:00',
     '2024-11-12 23:00',
+    '2024-11-09 10:00',
     150,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
@@ -323,6 +334,7 @@ VALUES
     '무서운 귀신의 집 체험',
     '2024-11-10 15:00',
     '2024-11-12 22:00',
+    '2024-11-09 10:00',
     120,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
@@ -339,6 +351,7 @@ VALUES
     '다양한 세계 음식',
     '2024-11-10 11:00',
     '2024-11-12 21:00',
+    '2024-11-09 10:00',
     200,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
@@ -356,6 +369,7 @@ VALUES
     '달콤한 솜사탕 판매',
     '2024-05-16 11:00',
     '2024-05-16 17:00',
+    '2024-05-15 10:00',
     25,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
@@ -372,6 +386,7 @@ VALUES
     '예쁜 네일아트 서비스',
     '2024-05-15 12:00',
     '2024-05-17 18:00',
+    '2024-05-14 10:00',
     35,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
@@ -388,6 +403,7 @@ VALUES
     '직접 내린 커피 판매',
     '2024-10-20 09:00',
     '2024-10-22 18:00',
+    '2024-10-19 10:00',
     45,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
@@ -404,6 +420,7 @@ VALUES
     '다양한 페이스페인팅',
     '2024-10-21 11:00',
     '2024-10-21 17:00',
+    '2024-10-20 10:00',
     20,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
@@ -420,6 +437,7 @@ VALUES
     '다양한 보드게임 체험',
     '2024-11-10 13:00',
     '2024-11-12 20:00',
+    '2024-11-09 10:00',
     55,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
@@ -436,6 +454,7 @@ VALUES
     '무알콜 칵테일 판매',
     '2024-11-11 15:00',
     '2024-11-11 22:00',
+    '2024-11-10 10:00',
     70,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
@@ -444,14 +463,191 @@ VALUES
   );
 
 /* =============================================================
-4. RESERVATIONS
+4. TIME SLOTS
+------------------------------------------------------------- */
+INSERT INTO
+  time_slot (
+    id,
+    booth_id,
+    start_time,
+    end_time,
+    max_capacity,
+    current_capacity,
+    status,
+    created_at,
+    updated_at
+  )
+VALUES
+  /* 떡볶이 부스 타임슬롯 */
+  (
+    1,
+    1,
+    '2024-05-15 11:00:00',
+    '2024-05-15 12:00:00',
+    10,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    2,
+    1,
+    '2024-05-15 12:00:00',
+    '2024-05-15 13:00:00',
+    10,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    3,
+    1,
+    '2024-05-15 13:00:00',
+    '2024-05-15 14:00:00',
+    10,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  /* 포토존 타임슬롯 */
+  (
+    4,
+    2,
+    '2024-05-15 10:00:00',
+    '2024-05-15 11:00:00',
+    5,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    5,
+    2,
+    '2024-05-15 11:00:00',
+    '2024-05-15 12:00:00',
+    5,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  /* 타로 부스 타임슬롯 */
+  (
+    6,
+    3,
+    '2024-05-16 12:00:00',
+    '2024-05-16 13:00:00',
+    3,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    7,
+    3,
+    '2024-05-16 13:00:00',
+    '2024-05-16 14:00:00',
+    3,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  /* 버스킹 공연 타임슬롯 */
+  (
+    8,
+    4,
+    '2024-05-15 17:00:00',
+    '2024-05-15 18:00:00',
+    20,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    9,
+    4,
+    '2024-05-15 18:00:00',
+    '2024-05-15 19:00:00',
+    20,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  /* 호떡 부스 타임슬롯 */
+  (
+    10,
+    5,
+    '2024-10-20 11:00:00',
+    '2024-10-20 12:00:00',
+    8,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    11,
+    5,
+    '2024-10-20 12:00:00',
+    '2024-10-20 13:00:00',
+    8,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  /* 주점 타임슬롯 */
+  (
+    12,
+    8,
+    '2024-11-10 17:00:00',
+    '2024-11-10 18:00:00',
+    15,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    13,
+    8,
+    '2024-11-10 18:00:00',
+    '2024-11-10 19:00:00',
+    15,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  ),
+  (
+    14,
+    8,
+    '2024-11-10 19:00:00',
+    '2024-11-10 20:00:00',
+    15,
+    0,
+    'AVAILABLE',
+    NOW(),
+    NOW()
+  );
+
+/* =============================================================
+5. RESERVATIONS
 ------------------------------------------------------------- */
 INSERT INTO
   reservation (
     user_id,
     booth_id,
     festival_id,
-    reservation_time,
+    time_slot_id,
     number_of_people,
     payment_method,
     created_at,
@@ -462,7 +658,7 @@ VALUES
     1,
     1,
     1,
-    '2024-05-15 12:30:00',
+    2,
     2,
     'CARD',
     NOW(),
@@ -472,7 +668,7 @@ VALUES
     1,
     4,
     1,
-    '2024-05-15 18:00:00',
+    8,
     4,
     'BANK',
     NOW(),
@@ -482,7 +678,7 @@ VALUES
     1,
     8,
     3,
-    '2024-11-10 19:00:00',
+    14,
     5,
     'BANK',
     NOW(),
@@ -492,7 +688,7 @@ VALUES
     2,
     2,
     1,
-    '2024-05-16 14:00:00',
+    4,
     3,
     'CARD',
     NOW(),
@@ -502,7 +698,7 @@ VALUES
     2,
     5,
     2,
-    '2024-10-20 13:00:00',
+    10,
     2,
     'CARD',
     NOW(),
@@ -512,7 +708,7 @@ VALUES
     4,
     3,
     1,
-    '2024-05-16 15:00:00',
+    6,
     1,
     'CARD',
     NOW(),
@@ -520,7 +716,35 @@ VALUES
   );
 
 /* =============================================================
-5. USER-FESTIVAL LIKES
+5.1. UPDATE TIME SLOT CAPACITY BASED ON RESERVATIONS
+------------------------------------------------------------- */
+-- 예약된 인원수만큼 타임슬롯의 current_capacity 업데이트
+UPDATE time_slot ts
+SET current_capacity = (
+    SELECT COALESCE(SUM(r.number_of_people), 0)
+    FROM reservation r
+    WHERE r.time_slot_id = ts.id
+)
+WHERE ts.id IN (
+    SELECT DISTINCT time_slot_id 
+    FROM reservation 
+    WHERE time_slot_id IS NOT NULL
+);
+
+-- 타임슬롯 상태 업데이트 (FULL 또는 AVAILABLE)
+UPDATE time_slot 
+SET status = CASE 
+    WHEN current_capacity >= max_capacity THEN 'FULL'
+    ELSE 'AVAILABLE'
+END
+WHERE id IN (
+    SELECT DISTINCT time_slot_id 
+    FROM reservation 
+    WHERE time_slot_id IS NOT NULL
+);
+
+/* =============================================================
+6. USER-FESTIVAL LIKES
 ------------------------------------------------------------- */
 INSERT INTO
   user_festival_like (user_id, festival_id, created_at)
@@ -533,7 +757,7 @@ VALUES
   (5, 2, NOW());
 
 /* =============================================================
-6. USER-BOOTH LIKES
+7. USER-BOOTH LIKES
 ------------------------------------------------------------- */
 INSERT INTO
   user_booth_like (user_id, booth_id, created_at)

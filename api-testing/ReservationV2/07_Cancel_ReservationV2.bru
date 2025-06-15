@@ -1,0 +1,16 @@
+meta {
+  name: Cancel Reservation V2
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{Url}}/v2/reservations/1
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Cancel Reservation V2
+  기존 예약을 취소합니다. 본인 예약만 취소 가능.
+} 

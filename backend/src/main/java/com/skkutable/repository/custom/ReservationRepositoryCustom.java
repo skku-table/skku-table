@@ -9,7 +9,7 @@ public interface ReservationRepositoryCustom {
    * Reservation + Booth + Festival 을 페치 조인으로 한 번에 가져온다
    */
   List<Reservation> findByUserIdWithBoothAndFestival(Long userId);
-  
+
   /**
    * Reservation + Booth + Festival + TimeSlot 을 페치 조인으로 한 번에 가져온다
    */

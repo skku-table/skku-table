@@ -1,0 +1,22 @@
+meta {
+  name: TimeSlot Status Closed
+  type: http
+  seq: 20
+}
+
+patch {
+  url: {{Url}}/booths/1/timeslots/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "status": "CLOSED"
+  }
+}
+
+docs {
+  # TimeSlot Status Closed
+  타임슬롯 상태를 CLOSED로 변경하여 예약을 마감합니다.
+}

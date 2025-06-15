@@ -1,0 +1,16 @@
+meta {
+  name: Booth Not Found
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{Url}}/booths/999/timeslots
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Booth Not Found
+  존재하지 않는 부스의 타임슬롯 조회 (404 Not Found 예상)
+} 

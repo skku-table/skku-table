@@ -8,5 +8,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false  # 테스트 환경에서는 SQL 로그를 출력하지 않음
   flyway:
     enabled: false    # ← H2에서는 마이그레이션 생략
+
+# 테스트 환경 설정
+test:
+  reservation:
+    enabled: true
+
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}

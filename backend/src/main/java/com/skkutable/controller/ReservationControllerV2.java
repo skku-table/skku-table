@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v2/reservations")
+@RequestMapping("/v2/reservations")
 @RequiredArgsConstructor
 public class ReservationControllerV2 {
 
