@@ -1,6 +1,6 @@
 
 import Header from "@/components/Headers"
-import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
+import { fetchWithCredentials } from "@/libs/fetchwithCredentialsServer";
 import { FestivalCard } from "@/components/FestivalCard";
 
 
@@ -51,6 +51,7 @@ export default async function Page() {
   
   const festivalsData: FestivalsData = await res.json();  
   const userData = await me.json();
+  const userId = userData.id;
 
 
   return (
@@ -61,7 +62,7 @@ export default async function Page() {
 
         <div className="flex flex-col items-center gap-6">
           {festivalsData.map((festival) => (
-            <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
+            <FestivalCard key={festival.id} festival={festival} userId={userId}/>
           ))}
         </div>
 

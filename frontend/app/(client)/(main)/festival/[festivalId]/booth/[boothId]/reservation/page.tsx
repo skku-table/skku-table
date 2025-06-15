@@ -11,6 +11,8 @@ import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 import { useRouter } from 'next/navigation'; 
+import { getToken } from 'firebase/messaging';
+import { messaging } from '@/libs/firebase';
 
 interface BoothType {
   id: number;
@@ -79,6 +81,7 @@ export default function BoothReservationPage() {
   const [userId, setUserId] = useState<number | null>(null);
 
 
+
   useEffect(() => {
   const fetchUserInfo = async () => {
     try {
@@ -142,6 +145,21 @@ export default function BoothReservationPage() {
     return;
     }
 
+    let fcmToken = '';
+    if (messaging) {
+      try {
+        fcmToken = await getToken(messaging, {
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_PUBLIC_KEY!,
+        });
+        console.log('✅ 예약용 FCM Token:', fcmToken);
+      } catch (error) {
+        console.error('❌ FCM 토큰 가져오기 실패:', error);
+      }
+    } else {
+      console.warn('⚠️ Firebase Messaging이 초기화되지 않았습니다.');
+      // 필요에 따라 early return
+    }
+
     const reservationBody = {
       userId: Number(userId),
       boothId: Number(boothId),
@@ -149,6 +167,7 @@ export default function BoothReservationPage() {
       reservationTime: `${selectedDate}T${selectedTime}:00`,
       numberOfPeople: numberOfPeople,
       paymentMethod: paymentMethod,
+      fcmToken: fcmToken
     };
 
     const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {

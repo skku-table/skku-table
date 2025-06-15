@@ -1,19 +1,65 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import {onSchedule} from "firebase-functions/v2/scheduler";
+import * as admin from "firebase-admin";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+admin.initializeApp();
+const db = admin.firestore();
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+export const sendReservationNotifications = onSchedule(
+  {
+    schedule: "every 1 minutes",
+    timeZone: "Asia/Seoul",
+  },
+  async () => {
+    const now = admin.firestore.Timestamp.now();
+    const tenMinutesLater = admin.firestore.Timestamp.fromDate(
+      new Date(now.toDate().getTime() + 10 * 60 * 1000)
+    );
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    const snapshot = await db
+      .collection("reservations")
+      .where("notified", "==", false)
+      .where("reservationTime", ">=", now)
+      .where("reservationTime", "<=", tenMinutesLater)
+      .get();
+
+    if (snapshot.empty) {
+      console.log("No upcoming reservations.");
+      return;
+    }
+
+    await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const {pushToken, boothName, reservationTime} = doc.data() as {
+          pushToken?: string;
+          boothName?: string;
+          reservationTime?: FirebaseFirestore.Timestamp;
+        };
+        if (!pushToken || !reservationTime) return;
+
+        // 1) Firestore Timestamp → JS Date
+        const date = reservationTime.toDate();
+
+        // 2) 한국 시각으로 포맷
+        const kst = date.toLocaleTimeString("ko-KR", {
+          timeZone: "Asia/Seoul",
+          hour: "2-digit",
+          minute: "2-digit",
+        }); // e.g. "22:33"
+
+        try {
+          await admin.messaging().send({
+            token: pushToken,
+            notification: {
+              title: "부스 예약 10분 전 알림",
+              body: `${kst}에 ${boothName} 부스 예약이 있어요!`,
+            },
+          });
+          await doc.ref.update({notified: true});
+          console.log(`Sent notification for ${doc.id} at ${kst}`);
+        } catch (err) {
+          console.error("FCM 전송 실패:", err);
+        }
+      })
+    );
+  }
+);

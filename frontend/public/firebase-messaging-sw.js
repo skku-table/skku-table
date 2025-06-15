@@ -23,9 +23,9 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/icons/icon.png', // 아이콘 경로 -> 나중에 추가하기...
+    icon: '/icon-rectangle.png', // 아이콘 경로 -> 나중에 추가하기...
     data: {
-      link: '/', // 알림 클릭 시 이동할 URL
+      link: 'skkutable.com', // 알림 클릭 시 이동할 URL
     },
   };
 
