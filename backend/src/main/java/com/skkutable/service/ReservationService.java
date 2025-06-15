@@ -23,6 +23,8 @@ import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -74,14 +76,23 @@ public class ReservationService {
         System.err.println("⚠️ reservationRequestDTO에 fcmToken이 없습니다.");
       } else {
         Firestore db = FirestoreClient.getFirestore();
+
+        // LocalDateTime → java.util.Date
+        Date date = Date.from(
+          response.getReservationTime()
+                  .atZone(ZoneId.systemDefault())
+                  .toInstant()
+        );
+
         Map<String, Object> alarmData = new HashMap<>();
-        alarmData.put("userId",      dto.getUserId());
-        alarmData.put("festivalName", response.getFestivalName());
-        alarmData.put("boothName",    response.getBoothName());
-        alarmData.put("reservationTime", response.getReservationTime().toString());
-        alarmData.put("pushToken",      fcmToken);
-        alarmData.put("notified",       false);
-  
+        alarmData.put("userId",           dto.getUserId());
+        alarmData.put("festivalName",     response.getFestivalName());
+        alarmData.put("boothName",        response.getBoothName());
+        // Date를 전달하면 Firestore SDK가 자동으로 Timestamp로 변환합니다
+        alarmData.put("reservationTime",  date);
+        alarmData.put("pushToken",        fcmToken);
+        alarmData.put("notified",         false);
+
         db.collection("reservations").add(alarmData);
         System.out.println("✅ Firestore 예약 알림 정보 저장 완료");
       }
