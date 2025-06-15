@@ -1,6 +1,6 @@
 
 import Header from "@/components/Headers"
-import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
+import { fetchWithCredentials } from "@/libs/fetchwithCredentialsServer";
 import { FestivalCard } from "@/components/FestivalCard";
 
 
