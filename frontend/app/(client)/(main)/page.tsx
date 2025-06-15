@@ -2,7 +2,7 @@
 import Header from "@/components/Headers"
 import { fetchWithCredentials } from "@/libs/fetchWithCredentials";
 import { FestivalCard } from "@/components/FestivalCard";
-import { usePushRegister } from '@/hooks/usePushRegister' 
+
 
 
 
@@ -51,7 +51,6 @@ export default async function Page() {
   
   const festivalsData: FestivalsData = await res.json();  
   const userData = await me.json();
-  usePushRegister(userData.id);
 
 
   return (
@@ -62,7 +61,7 @@ export default async function Page() {
 
         <div className="flex flex-col items-center gap-6">
           {festivalsData.map((festival) => (
-            <FestivalCard key={festival.id} festival={festival} />
+            <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
           ))}
         </div>
 
