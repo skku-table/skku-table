@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DayPicker } from 'react-day-picker';
@@ -37,6 +37,16 @@ type Festival = {
   booths: Booth[];
 };
 
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  role: 'USER' | 'ADMIN' | 'HOST'; // 또는 string도 가능
+  university: string;
+  major: string;
+  profileImageUrl: string;
+}
+
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,7 +57,7 @@ export default function SearchPage() {
   const [allFestivals, setAllFestivals] = useState<Festival[]>([]);
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [univList, setUnivList] = useState<string[]>([]);
-  const [userData, setUserData] = useState<any>(null); // 사용자 데이터 상태
+  const [userData, setUserData] = useState<UserData | null>(null); // 사용자 데이터 상태
 
   const extractUniversityName = (festivalName: string): string | null => {
     const regex = /([\w가-힣]+?)(대학교|대)/;
@@ -202,7 +212,7 @@ export default function SearchPage() {
         <div className="flex flex-col items-center gap-6">
           {festivals.length > 0 ? (
             festivals.map((festival) => (
-              <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
+              <FestivalCard key={festival.id} festival={festival} userId={userData!.id}/>
             ))
           ) : (
             <p className="text-center text-gray-500 mt-10 text-base">
