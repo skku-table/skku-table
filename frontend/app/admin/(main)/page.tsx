@@ -55,7 +55,7 @@ export default async function Page() {
 
         <div className="flex flex-col items-center gap-6">
           {festivalsData.map((festival) => (
-            <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
+            <FestivalCard key={festival.id} festival={festival} userId={userData}/>
           ))}
         </div>
 

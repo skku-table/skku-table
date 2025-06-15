@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DayPicker } from 'react-day-picker';
@@ -47,6 +47,7 @@ export default function SearchPage() {
   const [allFestivals, setAllFestivals] = useState<Festival[]>([]);
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [univList, setUnivList] = useState<string[]>([]);
+  const [userData, setUserData] = useState<any>(null); // 사용자 데이터 상태
 
   const extractUniversityName = (festivalName: string): string | null => {
     const regex = /([\w가-힣]+?)(대학교|대)/;
@@ -109,6 +110,24 @@ export default function SearchPage() {
 
     setFestivals(filtered);
   }, [allFestivals, query, isSearching, selectedDate]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/users/me`);
+        if (!res.ok) {
+          console.error('Failed to fetch user data:', res.status);
+          return;
+        }
+        const userData = await res.json();
+        setUserData(userData);
+        // 여기서 userData를 사용하여 필요한 작업 수행
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   return (
     <>
@@ -183,7 +202,7 @@ export default function SearchPage() {
         <div className="flex flex-col items-center gap-6">
           {festivals.length > 0 ? (
             festivals.map((festival) => (
-              <FestivalCard key={festival.id} festival={festival} />
+              <FestivalCard key={festival.id} festival={festival} userId={userData.id}/>
             ))
           ) : (
             <p className="text-center text-gray-500 mt-10 text-base">
