@@ -50,6 +50,8 @@ services:
     #        JAR_FILE: build/libs/skku-table-backend.jar
     ports:
       - 8080:8080 # Spring Boot 애플리케이션을 8080 포트로 매핑
+    env_file:
+      - .env
     depends_on:
       - database # 데이터베이스가 먼저 시작되도록 의존성 설정
     environment:
@@ -58,6 +60,8 @@ services:
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      FIREBASE_SERVICE_ACCOUNT_KEY: ${FIREBASE_SERVICE_ACCOUNT_KEY}
+
     networks:
       - web
 
