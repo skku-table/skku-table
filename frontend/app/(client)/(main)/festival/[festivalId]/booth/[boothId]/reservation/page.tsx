@@ -11,7 +11,7 @@ import DetailHeader from '@/components/DetailHeader';
 import { formatToKoreanTime } from '@/libs/utils';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
 import { useRouter } from 'next/navigation'; 
-import { getMessaging, getToken } from 'firebase/messaging';
+import { getToken } from 'firebase/messaging';
 import { messaging } from '@/libs/firebase';
 
 interface BoothType {
