@@ -29,31 +29,37 @@ export const sendReservationNotifications = onSchedule(
 
     await Promise.all(
       snapshot.docs.map(async (doc) => {
-        const data = doc.data() as {
+        const {pushToken, boothName, reservationTime} = doc.data() as {
           pushToken?: string;
           boothName?: string;
           reservationTime?: FirebaseFirestore.Timestamp;
         };
-        if (!data.pushToken) return;
+        if (!pushToken || !reservationTime) return;
+
+        // 1) Firestore Timestamp → JS Date
+        const date = reservationTime.toDate();
+
+        // 2) 한국 시각으로 포맷
+        const kst = date.toLocaleTimeString("ko-KR", {
+          timeZone: "Asia/Seoul",
+          hour: "2-digit",
+          minute: "2-digit",
+        }); // e.g. "22:33"
 
         try {
           await admin.messaging().send({
-            token: data.pushToken,
+            token: pushToken,
             notification: {
               title: "부스 예약 10분 전 알림",
-              body: `${data.reservationTime!
-                .toDate()
-                .toLocaleTimeString("ko-KR")}에 ${data.boothName} 부스 예약이 있어요!`,
+              body: `${kst}에 ${boothName} 부스 예약이 있어요!`,
             },
           });
           await doc.ref.update({notified: true});
-          console.log(`Sent notification for ${doc.id}`);
+          console.log(`Sent notification for ${doc.id} at ${kst}`);
         } catch (err) {
           console.error("FCM 전송 실패:", err);
         }
       })
     );
-
-    // no explicit return
   }
 );
