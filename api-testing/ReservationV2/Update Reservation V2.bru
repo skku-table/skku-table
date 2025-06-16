@@ -1,0 +1,23 @@
+meta {
+  name: Update Reservation V2
+  type: http
+  seq: 21
+}
+
+patch {
+  url: {{Url}}/v2/reservations/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "boothId": 1,
+    "festivalId": 1,
+    "timeSlotId": 2,
+    "numberOfPeople": 4,
+    "paymentMethod": "BANK",
+    "fcmToken": "string"
+  }
+}

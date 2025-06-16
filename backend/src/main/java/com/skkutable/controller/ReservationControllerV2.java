@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,18 @@ public class ReservationControllerV2 {
       @AuthenticationPrincipal(expression = "username") String email) {
     ReservationResponseDTO response = reservationService.createReservation(dto, email);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  //에약 수정 (USER/HOST/ADMIN - 본인 예약만)
+  @PatchMapping("/{reservationId}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<ReservationResponseDTO> updateReservation(
+      @PathVariable Long reservationId,
+      @Valid @RequestBody ReservationRequestDTO dto,
+      @AuthenticationPrincipal(expression = "username") String email) {
+    ReservationResponseDTO response = reservationService.updateReservation(reservationId, dto,
+        email);
+    return ResponseEntity.ok(response);
   }
 
   // 예약 취소 (USER/HOST/ADMIN - 본인 예약만)
