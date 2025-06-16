@@ -21,16 +21,18 @@ export default function RegisterBoothPage() {
   const [previewBoothUrl, setPreviewBoothUrl] = useState<string | null>(null)
   const [dateList, setDateList] = useState<string[]>([])
   const [timeList, setTimeList] = useState<string[]>([])
-  // const [selectedDate, setSelectedDate] = useState('')
-  // const [selectedStartTime, setSelectedStartTime] = useState('')
-  // const [selectedEndTime, setSelectedEndTime] = useState('')
-  // const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
-  const [_, setSelectedDate] = useState('');
-  const [__, setSelectedStartTime] = useState('');
-  const [___, setSelectedEndTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedStartTime, setSelectedStartTime] = useState('')
+  const [selectedEndTime, setSelectedEndTime] = useState('')
+
   const [timeSlots, setTimeSlots] = useState<
     { date: string; time: string; endTime: string; capacity: number | '' }[]
   >([])
+      useEffect(() => { // 에러 방지용 
+      void selectedDate;
+      void selectedStartTime;
+      void selectedEndTime;
+    }, []);
 
   const [form, setForm] = useState({
     festivalId: '',
