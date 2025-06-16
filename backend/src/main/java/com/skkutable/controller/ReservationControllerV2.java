@@ -41,8 +41,7 @@ public class ReservationControllerV2 {
   //에약 수정 (USER/HOST/ADMIN - 본인 예약만)
   @PatchMapping("/{reservationId}")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ReservationResponseDTO> updateReservation(
-      @PathVariable Long reservationId,
+  public ResponseEntity<ReservationResponseDTO> updateReservation(@PathVariable Long reservationId,
       @Valid @RequestBody ReservationRequestDTO dto,
       @AuthenticationPrincipal(expression = "username") String email) {
     ReservationResponseDTO response = reservationService.updateReservation(reservationId, dto,
@@ -50,7 +49,8 @@ public class ReservationControllerV2 {
     return ResponseEntity.ok(response);
   }
 
-  // 예약 취소 (USER/HOST/ADMIN - 본인 예약만)
+  // 예약 취소 (USER 본인 예약만)
+  // HOST와 ADMIN은 본인이 만든 부스에 대해 예약 취소 권한이 있음
   @DeleteMapping("/{reservationId}")
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId,

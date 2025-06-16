@@ -182,7 +182,7 @@ public class ReservationServiceV2 {
     if (!alreadyReserved) {
       throw new BadRequestException("해당 타임슬롯에 예약이 존재하지 않습니다");
     }
-    
+
     PaymentMethod paymentMethod;
     try {
       paymentMethod = PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase());
@@ -244,9 +244,17 @@ public class ReservationServiceV2 {
     Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
         () -> new ResourceNotFoundException("Reservation not found: " + reservationId));
 
-    // 본인 예약인지 확인
-    if (!reservation.getUser().getId().equals(user.getId())) {
-      throw new ForbiddenOperationException("본인의 예약만 취소할 수 있습니다");
+    // User인 경우, 본인 예약인지 확인
+    if (user.getRole() == com.skkutable.domain.Role.USER && !reservation.getUser().getId()
+        .equals(user.getId())) {
+      throw new ForbiddenOperationException("USER의 경우, 본인의 예약만 취소할 수 있습니다");
+    }
+
+    // HOST와 ADMIN은 본인이 만든 부스에 대해 예약 취소 권한이 있음
+    if ((user.getRole() == com.skkutable.domain.Role.HOST
+        || user.getRole() == com.skkutable.domain.Role.ADMIN) && !reservation.getBooth()
+        .getCreatedBy().getId().equals(user.getId())) {
+      throw new ForbiddenOperationException("HOST와 ADMIN은 본인이 만든 부스에 대해 예약 취소 권한이 있습니다");
     }
 
     // ⭐ 비관적 락을 사용하여 타임슬롯 조회 후 수용 인원 감소
