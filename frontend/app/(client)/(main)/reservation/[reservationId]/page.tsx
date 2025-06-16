@@ -63,6 +63,8 @@ export default function EditReservationPage() {
   const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'BANK'>('CARD');
   const [dateList, setDateList] = useState<string[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [currentReservation, setCurrentReservation] = useState<ReservationType | null>(null);
+
 
   const filteredTimeSlots = timeSlots.filter((slot) => slot.startTime.startsWith(selectedDate));
 
@@ -73,6 +75,7 @@ export default function EditReservationPage() {
         const reservations: ReservationType[] = await res.json();
         const currentReservation = reservations.find((r) => r.reservationId === Number(reservationId));
 
+
         if (!currentReservation) {
           alert('해당 예약 정보를 찾을 수 없습니다.');
           return;
@@ -82,6 +85,8 @@ export default function EditReservationPage() {
         setSelectedTime(currentReservation.timeSlotStartTime.split('T')[1].slice(0, 5));
         setNumberOfPeople(currentReservation.numberOfPeople);
         setPaymentMethod(currentReservation.paymentMethod);
+        setCurrentReservation(currentReservation);
+
 
         const boothRes = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${currentReservation.festivalId}`);
         const festivalData: FestivalType = await boothRes.json();
@@ -119,6 +124,11 @@ export default function EditReservationPage() {
       return;
     }
 
+    if (!currentReservation) {
+    alert('예약 정보를 불러오지 못했습니다.');
+    return;
+  }
+
     let fcmToken = '';
     if (messaging) {
       try {
@@ -131,12 +141,24 @@ export default function EditReservationPage() {
       }
     }
 
+    // const body = {
+    //   timeSlotId: matchedSlot.id,
+    //   numberOfPeople,
+    //   paymentMethod,
+    //   fcmToken
+    // };
+
     const body = {
-      timeSlotId: matchedSlot.id,
-      numberOfPeople,
-      paymentMethod,
-      fcmToken
-    };
+    userId: currentReservation.userId,
+    boothId: currentReservation.boothId,
+    festivalId: currentReservation.festivalId,
+    timeSlotId: matchedSlot.id,
+    numberOfPeople,
+    paymentMethod,
+    fcmToken
+  };
+  console.log(body)
+
 
     const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/${reservationId}`, {
       method: 'PATCH',
