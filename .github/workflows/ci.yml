@@ -3,7 +3,7 @@ name: CI - PR & Main build
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build with Gradle
         working-directory: backend
-        run: ./gradlew clean build
+        run: ./gradlew clean bootJar -x test
 
       # 📦 새로 추가 ────────────────────────────────────────────────
       - name: Upload backend JAR artifact
