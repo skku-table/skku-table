@@ -1,5 +1,7 @@
 package com.skkutable.service;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.cloud.FirestoreClient;
 import com.skkutable.domain.Booth;
 import com.skkutable.domain.Festival;
 import com.skkutable.domain.PaymentMethod;
@@ -18,7 +20,11 @@ import com.skkutable.repository.ReservationRepository;
 import com.skkutable.repository.TimeSlotRepository;
 import com.skkutable.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,8 +96,7 @@ public class ReservationServiceV2 {
       throw new IllegalArgumentException("Invalid payment method: " + dto.getPaymentMethod());
     }
 
-    Reservation reservation = new Reservation(user, booth, festival,
-        dto.getNumberOfPeople());
+    Reservation reservation = new Reservation(user, booth, festival, dto.getNumberOfPeople());
     reservation.setPaymentMethod(paymentMethod);
     reservation.setTimeSlot(timeSlot);
 
@@ -102,6 +107,30 @@ public class ReservationServiceV2 {
     timeSlotRepository.save(timeSlot);
 
     Reservation saved = reservationRepository.save(reservation);
+    // 🔔 Firestore에 예약 알림 정보 저장
+    String fcmToken = dto.getFcmToken();                       // 1) dto에서 바로 꺼냅니다.
+    if (fcmToken == null || fcmToken.isBlank()) {
+      throw new BadRequestException("FCM 토큰이 필요합니다");
+    }
+
+    Firestore db = FirestoreClient.getFirestore();
+    // LocalDateTime → java.util.Date
+    Date date = Date.from(
+        reservation.getTimeSlot().getStartTime().atZone(ZoneId.of("Asia/Seoul"))  // 서울 시간대 설정
+            .toInstant());
+
+    Map<String, Object> alarmData = new HashMap<>();
+    alarmData.put("userId", user.getId());
+    alarmData.put("festivalName", reservation.getFestival().getName());
+    alarmData.put("boothName", reservation.getBooth().getName());
+    // Date를 전달하면 Firestore SDK가 자동으로 Timestamp로 변환합니다
+    alarmData.put("reservationTime", date);
+    alarmData.put("pushToken", fcmToken);
+    alarmData.put("notified", false);
+
+    db.collection("reservations").add(alarmData);
+    System.out.println("✅ Firestore 예약 알림 정보 저장 완료");
+
     return toResponseDTO(saved);
   }
 
