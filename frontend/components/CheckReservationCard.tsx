@@ -12,7 +12,7 @@ type reservations ={
     paymentMethod: string;
     createdAt: string;
   };
-export default function CheckReservationCard({reservation, cookieHeader}: {reservation: reservations[], cookieHeader: string}) {
+export default function CheckReservationCard({ reservation }: { reservation: reservations[] }) {
     
     const [reservations, setReservations] = useState(reservation);
     
@@ -22,11 +22,8 @@ export default function CheckReservationCard({reservation, cookieHeader}: {reser
         if (!isConfirmed) return;
     
         try {
-          const response = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${reservationId}`, {
+          const response = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/${reservationId}`, {
             method: 'DELETE',
-            headers: {
-                Cookie: cookieHeader,
-              },
           });
     
           if (!response.ok) {

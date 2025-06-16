@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { formatDate, formatToKoreanTime } from '@/libs/utils';
 import DetailHeader from '@/components/DetailHeader';
 import { fetchWithCredentials } from '@/libs/fetchWithCredentials';
+import { getToken } from 'firebase/messaging';
+import { messaging } from '@/libs/firebase';
 
 interface BoothType {
   id: number;
@@ -27,38 +29,27 @@ interface FestivalType {
 interface ReservationType {
   reservationId: number;
   userId: number;
+  userName: string;
   boothId: number;
-  festivalId: number;
+  boothName: string;
+  boothStartDate: string;
+  boothPosterImageUrl: string;
   reservationTime: string;
+  festivalId: number;
+  festivalName: string;
   numberOfPeople: number;
   paymentMethod: 'CARD' | 'BANK';
+  createdAt: string;
+  timeSlotId: number;
+  timeSlotStartTime: string;
+  timeSlotEndTime: string;
 }
 
-function getDateRange(start: string, end: string): string[] {
-  const result: string[] = [];
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    result.push(`${yyyy}-${mm}-${dd}`);
-  }
-  return result;
-}
-
-function generateTimeSlotsFromTimes(start: string, end: string): string[] {
-  const result: string[] = [];
-  const startTime = new Date(`1970-01-01T${start}`);
-  const endTime = new Date(`1970-01-01T${end}`);
-  const current = new Date(startTime);
-  while (current <= endTime) {
-    const hh = current.getHours().toString().padStart(2, '0');
-    const mm = current.getMinutes().toString().padStart(2, '0');
-    result.push(`${hh}:${mm}`);
-    current.setMinutes(current.getMinutes() + 30);
-  }
-  return result;
+interface TimeSlot {
+  id: number;
+  startTime: string;
+  endTime: string;
+  availableCapacity: number;
 }
 
 export default function EditReservationPage() {
@@ -71,31 +62,39 @@ export default function EditReservationPage() {
   const [numberOfPeople, setNumberOfPeople] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'BANK'>('CARD');
   const [dateList, setDateList] = useState<string[]>([]);
-  const [timeList, setTimeList] = useState<string[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+
+  const filteredTimeSlots = timeSlots.filter((slot) => slot.startTime.startsWith(selectedDate));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${reservationId}`);
-        const reservation: ReservationType = await res.json();
-        setSelectedDate(reservation.reservationTime.split('T')[0]);
-        setSelectedTime(reservation.reservationTime.split('T')[1].slice(0, 5));
-        setNumberOfPeople(reservation.numberOfPeople);
-        setPaymentMethod(reservation.paymentMethod);
+        const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/my`);
+        const reservations: ReservationType[] = await res.json();
+        const currentReservation = reservations.find((r) => r.reservationId === Number(reservationId));
 
-        const boothRes = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${reservation.festivalId}`);
+        if (!currentReservation) {
+          alert('해당 예약 정보를 찾을 수 없습니다.');
+          return;
+        }
+
+        setSelectedDate(currentReservation.timeSlotStartTime.split('T')[0]);
+        setSelectedTime(currentReservation.timeSlotStartTime.split('T')[1].slice(0, 5));
+        setNumberOfPeople(currentReservation.numberOfPeople);
+        setPaymentMethod(currentReservation.paymentMethod);
+
+        const boothRes = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/festivals/${currentReservation.festivalId}`);
         const festivalData: FestivalType = await boothRes.json();
-        const foundBooth = festivalData.booths.find((b) => b.id === reservation.boothId);
+        const foundBooth = festivalData.booths.find((b) => b.id === currentReservation.boothId);
         setBooth(foundBooth ?? null);
 
         if (foundBooth) {
-          const fullDateList = getDateRange(foundBooth.startDateTime, foundBooth.endDateTime);
-          setDateList(fullDateList);
+          const timeSlotRes = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/booths/${foundBooth.id}/timeslots/available`);
+          const timeSlotData: TimeSlot[] = await timeSlotRes.json();
+          setTimeSlots(timeSlotData);
 
-          const startTimeStr = foundBooth.startDateTime.split('T')[1].slice(0, 5);
-          const endTimeStr = foundBooth.endDateTime.split('T')[1].slice(0, 5);
-          const slots = generateTimeSlotsFromTimes(startTimeStr, endTimeStr);
-          setTimeList(slots);
+          const uniqueDates = Array.from(new Set(timeSlotData.map((slot) => slot.startTime.split('T')[0])));
+          setDateList(uniqueDates);
         }
       } catch (err) {
         console.error('수정 예약 데이터 불러오기 실패:', err);
@@ -110,13 +109,36 @@ export default function EditReservationPage() {
       return;
     }
 
+    const matchedSlot = filteredTimeSlots.find((slot) => {
+      const time = slot.startTime.split('T')[1].slice(0, 5);
+      return time === selectedTime;
+    });
+
+    if (!matchedSlot) {
+      alert('해당 시간 슬롯을 찾을 수 없습니다.');
+      return;
+    }
+
+    let fcmToken = '';
+    if (messaging) {
+      try {
+        fcmToken = await getToken(messaging, {
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_PUBLIC_KEY!,
+        });
+        console.log('✅ 수정용 FCM Token:', fcmToken);
+      } catch (error) {
+        console.error('❌ FCM 토큰 가져오기 실패:', error);
+      }
+    }
+
     const body = {
-      reservationTime: `${selectedDate}T${selectedTime}:00`,
+      timeSlotId: matchedSlot.id,
       numberOfPeople,
       paymentMethod,
+      fcmToken
     };
 
-    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/reservations/${reservationId}`, {
+    const res = await fetchWithCredentials(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/${reservationId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -169,17 +191,20 @@ export default function EditReservationPage() {
           </div>
           <div className="overflow-x-auto whitespace-nowrap mt-4">
             <div className="inline-flex gap-2 px-1">
-              {timeList.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTime(time)}
-                  className={`min-w-[110px] h-[45px] text-[15px] border rounded-md font-medium ${
-                    selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
-                  }`}
-                >
-                  {formatToKoreanTime(time)}
-                </button>
-              ))}
+              {filteredTimeSlots.map((slot) => {
+                const time = slot.startTime.split('T')[1].slice(0, 5);
+                return (
+                  <button
+                    key={slot.id}
+                    onClick={() => setSelectedTime(time)}
+                    className={`min-w-[110px] h-[45px] text-[15px] border rounded-md font-medium ${
+                      selectedTime === time ? 'bg-[#335533] text-white' : 'bg-white text-black border-gray-300'
+                    }`}
+                  >
+                    {formatToKoreanTime(time)}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -192,7 +217,6 @@ export default function EditReservationPage() {
                 <span className="text-sm font-medium">{option.label}</span>
                 <div
                   onClick={() => setPaymentMethod(option.value as 'CARD' | 'BANK')}
-
                   className={`w-[16px] h-[16px] rounded-full border-[2px] cursor-pointer ${
                     paymentMethod === option.value ? 'bg-[#335533]' : 'bg-white'
                   } border-[#335533]`}
