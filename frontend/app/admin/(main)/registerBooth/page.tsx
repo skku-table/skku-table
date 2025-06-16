@@ -21,10 +21,13 @@ export default function RegisterBoothPage() {
   const [previewBoothUrl, setPreviewBoothUrl] = useState<string | null>(null)
   const [dateList, setDateList] = useState<string[]>([])
   const [timeList, setTimeList] = useState<string[]>([])
-  const [_1, setSelectedDate] = useState('')
-  const [_2, setSelectedStartTime] = useState('')
-  const [_3, setSelectedEndTime] = useState('')
+  // const [selectedDate, setSelectedDate] = useState('')
+  // const [selectedStartTime, setSelectedStartTime] = useState('')
+  // const [selectedEndTime, setSelectedEndTime] = useState('')
   // const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
+  const [_, setSelectedDate] = useState('');
+  const [__, setSelectedStartTime] = useState('');
+  const [___, setSelectedEndTime] = useState('');
   const [timeSlots, setTimeSlots] = useState<
     { date: string; time: string; endTime: string; capacity: number | '' }[]
   >([])
