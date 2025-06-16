@@ -250,4 +250,3 @@ export default function BoothReservationPage() {
     </div>
   );
 }
-2

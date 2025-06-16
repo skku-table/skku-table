@@ -113,7 +113,6 @@ export default function ReservationPage() {
 
       {/* 예약 카드 목록 */}
      {filtered.map((r) => {
-        const timeStr = new Date(r.reservationTime).toTimeString().slice(0, 5);
         const dateObj = safeDate(r.timeSlotStartTime);
         const hours = dateObj.getHours().toString().padStart(2, '0');
         const minutes = dateObj.getMinutes().toString().padStart(2, '0');
