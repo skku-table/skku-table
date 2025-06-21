@@ -26,7 +26,7 @@ interface MyBoothdata {
 }
 
 // 축제 정보 + 부스 리스트 타입
-interface MyFestivalBoothData extends Array<{
+export type MyFestivalBoothData = {
   id: number;
   posterImageUrl: string;
   mapImageUrl: string;
@@ -37,7 +37,8 @@ interface MyFestivalBoothData extends Array<{
   description: string;
   likeCount: number;
   booths: MyBoothdata[];
-}> {}
+}[];
+
 
 // 예약 정보 타입
 interface ReservationType {
@@ -50,10 +51,26 @@ interface ReservationType {
   createdAt: string;
 }
 
-export default async function CheckReservationDetail({ params }: { params: Promise<{ festivalId: string; boothId: string }> }) {
-  const cookieHeader = cookies().toString();
+interface SlotData {
+  id: number;
+}
 
-  const { festivalId, boothId } = await params;
+interface ReturnData {
+  reservationId: number,
+  userId: number,
+  userName: string,
+  timeSlotStartTime: string,
+  numberOfPeople: number,
+  paymentMethod: string,
+  createdAt: string,
+}
+
+export default async function CheckReservationDetail({ params }: { params: Promise<{ festivalId: string; boothId: string }> }) {
+  const cookieStore = await cookies();  // headers()와 cookies()는 모두 서버 컴포넌트용
+  const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
+
+
+  const { boothId } = await params;
 
   // 유저가 만든 부스들 조회
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/booths`, {
@@ -89,7 +106,7 @@ export default async function CheckReservationDetail({ params }: { params: Promi
 
   // 모든 타임슬롯에 대해 예약 정보 병렬 요청
   const reservations = await Promise.all(
-    timeSlots.map(async (slot: any) => {
+    timeSlots.map(async (slot: SlotData) => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/reservations/timeslots/${slot.id}`, {
         headers: {
           Cookie: cookieHeader,
@@ -98,7 +115,8 @@ export default async function CheckReservationDetail({ params }: { params: Promi
       });
       if (!res.ok) return [];
       const data = await res.json();
-      return data.map((r: any) => ({
+      return data.map((r: ReturnData) => (
+        {
         reservationId: r.reservationId,
         userId: r.userId,
         userName: r.userName,

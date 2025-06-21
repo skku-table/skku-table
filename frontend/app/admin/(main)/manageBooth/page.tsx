@@ -31,7 +31,8 @@ type MyFestivalBoothData = {
 
 
 export default async function AdminBoothManagePage() {
-  const cookieHeader = cookies().toString();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
 
   //try fetchwithcredential
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/booths`, {

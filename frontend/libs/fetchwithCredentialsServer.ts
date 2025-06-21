@@ -5,7 +5,8 @@ export async function fetchWithCredentials(
   input: RequestInfo | URL,
   init?: RequestInit
 ) {
-  const cookieHeader = cookies().toString();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
 
   return fetch(input, {
     ...init,

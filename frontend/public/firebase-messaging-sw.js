@@ -25,7 +25,7 @@ messaging.onBackgroundMessage(function (payload) {
     body: payload.notification.body,
     icon: '/icon-rectangle.png', // 아이콘 경로 -> 나중에 추가하기...
     data: {
-      link: 'skkutable.com', // 알림 클릭 시 이동할 URL
+      link: 'https://skkutable.com', // 알림 클릭 시 이동할 URL
     },
   };
 
