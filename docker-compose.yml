@@ -32,6 +32,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1234}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     volumes:
       - skku-table-database:/var/lib/mysql
     ports:
@@ -49,6 +54,7 @@ services:
       - .env
     depends_on:
       - database # 데이터베이스가 먼저 시작되도록 의존성 설정
+    restart: on-failure
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
