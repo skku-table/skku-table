@@ -112,7 +112,7 @@ services:
     command:
       - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
       - -user=root
-      - -password={MYSQL_ROOT_PASSWORD:-1234}
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
       - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
       - info
     volumes:
