@@ -2,8 +2,8 @@ name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
   workflow_run: # 'CI - PR & Main build' 워크플로우를 기다리기 위한 트리거
-    workflows: ["CI - PR & Main build"] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
-    types: [completed] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
+    workflows: [ "CI - PR & Main build" ] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
+    types: [ completed ] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
 
 jobs:
   deploy:
@@ -22,13 +22,13 @@ jobs:
         # 여기서 설정된 SCRIPT_NEXT_PUBLIC_API_URL 변수를 'with.envs'를 통해 원격 스크립트로 전달합니다.
         env:
           SCRIPT_NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
-          SCRIPT_NEXT_PUBLIC_API_KEY: ${{ secrets.NEXT_PUBLIC_API_KEY }}
-          SCRIPT_NEXT_PUBLIC_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_AUTH_DOMAIN }}
-          SCRIPT_NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          SCRIPT_NEXT_PUBLIC_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_STORAGE_BUCKET }}
-          SCRIPT_NEXT_PUBLIC_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_MESSAGING_SENDER_ID }}
-          SCRIPT_NEXT_PUBLIC_APP_ID: ${{ secrets.NEXT_PUBLIC_APP_ID }}
-          SCRIPT_NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_MEASUREMENT_ID }}
+          SCRIPT_NEXT_PUBLIC_API_KEY: ${{ secrets.API_KEY }}
+          SCRIPT_NEXT_PUBLIC_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          SCRIPT_NEXT_PUBLIC_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SCRIPT_NEXT_PUBLIC_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          SCRIPT_NEXT_PUBLIC_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+          SCRIPT_NEXT_PUBLIC_APP_ID: ${{ secrets.APP_ID }}
+          SCRIPT_NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.MEASUREMENT_ID }}
         with:
           host: skkutable.com # 직접 값을 사용하거나, ${{ env.HOST }} 와 같이 job/workflow 레벨에서 HOST 환경 변수를 설정하여 사용 가능
           username: ubuntu # 직접 값을 사용하거나, ${{ env.USER }} 와 같이 job/workflow 레벨에서 USER 환경 변수를 설정하여 사용 가능
