@@ -4,6 +4,7 @@ spring:
   
   datasource:
     url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   
@@ -14,8 +15,10 @@ spring:
   
   flyway:
     enabled: true
-    baseline-on-migrate: false  # 프로덕션에서는 false
-    locations: classpath:db/migration  # prod에서는 seed 데이터 제외
+    baseline-on-migrate: true  # 프로덕션에서는 false
+    locations:
+      - classpath:db/migration  # prod에서는 seed 데이터 제외
+      - classpath:db/dev/seed
     validate-on-migrate: true
 
 logging:

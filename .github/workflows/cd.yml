@@ -2,8 +2,8 @@ name: CD – Deploy Front- and Back-end to Oracle Cloud
 
 on:
   workflow_run: # 'CI - PR & Main build' 워크플로우를 기다리기 위한 트리거
-    workflows: ["CI - PR & Main build"] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
-    types: [completed] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
+    workflows: [ "CI - PR & Main build" ] # ci.yml 파일에 정의된 name과 정확히 일치해야 합니다.
+    types: [ completed ] # 'CI - PR & Main build'가 완료되었을 때 트리거됩니다.
 
 jobs:
   deploy:
@@ -57,17 +57,41 @@ jobs:
 
       - name: Deploy application using Docker Compose on Oracle Cloud
         uses: appleboy/ssh-action@v1.2.2 # 또는 최신 버전을 위해 @v1 사용 가능
+        env:
+          SCRIPT_CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          SCRIPT_CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          SCRIPT_CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          SCRIPT_MYSQL_DATABASE: skku-table-prod # 프로덕션 데이터베이스 이름
+          SCRIPT_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          SCRIPT_SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+          SCRIPT_SPRING_PROFILES_ACTIVE: prod # 프로덕션 환경 설정
+          SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         with:
           host: skkutable.com # 위와 동일한 호스트 정보
           username: ubuntu # 위와 동일한 사용자 정보
           key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
           port: 22 # 기본값
+          envs: SCRIPT_CLOUDINARY_API_KEY,SCRIPT_CLOUDINARY_API_SECRET,SCRIPT_CLOUDINARY_CLOUD_NAME,SCRIPT_MYSQL_DATABASE,SCRIPT_MYSQL_ROOT_PASSWORD,SCRIPT_SPRING_DATASOURCE_URL,SCRIPT_SPRING_PROFILES_ACTIVE,SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY
           script: |
             set -ex # 명령어 실행 중 오류 발생 시 즉시 중단하고, 실행되는 명령어들을 출력합니다.
 
             echo "♻️ Running docker-compose pull and up..."
             cd ~/skku-table # skku-table 디렉토리로 이동
-
+            
+            # .env 파일이 존재하는지 확인하고, 없으면 생성
+            if [ ! -f .env ]; then
+              echo "Creating .env file..."
+              echo "CLOUDINARY_CLOUD_NAME=$SCRIPT_CLOUDINARY_CLOUD_NAME" >> .env
+              echo "CLOUDINARY_API_KEY=$SCRIPT_CLOUDINARY_API_KEY" >> .env
+              echo "CLOUDINARY_API_SECRET=$SCRIPT_CLOUDINARY_API_SECRET" >> .env
+              echo "MYSQL_DATABASE=$SCRIPT_MYSQL_DATABASE" >> .env
+              echo "MYSQL_ROOT_PASSWORD=$SCRIPT_MYSQL_ROOT_PASSWORD" >> .env
+              echo "SPRING_DATASOURCE_URL=$SCRIPT_SPRING_DATASOURCE_URL" >> .env
+              echo "SPRING_PROFILES_ACTIVE=$SCRIPT_SPRING_PROFILES_ACTIVE" >> .env
+              echo "FIREBASE_SERVICE_ACCOUNT_KEY=$SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY" >> .env
+            else
+              echo ".env file already exists, skipping creation."
+            fi
             echo "Pulling latest Docker images..."
             docker compose pull
 

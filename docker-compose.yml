@@ -30,7 +30,7 @@ services:
     container_name: mysql
     image: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1234}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - skku-table-database:/var/lib/mysql
@@ -43,11 +43,6 @@ services:
     pull_policy: always
     container_name: spring-boot-app
     image: ghcr.io/skku-table/skku-table-backend:latest
-    #    build:
-    #      context: backend/
-    #      dockerfile: Dockerfile
-    #      args:
-    #        JAR_FILE: build/libs/skku-table-backend.jar
     ports:
       - 8080:8080 # Spring Boot 애플리케이션을 8080 포트로 매핑
     env_file:
@@ -61,7 +56,6 @@ services:
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       FIREBASE_SERVICE_ACCOUNT_KEY: ${FIREBASE_SERVICE_ACCOUNT_KEY}
-
     networks:
       - web
 
