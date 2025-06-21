@@ -51,7 +51,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
     '성균관대학교',
-    '컴퓨터교육',
+    '문헌정보학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -63,7 +63,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
     '성균관대학교',
-    '경제학',
+    '심리학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -75,7 +75,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'ADMIN',
     '성균관대학교',
-    '경영학',
+    '컴퓨터교육과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -87,7 +87,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
     '성균관대학교',
-    '전자공학',
+    '화학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -99,7 +99,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
     '성균관대학교',
-    '디자인',
+    '소프트웨어학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
