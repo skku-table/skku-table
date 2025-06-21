@@ -107,6 +107,46 @@ services:
       - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
     networks: [ web ]
 
+  prod-flyway-info:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password={MYSQL_ROOT_PASSWORD:-1234}
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - info
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  prod-flyway-clean:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - -cleanDisabled=false
+      - clean
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  prod-flyway-migrate:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - migrate
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
 volumes:
   caddy_data:
   caddy_config:
