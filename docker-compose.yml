@@ -30,8 +30,13 @@ services:
     container_name: mysql
     image: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1234}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     volumes:
       - skku-table-database:/var/lib/mysql
     ports:
@@ -43,17 +48,13 @@ services:
     pull_policy: always
     container_name: spring-boot-app
     image: ghcr.io/skku-table/skku-table-backend:latest
-    #    build:
-    #      context: backend/
-    #      dockerfile: Dockerfile
-    #      args:
-    #        JAR_FILE: build/libs/skku-table-backend.jar
     ports:
       - 8080:8080 # Spring Boot 애플리케이션을 8080 포트로 매핑
     env_file:
       - .env
     depends_on:
       - database # 데이터베이스가 먼저 시작되도록 의존성 설정
+    restart: on-failure
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
@@ -61,7 +62,8 @@ services:
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       FIREBASE_SERVICE_ACCOUNT_KEY: ${FIREBASE_SERVICE_ACCOUNT_KEY}
-
+      DB_USERNAME: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-1234}
     networks:
       - web
 
@@ -98,6 +100,46 @@ services:
       - -url=jdbc:mysql://database:3306/skku-table-dev?allowPublicKeyRetrieval=true&useSSL=false
       - -user=root
       - -password=1234
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - migrate
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  prod-flyway-info:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - info
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  prod-flyway-clean:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
+      - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
+      - -cleanDisabled=false
+      - clean
+    volumes:
+      - ./backend/src/main/resources/db/migration:/sql/migration
+      - ./backend/src/main/resources/db/seed/dev:/sql/seed/dev
+    networks: [ web ]
+
+  prod-flyway-migrate:
+    image: flyway/flyway:11.9   # 공식 CLI
+    command:
+      - -url=jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=${MYSQL_ROOT_PASSWORD:-1234}
       - -locations=filesystem:/sql/migration,filesystem:/sql/seed/dev
       - migrate
     volumes:

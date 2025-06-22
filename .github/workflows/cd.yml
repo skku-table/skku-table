@@ -22,12 +22,21 @@ jobs:
         # 여기서 설정된 SCRIPT_NEXT_PUBLIC_API_URL 변수를 'with.envs'를 통해 원격 스크립트로 전달합니다.
         env:
           SCRIPT_NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          SCRIPT_NEXT_PUBLIC_API_KEY: ${{ secrets.API_KEY }}
+          SCRIPT_NEXT_PUBLIC_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          SCRIPT_NEXT_PUBLIC_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SCRIPT_NEXT_PUBLIC_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          SCRIPT_NEXT_PUBLIC_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+          SCRIPT_NEXT_PUBLIC_APP_ID: ${{ secrets.APP_ID }}
+          SCRIPT_NEXT_PUBLIC_MEASUREMENT_ID: ${{ secrets.MEASUREMENT_ID }}
+          SCRIPT_NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          SCRIPT_NEXT_PUBLIC_ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
         with:
           host: skkutable.com # 직접 값을 사용하거나, ${{ env.HOST }} 와 같이 job/workflow 레벨에서 HOST 환경 변수를 설정하여 사용 가능
           username: ubuntu # 직접 값을 사용하거나, ${{ env.USER }} 와 같이 job/workflow 레벨에서 USER 환경 변수를 설정하여 사용 가능
           key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
           port: 22 # 기본값이 22이므로 명시하지 않아도 됩니다. 다른 포트인 경우 지정합니다.
-          envs: SCRIPT_NEXT_PUBLIC_API_URL # 여기에 명시된 변수들이 원격 쉘의 환경 변수로 전달됩니다.
+          envs: SCRIPT_NEXT_PUBLIC_API_URL,SCRIPT_NEXT_PUBLIC_API_KEY,SCRIPT_NEXT_PUBLIC_AUTH_DOMAIN,SCRIPT_NEXT_PUBLIC_PROJECT_ID,SCRIPT_NEXT_PUBLIC_STORAGE_BUCKET,SCRIPT_NEXT_PUBLIC_MESSAGING_SENDER_ID,SCRIPT_NEXT_PUBLIC_APP_ID,SCRIPT_NEXT_PUBLIC_MEASUREMENT_ID,SCRIPT_NEXT_PUBLIC_VAPID_PUBLIC_KEY,SCRIPT_NEXT_PUBLIC_ADMIN_SECRET # 여기에 명시된 변수들이 원격 쉘의 환경 변수로 전달됩니다.
           script: |
             set -ex  # 명령어 실행 중 오류 발생 시 즉시 중단하고, 실행되는 명령어들을 출력합니다.
 
@@ -48,8 +57,23 @@ jobs:
             echo "Navigating to skku-table/frontend/ to create .env.production..."
             cd skku-table/frontend/
 
+            # 원래 있던 .env.production 파일 삭제
+            if [ -f .env.production ]; then
+              echo "Deleting existing .env.production file..."
+              rm .env.production
+            fi
+
             # .env.production 파일 생성
             echo "NEXT_PUBLIC_API_URL=$SCRIPT_NEXT_PUBLIC_API_URL" > .env.production
+            echo "NEXT_PUBLIC_API_KEY=$SCRIPT_NEXT_PUBLIC_API_KEY" >> .env.production
+            echo "NEXT_PUBLIC_AUTH_DOMAIN=$SCRIPT_NEXT_PUBLIC_AUTH_DOMAIN" >> .env.production
+            echo "NEXT_PUBLIC_PROJECT_ID=$SCRIPT_NEXT_PUBLIC_PROJECT_ID" >> .env.production
+            echo "NEXT_PUBLIC_STORAGE_BUCKET=$SCRIPT_NEXT_PUBLIC_STORAGE_BUCKET" >> .env.production
+            echo "NEXT_PUBLIC_MESSAGING_SENDER_ID=$SCRIPT_NEXT_PUBLIC_MESSAGING_SENDER_ID" >> .env.production
+            echo "NEXT_PUBLIC_APP_ID=$SCRIPT_NEXT_PUBLIC_APP_ID" >> .env.production
+            echo "NEXT_PUBLIC_MEASUREMENT_ID=$SCRIPT_NEXT_PUBLIC_MEASUREMENT_ID" >> .env.production
+            echo "NEXT_PUBLIC_VAPID_PUBLIC_KEY=$SCRIPT_NEXT_PUBLIC_VAPID_PUBLIC_KEY" >> .env.production
+            echo "NEXT_PUBLIC_ADMIN_SECRET=$SCRIPT_NEXT_PUBLIC_ADMIN_SECRET" >> .env.production
             echo ".env.production file created/updated successfully."
 
             cd ~ # 홈 디렉토리로 이동
@@ -57,17 +81,41 @@ jobs:
 
       - name: Deploy application using Docker Compose on Oracle Cloud
         uses: appleboy/ssh-action@v1.2.2 # 또는 최신 버전을 위해 @v1 사용 가능
+        env:
+          SCRIPT_CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          SCRIPT_CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          SCRIPT_CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          SCRIPT_MYSQL_DATABASE: skku-table-prod # 프로덕션 데이터베이스 이름
+          SCRIPT_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          SCRIPT_SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/skku-table-prod?allowPublicKeyRetrieval=true&useSSL=false
+          SCRIPT_SPRING_PROFILES_ACTIVE: prod # 프로덕션 환경 설정
+          SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         with:
           host: skkutable.com # 위와 동일한 호스트 정보
           username: ubuntu # 위와 동일한 사용자 정보
           key: ${{ secrets.ORACLE_CLOUD_SSH_KEY }}
           port: 22 # 기본값
+          envs: SCRIPT_CLOUDINARY_API_KEY,SCRIPT_CLOUDINARY_API_SECRET,SCRIPT_CLOUDINARY_CLOUD_NAME,SCRIPT_MYSQL_DATABASE,SCRIPT_MYSQL_ROOT_PASSWORD,SCRIPT_SPRING_DATASOURCE_URL,SCRIPT_SPRING_PROFILES_ACTIVE,SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY
           script: |
             set -ex # 명령어 실행 중 오류 발생 시 즉시 중단하고, 실행되는 명령어들을 출력합니다.
 
             echo "♻️ Running docker-compose pull and up..."
             cd ~/skku-table # skku-table 디렉토리로 이동
 
+            # .env 파일이 존재하는지 확인하고, 없으면 생성
+            if [ ! -f .env ]; then
+              echo "Creating .env file..."
+              echo "CLOUDINARY_CLOUD_NAME=$SCRIPT_CLOUDINARY_CLOUD_NAME" >> .env
+              echo "CLOUDINARY_API_KEY=$SCRIPT_CLOUDINARY_API_KEY" >> .env
+              echo "CLOUDINARY_API_SECRET=$SCRIPT_CLOUDINARY_API_SECRET" >> .env
+              echo "MYSQL_DATABASE=$SCRIPT_MYSQL_DATABASE" >> .env
+              echo "MYSQL_ROOT_PASSWORD=$SCRIPT_MYSQL_ROOT_PASSWORD" >> .env
+              echo "SPRING_DATASOURCE_URL=$SCRIPT_SPRING_DATASOURCE_URL" >> .env
+              echo "SPRING_PROFILES_ACTIVE=$SCRIPT_SPRING_PROFILES_ACTIVE" >> .env
+              echo "FIREBASE_SERVICE_ACCOUNT_KEY=$SCRIPT_FIREBASE_SERVICE_ACCOUNT_KEY" >> .env
+            else
+              echo ".env file already exists, skipping creation."
+            fi
             echo "Pulling latest Docker images..."
             docker compose pull
 

@@ -51,7 +51,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
     '성균관대학교',
-    '컴퓨터교육',
+    '문헌정보학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -63,7 +63,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'USER',
     '성균관대학교',
-    '경제학',
+    '심리학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -75,7 +75,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'ADMIN',
     '성균관대학교',
-    '경영학',
+    '컴퓨터교육과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -87,7 +87,7 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
     '성균관대학교',
-    '전자공학',
+    '화학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
@@ -99,14 +99,14 @@ VALUES
     '$2a$10$fihxE1rSIi64vEXARNikYu7vvrFt6OS.PyLqMp4B31bJzQM8Z4chO',
     'HOST',
     '성균관대학교',
-    '디자인',
+    '소프트웨어학과',
     '/src/userprofile.png',
     NOW(),
     NOW()
   );
 
 /* =============================================================
-2. FESTIVALS   –  ADMIN(3)이 생성
+2. FESTIVALS   –  ADMIN(3)이 생성 (2025년 6월 21-22일로 업데이트)
 ------------------------------------------------------------- */
 INSERT INTO
   festival (
@@ -125,11 +125,11 @@ INSERT INTO
 VALUES
   (
     1,
-    '2024 성균관대 봄 축제',
-    '성균관대학교 봄 축제입니다! 다양한 공연과 부스가 준비되어 있습니다.',
+    '2025 성균관대 여름 축제',
+    '성균관대학교 여름 축제입니다! 다양한 공연과 부스가 준비되어 있습니다.',
     '성균관대학교 자연과학캠퍼스',
-    '2024-05-15',
-    '2024-05-17',
+    '2025-06-21',
+    '2025-06-22',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455884/kcicwce5sgn5onqfzea8.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455854/plzvsshapqguzjbjpixy.png',
     150,
@@ -138,11 +138,11 @@ VALUES
   ),
   (
     2,
-    '2024 성균관대 가을 축제',
-    '성균관대학교 가을 축제! 풍성한 먹거리와 볼거리가 가득합니다.',
+    '2025 성균관대 여름 특별전',
+    '성균관대학교 여름 특별전! 풍성한 먹거리와 볼거리가 가득합니다.',
     '성균관대학교 인문사회과학캠퍼스',
-    '2024-10-20',
-    '2024-10-22',
+    '2025-06-22',
+    '2025-06-22',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456311/snjku9czhglrsjxbcnwl.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455854/plzvsshapqguzjbjpixy.png',
     200,
@@ -151,11 +151,11 @@ VALUES
   ),
   (
     3,
-    '2024 대동제',
+    '2025 대동제',
     '학생회 주최 대동제! 모든 성균인이 하나되는 축제입니다.',
     '성균관대학교 자연과학캠퍼스',
-    '2024-11-10',
-    '2024-11-12',
+    '2025-06-21',
+    '2025-06-22',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457780/werbb5bcsyuzn4eooy77.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456313/zogfhbmwdthzkdcrjdg1.jpg',
     300,
@@ -164,7 +164,7 @@ VALUES
   );
 
 /* =============================================================
-3. BOOTHS  – created_by FK 필수
+3. BOOTHS  – created_by FK 필수 (2025년 6월 21-22일로 업데이트)
 ------------------------------------------------------------- */
 INSERT INTO
   booth (
@@ -185,7 +185,7 @@ INSERT INTO
     updated_at
   )
 VALUES
-  /* 봄 축제 – host1 */
+  /* 여름 축제 – host1 */
   (
     1,
     1,
@@ -194,9 +194,9 @@ VALUES
     '요리 동아리',
     '학생회관 앞',
     '매콤달콤한 떡볶이를 판매합니다!',
-    '2024-05-15 11:00',
-    '2024-05-15 18:00',
-    '2024-05-14 10:00',
+    '2025-06-21 11:00',
+    '2025-06-21 18:00',
+    '2025-06-21 10:00',
     50,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749451072/wa37se78uujl1cxlgqwp.jpg',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119788/cld-sample-4.jpg',
@@ -211,9 +211,9 @@ VALUES
     '사진 동아리',
     '중앙광장',
     '예쁜 사진을 찍어드립니다!',
-    '2024-05-15 10:00',
-    '2024-05-17 20:00',
-    '2024-05-14 10:00',
+    '2025-06-21 10:00',
+    '2025-06-22 20:00',
+    '2025-06-21 09:00',
     80,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452445/txlx2ubqm7nkhnkynuvn.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749452444/yxqv3hkmpx4lw3uu7ouk.jpg',
@@ -228,9 +228,9 @@ VALUES
     '심리학과',
     '도서관 앞',
     '타로로 당신의 운세를 봐드립니다',
-    '2024-05-16 12:00',
-    '2024-05-16 17:00',
-    '2024-05-15 10:00',
+    '2025-06-22 12:00',
+    '2025-06-22 17:00',
+    '2025-06-21 10:00',
     30,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455091/lxnqsi8efdbjr7ek620k.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455088/fi2tyk0xw3f59mstdbhx.jpg',
@@ -245,16 +245,16 @@ VALUES
     '음악 동아리',
     '야외 무대',
     '다양한 장르의 음악 공연',
-    '2024-05-15 17:00',
-    '2024-05-17 21:00',
-    '2024-05-14 10:00',
+    '2025-06-21 17:00',
+    '2025-06-22 21:00',
+    '2025-06-21 09:00',
     100,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455362/suq5t8iaricxlgd86vez.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455360/o1lsd2kqls6nj7mszugc.jpg',
     NOW(),
     NOW()
   ),
-  /* 가을 축제 – host1 */
+  /* 여름 특별전 – host1 */
   (
     5,
     2,
@@ -263,9 +263,9 @@ VALUES
     '봉사 동아리',
     '정문 앞',
     '따뜻한 호떡을 판매합니다',
-    '2024-10-20 11:00',
-    '2024-10-22 18:00',
-    '2024-10-19 10:00',
+    '2025-06-22 11:00',
+    '2025-06-22 18:00',
+    '2025-06-21 10:00',
     60,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456545/j78bhadk7nzfet4vcvrv.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456558/sjj67jexg8w48li3ik7w.png',
@@ -280,9 +280,9 @@ VALUES
     '경영학과',
     '중앙도서관 앞',
     '다양한 수공예품 판매',
-    '2024-10-20 10:00',
-    '2024-10-22 19:00',
-    '2024-10-19 10:00',
+    '2025-06-22 10:00',
+    '2025-06-22 19:00',
+    '2025-06-21 10:00',
     90,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456822/ghog4i3zhin6vazojn1z.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456820/w9gd6276jkf4tf3fl3hn.png',
@@ -297,9 +297,9 @@ VALUES
     '컴퓨터학과',
     '공학관 앞',
     '재미있는 미니게임과 상품!',
-    '2024-10-21 12:00',
-    '2024-10-21 18:00',
-    '2024-10-20 10:00',
+    '2025-06-22 12:00',
+    '2025-06-22 18:00',
+    '2025-06-21 10:00',
     40,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456940/pw88m9eitbhjbpi3dbno.png',
@@ -315,9 +315,9 @@ VALUES
     '경제학과',
     '학생회관 3층',
     '다양한 안주와 음료 판매',
-    '2024-11-10 17:00',
-    '2024-11-12 23:00',
-    '2024-11-09 10:00',
+    '2025-06-21 17:00',
+    '2025-06-22 23:00',
+    '2025-06-21 09:00',
     150,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458261/k6ugculwmvsilctv0m82.png',
@@ -332,9 +332,9 @@ VALUES
     '연극 동아리',
     '체육관',
     '무서운 귀신의 집 체험',
-    '2024-11-10 15:00',
-    '2024-11-12 22:00',
-    '2024-11-09 10:00',
+    '2025-06-21 15:00',
+    '2025-06-22 22:00',
+    '2025-06-21 09:00',
     120,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458292/wn9rawl8mmb0ezy5mqwb.png',
@@ -349,9 +349,9 @@ VALUES
     '학생회',
     '중앙광장',
     '다양한 세계 음식',
-    '2024-11-10 11:00',
-    '2024-11-12 21:00',
-    '2024-11-09 10:00',
+    '2025-06-21 11:00',
+    '2025-06-22 21:00',
+    '2025-06-21 09:00',
     200,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749119779/samples/food/spices.jpg',
@@ -367,9 +367,9 @@ VALUES
     '화학과',
     '과학관 앞',
     '달콤한 솜사탕 판매',
-    '2024-05-16 11:00',
-    '2024-05-16 17:00',
-    '2024-05-15 10:00',
+    '2025-06-22 11:00',
+    '2025-06-22 17:00',
+    '2025-06-21 10:00',
     25,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749455727/dgu0drgvrzlxbizefzfh.png',
@@ -384,9 +384,9 @@ VALUES
     '미술학과',
     '예술관 로비',
     '예쁜 네일아트 서비스',
-    '2024-05-15 12:00',
-    '2024-05-17 18:00',
-    '2024-05-14 10:00',
+    '2025-06-21 12:00',
+    '2025-06-22 18:00',
+    '2025-06-21 09:00',
     35,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749456065/pqqs6mctdvyxp7ufbd8u.png',
@@ -401,9 +401,9 @@ VALUES
     '바리스타 동아리',
     '경영관 앞',
     '직접 내린 커피 판매',
-    '2024-10-20 09:00',
-    '2024-10-22 18:00',
-    '2024-10-19 10:00',
+    '2025-06-22 09:00',
+    '2025-06-22 18:00',
+    '2025-06-21 10:00',
     45,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457065/wju1kfwkrjifqdzdokfj.png',
@@ -418,9 +418,9 @@ VALUES
     '디자인학과',
     '미술관 앞',
     '다양한 페이스페인팅',
-    '2024-10-21 11:00',
-    '2024-10-21 17:00',
-    '2024-10-20 10:00',
+    '2025-06-22 11:00',
+    '2025-06-22 17:00',
+    '2025-06-21 10:00',
     20,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749457744/xb5muwvibwlm3hogrbz4.png',
@@ -435,9 +435,9 @@ VALUES
     '보드게임 동아리',
     '학생회관 2층',
     '다양한 보드게임 체험',
-    '2024-11-10 13:00',
-    '2024-11-12 20:00',
-    '2024-11-09 10:00',
+    '2025-06-21 13:00',
+    '2025-06-22 20:00',
+    '2025-06-21 09:00',
     55,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458368/qm3vkip13mhbmtadluew.png',
@@ -452,9 +452,9 @@ VALUES
     'mixology 동아리',
     '중앙광장',
     '무알콜 칵테일 판매',
-    '2024-11-11 15:00',
-    '2024-11-11 22:00',
-    '2024-11-10 10:00',
+    '2025-06-22 15:00',
+    '2025-06-22 22:00',
+    '2025-06-21 10:00',
     70,
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
     'https://res.cloudinary.com/dyn6rhsfe/image/upload/v1749458391/bigwistmbbldpee4djn8.png',
@@ -463,7 +463,7 @@ VALUES
   );
 
 /* =============================================================
-4. TIME SLOTS
+4. TIME SLOTS (2025년 6월 21-22일로 업데이트)
 ------------------------------------------------------------- */
 INSERT INTO
   time_slot (
@@ -482,8 +482,8 @@ VALUES
   (
     1,
     1,
-    '2024-05-15 11:00:00',
-    '2024-05-15 12:00:00',
+    '2025-06-21 11:00:00',
+    '2025-06-21 12:00:00',
     10,
     0,
     'AVAILABLE',
@@ -493,8 +493,8 @@ VALUES
   (
     2,
     1,
-    '2024-05-15 12:00:00',
-    '2024-05-15 13:00:00',
+    '2025-06-21 12:00:00',
+    '2025-06-21 13:00:00',
     10,
     0,
     'AVAILABLE',
@@ -504,8 +504,8 @@ VALUES
   (
     3,
     1,
-    '2024-05-15 13:00:00',
-    '2024-05-15 14:00:00',
+    '2025-06-21 13:00:00',
+    '2025-06-21 14:00:00',
     10,
     0,
     'AVAILABLE',
@@ -516,8 +516,8 @@ VALUES
   (
     4,
     2,
-    '2024-05-15 10:00:00',
-    '2024-05-15 11:00:00',
+    '2025-06-21 10:00:00',
+    '2025-06-21 11:00:00',
     5,
     0,
     'AVAILABLE',
@@ -527,8 +527,8 @@ VALUES
   (
     5,
     2,
-    '2024-05-15 11:00:00',
-    '2024-05-15 12:00:00',
+    '2025-06-21 11:00:00',
+    '2025-06-21 12:00:00',
     5,
     0,
     'AVAILABLE',
@@ -539,8 +539,8 @@ VALUES
   (
     6,
     3,
-    '2024-05-16 12:00:00',
-    '2024-05-16 13:00:00',
+    '2025-06-22 12:00:00',
+    '2025-06-22 13:00:00',
     3,
     0,
     'AVAILABLE',
@@ -550,8 +550,8 @@ VALUES
   (
     7,
     3,
-    '2024-05-16 13:00:00',
-    '2024-05-16 14:00:00',
+    '2025-06-22 13:00:00',
+    '2025-06-22 14:00:00',
     3,
     0,
     'AVAILABLE',
@@ -562,8 +562,8 @@ VALUES
   (
     8,
     4,
-    '2024-05-15 17:00:00',
-    '2024-05-15 18:00:00',
+    '2025-06-21 17:00:00',
+    '2025-06-21 18:00:00',
     20,
     0,
     'AVAILABLE',
@@ -573,8 +573,8 @@ VALUES
   (
     9,
     4,
-    '2024-05-15 18:00:00',
-    '2024-05-15 19:00:00',
+    '2025-06-21 18:00:00',
+    '2025-06-21 19:00:00',
     20,
     0,
     'AVAILABLE',
@@ -585,8 +585,8 @@ VALUES
   (
     10,
     5,
-    '2024-10-20 11:00:00',
-    '2024-10-20 12:00:00',
+    '2025-06-22 11:00:00',
+    '2025-06-22 12:00:00',
     8,
     0,
     'AVAILABLE',
@@ -596,8 +596,8 @@ VALUES
   (
     11,
     5,
-    '2024-10-20 12:00:00',
-    '2024-10-20 13:00:00',
+    '2025-06-22 12:00:00',
+    '2025-06-22 13:00:00',
     8,
     0,
     'AVAILABLE',
@@ -608,8 +608,8 @@ VALUES
   (
     12,
     8,
-    '2024-11-10 17:00:00',
-    '2024-11-10 18:00:00',
+    '2025-06-21 17:00:00',
+    '2025-06-21 18:00:00',
     15,
     0,
     'AVAILABLE',
@@ -619,8 +619,8 @@ VALUES
   (
     13,
     8,
-    '2024-11-10 18:00:00',
-    '2024-11-10 19:00:00',
+    '2025-06-21 18:00:00',
+    '2025-06-21 19:00:00',
     15,
     0,
     'AVAILABLE',
@@ -630,8 +630,8 @@ VALUES
   (
     14,
     8,
-    '2024-11-10 19:00:00',
-    '2024-11-10 20:00:00',
+    '2025-06-21 19:00:00',
+    '2025-06-21 20:00:00',
     15,
     0,
     'AVAILABLE',
@@ -640,7 +640,7 @@ VALUES
   );
 
 /* =============================================================
-5. RESERVATIONS
+5. RESERVATIONS (오늘 날짜에 맞춰 샘플 예약)
 ------------------------------------------------------------- */
 INSERT INTO
   reservation (
@@ -726,20 +726,20 @@ SET current_capacity = (
     WHERE r.time_slot_id = ts.id
 )
 WHERE ts.id IN (
-    SELECT DISTINCT time_slot_id 
-    FROM reservation 
+    SELECT DISTINCT time_slot_id
+    FROM reservation
     WHERE time_slot_id IS NOT NULL
 );
 
 -- 타임슬롯 상태 업데이트 (FULL 또는 AVAILABLE)
-UPDATE time_slot 
-SET status = CASE 
+UPDATE time_slot
+SET status = CASE
     WHEN current_capacity >= max_capacity THEN 'FULL'
     ELSE 'AVAILABLE'
 END
 WHERE id IN (
-    SELECT DISTINCT time_slot_id 
-    FROM reservation 
+    SELECT DISTINCT time_slot_id
+    FROM reservation
     WHERE time_slot_id IS NOT NULL
 );
 
