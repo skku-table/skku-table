@@ -65,7 +65,7 @@ export default function MyProfilePage() {
 
     if (!res.ok) throw new Error('로그아웃 실패');
 
-    router.push('/'); // 또는 '/login' 등 원하는 경로로
+    router.push('/login'); // 또는 '/login' 등 원하는 경로로
   } catch (err) {
     console.error('로그아웃 오류:', err);
     alert('로그아웃에 실패했습니다.');
