@@ -1,78 +1,80 @@
-# SKKU TABLE - Festival Booth Reservation Management System
+# SKKU TABLE - 축제 부스 예약 관리 시스템
 
-SKKU TABLE is a web application designed to efficiently manage festival booth reservations at Sungkyunkwan University. Students can explore and reserve booths at various festivals, while booth operators can easily manage reservations and time-slot operations.
+[English](./README.en.md) | **한국어**
 
-## 🎯 Key Features
+SKKU TABLE은 성균관대학교의 축제 부스 예약을 효율적으로 관리하기 위해 설계된 웹 애플리케이션입니다. 학생들은 다양한 축제의 부스를 탐색하고 예약할 수 있으며, 부스 운영자는 예약 및 시간대별 운영을 쉽게 관리할 수 있습니다.
 
-- **Festival & Booth Discovery**: Search and explore various festivals and booth information
-- **Real-time Reservation System**: Time-slot based booth reservations with real-time availability
-- **User Management**: Secure user management through Firebase authentication
-- **Like System**: Like your favorite festivals and booths
-- **Admin Panel**: Administrative features for festival and booth management
-- **Responsive PWA**: Mobile-friendly Progressive Web App
+## 🎯 주요 기능
 
-## 🏗️ Tech Stack
+- **축제 및 부스 탐색**: 다양한 축제 및 부스 정보 검색 및 탐색
+- **실시간 예약 시스템**: 실시간 가용성을 갖춘 시간대 기반 부스 예약
+- **사용자 관리**: Firebase 인증을 통한 안전한 사용자 관리
+- **'좋아요' 시스템**: 좋아하는 축제 및 부스에 '좋아요' 표시
+- **관리자 패널**: 축제 및 부스 관리를 위한 관리 기능
+- **반응형 PWA**: 모바일 친화적인 프로그레시브 웹 앱
 
-### Frontend
+## 🏗️ 기술 스택
 
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand
-- **Authentication**: Firebase Auth
-- **UI Components**: Radix UI, Lucide React
+### 프론트엔드
+
+- **프레임워크**: Next.js 15 (App Router)
+- **언어**: TypeScript
+- **스타일링**: Tailwind CSS
+- **상태 관리**: Zustand
+- **인증**: Firebase Auth
+- **UI 컴포넌트**: Radix UI, Lucide React
 - **PWA**: next-pwa
 
-### Backend
+### 백엔드
 
-- **Framework**: Spring Boot 3.5
-- **Language**: Java 21
-- **Database**: MySQL
+- **프레임워크**: Spring Boot 3.5
+- **언어**: Java 21
+- **데이터베이스**: MySQL
 - **ORM**: Spring Data JPA
-- **Migration**: Flyway
-- **Image Storage**: Cloudinary
-- **Authentication**: Firebase Admin SDK
-- **API Testing**: Bruno
+- **마이그레이션**: Flyway
+- **이미지 저장소**: Cloudinary
+- **인증**: Firebase Admin SDK
+- **API 테스트**: Bruno
 
-### Infrastructure
+### 인프라
 
-- **Containerization**: Docker & Docker Compose
-- **Reverse Proxy**: Caddy
+- **컨테이너화**: Docker & Docker Compose
+- **리버스 프록시**: Caddy
 - **CI/CD**: GitHub Actions
-- **Deployment**: Oracle Cloud
+- **배포**: Oracle Cloud
 
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```
 skku-table/
-├── frontend/                 # Next.js Frontend
-│   ├── app/                 # App Router Structure
-│   │   ├── (auth)/         # Authentication Pages
-│   │   ├── (client)/       # Client Pages
-│   │   │   └── (main)/     # Main Pages
-│   │   └── admin/          # Admin Pages
-│   ├── components/         # Reusable Components
-│   ├── libs/              # Utility Libraries
-│   └── stores/            # Zustand State Management
-├── backend/               # Spring Boot Backend
+├── frontend/                 # Next.js 프론트엔드
+│   ├── app/                 # App Router 구조
+│   │   ├── (auth)/         # 인증 페이지
+│   │   ├── (client)/       # 클라이언트 페이지
+│   │   │   └── (main)/     # 메인 페이지
+│   │   └── admin/          # 관리자 페이지
+│   ├── components/         # 재사용 가능한 컴포넌트
+│   ├── libs/              # 유틸리티 라이브러리
+│   └── stores/            # Zustand 상태 관리
+├── backend/               # Spring Boot 백엔드
 │   └── src/main/java/com/skkutable/
-│       ├── controller/    # REST API Controllers
-│       ├── service/       # Business Logic
-│       ├── domain/        # JPA Entities
-│       ├── repository/    # Data Access Layer
-│       └── dto/          # Data Transfer Objects
-├── api-testing/          # Bruno API Test Collection
+│       ├── controller/    # REST API 컨트롤러
+│       ├── service/       # 비즈니스 로직
+│       ├── domain/        # JPA 엔티티
+│       ├── repository/    # 데이터 액세스 레이어
+│       └── dto/          # 데이터 전송 객체
+├── api-testing/          # Bruno API 테스트 컬렉션
 ├── functions/            # Firebase Cloud Functions
-└── docker-compose.yml    # Development Environment Setup
+└── docker-compose.yml    # 개발 환경 설정
 ```
 
-## 🚀 Local Development Environment Setup
+## 🚀 로컬 개발 환경 설정
 
-## Table of Contents
+## 목차
 
-## Project Setup
+## 프로젝트 설정
 
-### Clone the Repository
+### 레포지토리 클론
 
 ```bash
 git clone https://github.com/skku-table/skku-table.git
@@ -80,32 +82,32 @@ git clone https://github.com/skku-table/skku-table.git
 
 ![clone-skku-table](/assets/how-to-set-up-local-dev-env/clone.png)
 
-Execute the above command to clone the project.
+위 명령어를 실행하여 프로젝트를 클론합니다.
 
-### Open Project Directory
+### 프로젝트 디렉토리 열기
 
 ```bash
 code skku-table
 ```
 
-OR
+또는
 
 ```bash
 cursor skku-table
 ```
 
-### Clean Up Existing Docker Containers and Volumes
+### 기존 Docker 컨테이너 및 볼륨 정리
 
 ![delete-container](/assets/how-to-set-up-local-dev-env/delete-container.png)
 ![delete-volume](/assets/how-to-set-up-local-dev-env/delete-volume.png)
 
-Delete any existing Docker containers and volumes as shown in the images above.
+위 이미지와 같이 기존 Docker 컨테이너 및 볼륨을 삭제합니다.
 
-## Environment Configuration
+## 환경 설정
 
-### Create Root `.env` File
+### 루트 `.env` 파일 생성
 
-Create a `.env` file in the project root directory with the following format:
+프로젝트 루트 디렉토리에 다음 형식으로 `.env` 파일을 생성합니다:
 
 ```plaintext
 CLOUDINARY_API_KEY=YOUR_CLOUDINARY_API_KEY
@@ -118,9 +120,9 @@ SPRING_PROFILES_ACTIVE=dev
 FIREBASE_SERVICE_ACCOUNT_KEY=YOUR_FIREBASE_SERVICE_ACCOUNT_KEY
 ```
 
-### Create Frontend Environment Variables
+### 프론트엔드 환경 변수 생성
 
-Create a `.env.local` file in the `frontend/` directory with the following format:
+`frontend/` 디렉토리에 다음 형식으로 `.env.local` 파일을 생성합니다:
 
 ```plaintext
 NEXT_PUBLIC_API_URL=http://localhost:8080
@@ -135,55 +137,55 @@ NEXT_PUBLIC_VAPID_PUBLIC_KEY=YOUR_VAPID_PUBLIC_KEY
 NEXT_PUBLIC_ADMIN_SECRET=YOUR_ADMIN_SECRET
 ```
 
-## Backend Setup (MySQL + Spring Boot Application)
+## 백엔드 설정 (MySQL + Spring Boot 애플리케이션)
 
-Open the `docker-compose.yml` file to run the backend.
+`docker-compose.yml` 파일을 열어 백엔드를 실행합니다.
 
 ![docker-compose-yml](/assets/how-to-set-up-local-dev-env/docker-compose-yml.png)
 
-To run the `database` service, click the `Run Service` play button above.  
-This will start the MySQL container.  
-Once MySQL is running, start the Spring Boot Application.
+`database` 서비스를 실행하려면 위의 `Run Service` 재생 버튼을 클릭합니다.
+그러면 MySQL 컨테이너가 시작됩니다.
+MySQL이 실행되면 Spring Boot 애플리케이션을 시작합니다.
 
-To run the `application` service, click the `Run Service` play button above.  
-This will start the Spring Boot Application.
+`application` 서비스를 실행하려면 위의 `Run Service` 재생 버튼을 클릭합니다.
+그러면 Spring Boot 애플리케이션이 시작됩니다.
 
-Great! The backend is now running.
-You can now open Bruno and test the backend API running locally as shown below. (Make requests according to the seed data described below.)
+좋습니다! 이제 백엔드가 실행 중입니다.
+이제 Bruno를 열어 아래와 같이 로컬에서 실행 중인 백엔드 API를 테스트할 수 있습니다. (아래 설명된 시드 데이터에 따라 요청을 보내세요.)
 
 ![test-backend-api-with-bruno](/assets/how-to-set-up-local-dev-env/test-backend-api-with-bruno.png)
 
-## Seed Data
+## 시드 데이터
 
-When the backend runs locally (on your laptop or desktop), seed data is automatically loaded into the database.
+백엔드가 로컬(노트북 또는 데스크톱)에서 실행될 때, 시드 데이터가 자동으로 데이터베이스에 로드됩니다.
 
-The seed data is located in the `backend/src/main/resources/db/seed/dev/R_seed_data.sql` file in the repository.
+시드 데이터는 레포지토리의 `backend/src/main/resources/db/seed/dev/R_seed_data.sql` 파일에 있습니다.
 
-## Seed Data Management
+## 시드 데이터 관리
 
-- `docker compose run --rm dev-flyway-clean` - Deletes seed data
-- `docker compose run --rm dev-flyway-migrate` - Applies seed data
-- `docker compose run --rm dev-flyway-info` - Shows migration information
+- `docker compose run --rm dev-flyway-clean` - 시드 데이터 삭제
+- `docker compose run --rm dev-flyway-migrate` - 시드 데이터 적용
+- `docker compose run --rm dev-flyway-info` - 마이그레이션 정보 표시
 
-## Frontend Setup (Next.js)
+## 프론트엔드 설정 (Next.js)
 
-Navigate to the frontend directory and run the development server as usual.
+프론트엔드 디렉토리로 이동하여 평소와 같이 개발 서버를 실행합니다.
 
 ```bash
 cd frontend
-pnpm install  # If needed
+pnpm install  # 필요한 경우
 pnpm run dev
 ```
 
-The frontend runs at `http://localhost:3000` and connects to the backend API at `http://localhost:8080`.
+프론트엔드는 `http://localhost:3000`에서 실행되며 백엔드 API `http://localhost:8080`에 연결됩니다.
 
-## Backend Development Setup (IDE Direct Execution)
+## 백엔드 개발 설정 (IDE 직접 실행)
 
-If you want to run Spring Boot directly from your IDE, configure as follows:
+IDE에서 직접 Spring Boot를 실행하려면 다음과 같이 구성합니다:
 
-### Create Separate `.env` File (Optional)
+### 별도의 `.env` 파일 생성 (선택 사항)
 
-For running only the backend, you can create a separate `.env` file in the project root:
+백엔드만 실행하는 경우, 프로젝트 루트에 별도의 `.env` 파일을 생성할 수 있습니다:
 
 ```plaintext
 CLOUDINARY_API_KEY=YOUR_CLOUDINARY_API_KEY
@@ -196,86 +198,86 @@ SPRING_PROFILES_ACTIVE=dev
 FIREBASE_SERVICE_ACCOUNT_KEY=YOUR_FIREBASE_SERVICE_ACCOUNT_KEY
 ```
 
-**Note:** Use `localhost:3306` in `SPRING_DATASOURCE_URL` (not `database:3306` which is for Docker containers).
+**참고:** `SPRING_DATASOURCE_URL`에 `localhost:3306`을 사용하세요 (Docker 컨테이너용인 `database:3306`이 아님).
 
-### Configure Spring Boot Profile
+### Spring Boot 프로필 구성
 
-Click the icon next to the `Run` button in the top-right corner of IntelliJ IDEA, then select `Edit Configurations...` from the menu.
+IntelliJ IDEA의 오른쪽 상단에 있는 `Run` 버튼 옆의 아이콘을 클릭한 다음 메뉴에서 `Edit Configurations...`를 선택합니다.
 
 ![edit-configurations](/assets/how-to-set-up-local-dev-env/edit-configurations.png)
 
 ![spring-boot-profile](/assets/how-to-set-up-local-dev-env/spring-boot-profile.png)
 
-Add `dev` to the `Active Profiles` section.  
-In the `Environment variables` section, add the path to your `.env` file. (Click the folder icon on the right to directly select the `.env` file.)
+`Active Profiles` 섹션에 `dev`를 추가합니다.
+`Environment variables` 섹션에 `.env` 파일의 경로를 추가합니다. (오른쪽의 폴더 아이콘을 클릭하여 `.env` 파일을 직접 선택할 수 있습니다.)
 
-### Rebuild Project
+### 프로젝트 다시 빌드
 
-In IntelliJ IDEA, click `Build` - `Rebuild Project`.  
-This will rebuild the project.
+IntelliJ IDEA에서 `Build` - `Rebuild Project`를 클릭합니다.
+그러면 프로젝트가 다시 빌드됩니다.
 
-### Run Backend
+### 백엔드 실행
 
-Run the MySQL container as usual, then start the backend.  
-Spring will apply the dev profile and connect to the local database.  
-Seed data will also be applied.
+평소와 같이 MySQL 컨테이너를 실행한 다음 백엔드를 시작합니다.
+Spring은 dev 프로필을 적용하고 로컬 데이터베이스에 연결합니다.
+시드 데이터도 적용됩니다.
 
-## Java Code Formatting
+## Java 코드 서식 지정
 
-[Google Style Guide Repository](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
+[Google 스타일 가이드 레포지토리](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
 
 ![settings-code-style](/assets/how-to-set-up-local-dev-env/settings-code-style.png)
 
-Download intellij-java-google-style.xml, then in IntelliJ IDEA go to `Preferences` - `Code Style` - `Java` and click the `Schema` tab.
+intellij-java-google-style.xml을 다운로드한 다음 IntelliJ IDEA에서 `Preferences` - `Code Style` - `Java`로 이동하여 `Schema` 탭을 클릭합니다.
 
-You'll see a gear icon as shown above. Click it to select the downloaded file.
+위와 같이 톱니바퀴 아이콘이 표시됩니다. 클릭하여 다운로드한 파일을 선택합니다.
 
 ![import-scheme](/assets/how-to-set-up-local-dev-env/import-scheme.png)
 
 ![intellij-idea-code-style](/assets/how-to-set-up-local-dev-env/intellij-idea-code-style.png)
 
-schema - gear icon - import downloaded file
+스키마 - 톱니바퀴 아이콘 - 다운로드한 파일 가져오기
 
-## Apply Code Formatting
+## 코드 서식 적용
 
-Press `Ctrl + Alt + L` (or `Cmd + Alt + L` on Mac) to apply code formatting.
+`Ctrl + Alt + L`(Mac의 경우 `Cmd + Alt + L`)을 눌러 코드 서식을 적용합니다.
 
-## 📝 API Documentation
+## 📝 API 문서
 
-API documentation is available through Bruno test collections in the `api-testing/` directory. The collection includes comprehensive test cases for:
+API 문서는 `api-testing/` 디렉토리의 Bruno 테스트 컬렉션을 통해 제공됩니다. 컬렉션에는 다음에 대한 포괄적인 테스트 케이스가 포함됩니다:
 
-- User authentication and management
-- Festival operations
-- Booth management
-- Reservation system (v1 and v2)
-- Image upload functionality
+- 사용자 인증 및 관리
+- 축제 운영
+- 부스 관리
+- 예약 시스템 (v1 및 v2)
+- 이미지 업로드 기능
 
-## 🤝 Contributing
+## 🤝 기여하기
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. 레포지토리 포크
+2. 기능 브랜치 생성 (`git checkout -b feature/amazing-feature`)
+3. 변경 사항 커밋 (`git commit -m 'Add some amazing feature'`)
+4. 브랜치에 푸시 (`git push origin feature/amazing-feature`)
+5. Pull Request 열기
 
-## 📄 License
+## 📄 라이선스
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+이 프로젝트는 MIT 라이선스에 따라 라이선스가 부여됩니다 - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하십시오.
 
-## 🔧 Development Notes
+## 🔧 개발 노트
 
-### Key Changes Summary
+### 주요 변경 사항 요약
 
-1. **Frontend Environment Variables**: Create separate `.env.local` file in `frontend/` directory for Next.js environment variables
-2. **Backend Environment Variables**: Added Firebase service account key, MySQL root password, and other new environment variables
-3. **Database Connection URL**: Added `allowPublicKeyRetrieval=true&useSSL=false` parameters
-4. **Production Environment**: CD script dynamically generates `.env.production` file during deployment
+1. **프론트엔드 환경 변수**: Next.js 환경 변수를 위해 `frontend/` 디렉토리에 별도의 `.env.local` 파일 생성
+2. **백엔드 환경 변수**: Firebase 서비스 계정 키, MySQL 루트 암호 및 기타 새로운 환경 변수 추가
+3. **데이터베이스 연결 URL**: `allowPublicKeyRetrieval=true&useSSL=false` 매개변수 추가
+4. **프로덕션 환경**: CD 스크립트가 배포 중에 `.env.production` 파일을 동적으로 생성
 
-### Development Workflow
+### 개발 워크플로우
 
-1. Start MySQL container using Docker Compose
-2. Run Spring Boot application (either via Docker or IDE)
-3. Run Next.js frontend development server
-4. Use Bruno for API testing and development
+1. Docker Compose를 사용하여 MySQL 컨테이너 시작
+2. Spring Boot 애플리케이션 실행 (Docker 또는 IDE를 통해)
+3. Next.js 프론트엔드 개발 서버 실행
+4. API 테스트 및 개발에 Bruno 사용
 
-For any issues or questions, please check the [Issues](https://github.com/skku-table/skku-table/issues) section or create a new issue.
+문제나 질문이 있는 경우 [Issues](https://github.com/skku-table/skku-table/issues) 섹션을 확인하거나 새 이슈를 생성하십시오.
