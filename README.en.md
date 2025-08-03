@@ -4,6 +4,10 @@
 
 SKKU TABLE is a web application designed to efficiently manage festival booth reservations at Sungkyunkwan University. Students can explore and reserve booths at various festivals, while booth operators can easily manage reservations and time-slot operations.
 
+## ER Diagram
+
+![ER Diagram](./assets/ER_Diagram.png)
+
 ## 🎯 Key Features
 
 - **Festival & Booth Discovery**: Search and explore various festivals and booth information
